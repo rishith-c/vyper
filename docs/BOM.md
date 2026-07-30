@@ -1,4 +1,17 @@
-# VYPER-5 — Bill of Materials
+# VYPER-5F — Bill of Materials
+
+> **The airframe is cut to specific parts.** Bays are carved from the actual
+> component solids in `cad/components.py`, so the two below are not
+> interchangeable with anything of a different size without editing that file
+> and re-running `cad/verify.py`:
+>
+> * **SpeedyBee F405 V4 stack** — ESC 45.6 x 44 x 8 mm, FC 41.6 x 39.4 x 7.8 mm,
+>   16.1 mm assembled. The 44 mm ESC width sets the 62 mm fuselage diameter.
+> * **CNHL Ultra Black 6S 1050** — 76 x 38 x 31 mm, 180 g. It drops into a
+>   31 mm bay and the canopy closes on it, so there is no strap.
+>
+> A cheaper AliExpress stack is usually *smaller* than the SpeedyBee, so it will
+> fit the bay — but check its width against 44 mm before ordering.
 
 ## Read this first
 
@@ -31,7 +44,7 @@ AliExpress pricing also swings ±30% with coupons and sale events.
 | 6 | ExpressLRS 2.4 GHz RX | nano, UART | 1 | $7-11 |
 | 7 | 5x4.3x3 props | 5 mm bore, tri-blade | 8 (2 sets) | $4-6 |
 | 8 | Hardware kit (below) | | 1 | $10-15 |
-| 9 | PETG filament | ~250 g incl. a failed print | | $5 |
+| 9 | PETG filament | ~350 g incl. a failed print | | $7 |
 | | | | **Total** | **$150-200** |
 
 **Budget midpoint: ~$174.**
@@ -60,23 +73,22 @@ spares. Quantities below are what the airframe consumes.
 
 | Item | Qty | Where it goes |
 |---|---|---|
-| M3 x 35 socket cap | 4 | Stack column: bottom plate → arm → ESC → spacers → FC → nyloc |
-| M3 x 25 socket cap | 4 | Bottom plate → arm → into the standoff |
-| M3 x 20 **female-female standoff**, aluminium | 4 | Arm top → top plate. Get metal, not printed. ~$4/set |
-| M3 x 8 button head | 4 | Top plate → standoff |
-| M3 x 12 button head + nyloc | 4 | Camera cage and antenna mount → bottom plate |
-| M3 nyloc nut | 8 | |
+| M3 x 20 socket cap | 16 | Pylon flanges: 4 per pylon, through the shell into the backing ribs |
+| M3 x 10 button head | 4 | Canopy → lower shell |
+| M3 x 12 button head | 4 | Nose cone and tail cone → main body |
+| M3 x 12 button head | 2 | Tail fin → tail cone |
+| M3 x 8 button head | 4 | Stack → posts (self-tapping into printed bosses) |
 | M3 washer | 8 | **Under every head.** Bearing in printed plastic is the weak link |
 | M3 x 8 motor screws | 16 | Usually ship with the motors — see the warning below |
 | M2 x 8 | 2 | Camera pivot — usually ships with the camera |
-| 20 mm battery strap | 1 | |
 | XT60 pigtail, 14 AWG | 1 | |
 | 470 µF / 35 V low-ESR capacitor | 1 | Across the XT60. **Not optional on 6S** |
 | Heatshrink, zip ties | | |
 
 ### The motor screw warning
 
-The motor pad is **4.0 mm** thick, so an M3x8 reaches exactly 4 mm into the
+The nacelle is 17 mm deep, so the belly is hollowed out to leave a **4.0 mm**
+pad under the motor, so an M3x8 reaches exactly 4 mm into the
 motor. **Do not use anything longer.** A screw that is too long punches into the
 windings and destroys a brand-new motor — it is the single most common way
 people kill their first set. If your motors ship with M3x6, use those and the

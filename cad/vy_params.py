@@ -1,198 +1,172 @@
-"""VYPER-5 -- shared airframe parameters.
+"""VYPER-5F -- faired airframe parameters.
 
-Every dimension the airframe depends on lives here. Nothing else defines
-geometry twice. Units are millimetres, degrees, grams, newtons.
+This is a full redesign of the original flat-plate VYPER-5 (still in git
+history). Same class, same electronics, completely different structure: a
+streamlined body-of-revolution fuselage with the battery and stack buried
+inside, and four swept faired pylons ending in motor nacelles.
 
-FRAME COORDINATE SYSTEM
------------------------
-  Origin  = centre of the bottom plate, on its BOTTOM face (Z = 0).
-  +X      = forward (camera end)
+WHY THE FAIRING, HONESTLY
+-------------------------
+On a conventional racer the drag is dominated by the exposed battery brick,
+the four flat arms and the open stack. Burying all of that is a real win.
+
+But a quad at speed does not fly nose-first -- it pitches over 40-60 degrees,
+so a fuselage aligned with the airframe X axis sits at a large angle of attack
+and stops behaving like a streamlined body. That is exactly why conventional
+racers do not have fuselages.
+
+The fix is MOTOR_TILT: cant the motor pads nose-down so the airframe can make
+thrust while the fuselage stays closer to the flow. 12 degrees is a proven
+racing value and does not make hovering awkward. Set it to 0 for a
+conventional build, or 25-30 for a dedicated speed-run airframe (and expect to
+fly it nose-high in the hover).
+
+Realistic expectation: meaningfully faster than the plate version, mostly from
+burying the battery and fairing the arms. Not the 40% a wind-tunnel-aligned
+body would give.
+
+COORDINATES
+-----------
+  Origin  = fuselage axis, at the longitudinal datum (battery bay centre-ish)
+  +X      = forward (nose)
   +Y      = left
   +Z      = up
-  Motors sit at 45/135/225/315 degrees -- true X, not stretched/deadcat.
-  A true X keeps yaw authority symmetric and is what you want for racing;
-  deadcat only exists to keep props out of a camera's field of view.
+  Fuselage is a body of revolution about the X axis.
 
-WHY 220 mm / 5 inch
--------------------
-  5" is the best thrust-per-dollar class in the hobby. 220 mm true-X puts
-  155.6 mm between adjacent motors, so 127 mm props leave a 28.6 mm tip gap
-  -- no overlap, no interference drag between discs.
-
-VERTICAL STACK-UP (all frame Z)
--------------------------------
-   0.0 .. 4.0    bottom plate
-   3.2 .. 17.2   arms -- they seat 0.8 mm DOWN into the locating grooves,
-                 so the arm top (the motor mounting face) is at 17.2, not 18
-  17.2 .. 37.2   M3x20 standoffs; ESC + FC live in here
-  37.2 .. 40.2   top plate
-  40.2 ..        battery, strapped on top
-  ~43.2          prop disc (motor mount face + ~26 mm for a 2207)
-
-  Everything that reaches above ~42 mm must stay inside R = 46.5 mm along
-  the 45 deg (arm) directions, because that is where the prop discs start.
-  Along 0/90/180/270 deg the prop discs are never reached at all.
+WHAT DRIVES THE SIZE
+--------------------
+The SpeedyBee ESC is 44 mm wide and rigid. That single number sets the
+fuselage diameter -- see components.py.
 """
 
+import components as C
+
 # --------------------------------------------------------------- airframe
-WHEELBASE = 220.0                 # motor-to-motor diagonal
-R_MOTOR = WHEELBASE / 2.0         # 110.0
+WHEELBASE = 220.0
+R_MOTOR = WHEELBASE / 2.0
 ARM_ANGLES = (45.0, 135.0, 225.0, 315.0)
 
-PROP_DIA = 127.0                  # 5.0 in
+PROP_DIA = C.PROP_D
 PROP_R = PROP_DIA / 2.0
-# Along an arm axis the prop disc starts at this radius. Nothing tall may
-# cross it.
-R_PROP_INNER = R_MOTOR - PROP_R   # 46.5
+
+# SHIPPED AT ZERO. Motor tilt is what would let the fuselage fly aligned with
+# the flow, but it re-cuts the pylon-to-fuselage joint at a compound angle and
+# needs board_align_pitch set in Betaflight. The fairing's two biggest wins --
+# burying the battery and fairing the arms -- pay off at any attitude, so the
+# first article ships conventional. Raise this for a dedicated speed airframe
+# and expect to re-verify the root lands.
+MOTOR_TILT = 0.0
+MOTOR_PAD_Z = 16.0                # pad height above the fuselage axis; also
+                                  # the height the pylons leave the fuselage,
+                                  # so the whole pylon is flat-topped
 
 # --------------------------------------------------------------- fasteners
-M3_CLR = 3.3                      # snug M3 clearance; locates the arms
+M3_CLR = 3.3
 M2_CLR = 2.2
-ZIP_D = 4.0                       # zip-tie pass-through
+M3_TAP = 2.5                      # self-tapping M3 into printed plastic
 
-# Bolt circles, all on the 45 deg arm axes.
-R_STACK = 21.567                  # 30.5 x 30.5 FC/ESC pattern -> (15.25,15.25)
-R_ARM_OUT = 38.0                  # outer arm bolt = top-plate standoff
+# --------------------------------------------------------------- fuselage
+# Outer profile: (x, radius). Splined, then revolved about X.
+FUSE_NOSE_X = 112.0
+FUSE_TAIL_X = -142.0
+FUSE_R_MAX = 31.0                 # 62 mm dia; set by the 44 mm ESC + walls
 
-STACK_PITCH = 30.5
-
-# --------------------------------------------------------------- bottom plate
-BP_T = 4.0
-BP_SQ = 56.0                      # central square
-BP_SQ_R = 8.0
-BP_BAR_L = 108.0                  # the two crossed bars -> reach R = 54
-BP_BAR_W = 17.0
-BP_BAR_R = 8.0
-BP_GROOVE_W = 9.4                 # arm locating groove (arm is 9.0 wide)
-BP_GROOVE_D = 0.8                 # shallow: locating only, not structural
-BP_GROOVE_R0 = 8.0
-BP_GROOVE_R1 = 56.0
-
-# Accessory bolt pairs: front = camera cage, rear = antenna mount.
-#
-# THE ARM WEDGE. Arms run out at 45 deg, 9 mm wide, starting at R=12. So a
-# point (x, y) is inside an arm when |x-y| <= 6.36 and x+y >= 16.97. Along
-# the +X centreline that leaves a wedge whose usable half-width is only
-# (x - 6.36). Anything bolted to the nose or the tail has to live inside
-# that wedge, which is why both accessory parts have trapezoidal bases that
-# are narrow at the inboard end and widen going outboard.
-ACC_X = 21.0
-ACC_Y = 8.0
-
-
-def wedge_halfwidth(x):
-    """Usable half-width at distance x from centre, before hitting an arm."""
-    return abs(x) - (ARM_W_ROOT / 2) * (2 ** 0.5)
-
-
-# Shared accessory base outline, +X outboard. Mirror for the tail.
-ACC_BASE = (
-    (-8.0, 5.0),
-    (0.0, 12.5),
-    (26.0, 16.0),
-    (26.0, -16.0),
-    (0.0, -12.5),
-    (-8.0, -5.0),
+FUSE_PROFILE = (
+    (112.0, 0.8),
+    (108.0, 6.5),
+    (100.0, 12.5),
+    (88.0, 19.5),
+    (72.0, 25.5),
+    (50.0, 29.5),
+    (35.0, 31.0),
+    (0.0, 31.0),
+    (-45.0, 31.0),
+    (-70.0, 27.5),
+    (-95.0, 22.0),
+    (-118.0, 15.0),
+    (-135.0, 8.0),
+    (-142.0, 3.0),
 )
 
-# XT60 lead strain-relief slot, rear centreline.
-LEAD_SLOT_X = -15.0
-LEAD_SLOT_W = 8.0                 # along Y
-LEAD_SLOT_T = 3.0                 # along X
+FUSE_WALL = 2.2
+FUSE_R_IN = FUSE_R_MAX - FUSE_WALL
 
-# --------------------------------------------------------------- arm
-ARM_R0 = 12.0                     # inner end radius (4 arms clear each other)
-ARM_L = 111.0                     # part length; motor centre at local x = 98
-ARM_H = 14.0                      # root height. Top face is FLAT full length.
-ARM_W_ROOT = 9.0
-ARM_W_TIP = 7.0
-PAD_T = 4.0                       # tip thickness == motor screw grip depth
+# Split stations. Nose cone and tail cone come off; the main body splits
+# horizontally into a structural lower shell and a lid.
+SPLIT_NOSE_X = 68.0
+SPLIT_TAIL_X = -92.0
+SPLIT_CANOPY_Z = 13.0             # lid parting height
+CANOPY_BOLT_X0 = 52.0
+CANOPY_BOLT_X1 = -56.0
+CANOPY_BOLT_Y = 24.0
 
-MOTOR_X = R_MOTOR - ARM_R0        # 98.0, arm-local
-MOTOR_PATTERN = 16.0              # 2207 / 2306 M3 square
-MOTOR_BORE = 8.0                  # bell boss relief + grit drain
+# Longitudinal bay layout, front to back.
+# The 19 x 19 camera needs 13.5 mm of internal half-diagonal, which the nose
+# taper does not provide until about X = 94. Sat at 92 with margin.
+CAM_FACE_X = 92.0
+# Pack sits aft of the widest point: at X = +64 the inner radius is only
+# 24.75 mm against the pack's 24.5 mm half-diagonal, which is no margin at all.
+BATT_X0, BATT_X1 = -16.0, 60.0    # 76 mm pack
+BATT_FLOOR_Z = -18.0
+STACK_X = -39.0                   # stack centre
+STACK_Z = -4.0                    # ESC underside
+VTX_X = -70.0
+RX_X = -82.0
 
-ARM_BOLT_1 = R_STACK - ARM_R0     # 9.567
-ARM_BOLT_2 = R_ARM_OUT - ARM_R0   # 26.0
-ARM_ZIP_X = 64.0                  # motor-wire tie point
-ARM_ZIP_D = 2.6
+# --------------------------------------------------------------- pylons
+# Root stations on the fuselage flank; front pair sweeps out-and-forward,
+# rear pair out-and-aft.
+PYLON_ROOT_X = 25.0
+PYLON_ROOT_Z = 16.0               # == MOTOR_PAD_Z: pylons are flat-topped
+PYLON_CHORD_ROOT = 30.0           # streamwise width at the root
+PYLON_CHORD_TIP = 26.0            # where it meets the nacelle
+PYLON_DEPTH = 17.0                # vertical; this is what carries bending
 
-# Underside taper, as (arm-local x, depth). Depth tracks the bending moment
-# so peak stress stays roughly flat along the span instead of spiking just
-# inboard of the motor pad.
-ARM_TAPER = (
-    (30.0, 14.0),
-    (55.0, 12.5),
-    (72.0, 9.5),
-    (82.0, 5.5),
-    (86.0, 4.0),
-)
+# Belly profile: (z below the flat top, plan inset). Lofting the plan shape
+# downward with a growing inset rounds the underside of strut and nacelle
+# together, and guarantees the section only ever shrinks going up in the print.
+PYLON_BELLY = ((0.0, 0.0), (4.0, 0.5), (8.0, 1.6), (11.5, 3.4),
+               (14.5, 5.8), (17.0, 9.0))
 
-# Plan outline, +Y half, root -> tip. Mirrored in the generator.
-ARM_OUTLINE = (
-    (0.0, 4.5),
-    (40.0, 4.5),
-    (74.0, 3.5),
-    (78.0, 4.5),
-    (82.0, 8.0),
-    (85.0, 12.0),
-    (86.5, 13.0),
-    (108.0, 13.0),
-    (111.0, 9.5),
-)
+PYLON_FLANGE_W = 30.0             # root flange, bolts to a flat land
+PYLON_FLANGE_H = 24.0             # tall, because the bending is vertical
+PYLON_FLANGE_T = 11.0             # thick, because the saddle cut eats most of it
+PYLON_FLANGE_OUT = 2.0            # how far it stands proud of the root plane
+RIB_T = 9.0                       # backing rib depth; bounded by the bays
+SADDLE_GAP = 0.6
+LIP_BITE = 0.9                    # how far the canopy lip merges into the wall                  # clearance on every saddled mating face
+PYLON_FLANGE_BOLT = 8.0           # +/- in both axes -> 16 mm couple arm
+MOTOR_PAD_T = 4.0                 # material left under the motor -> M3x8
+MOTOR_POCKET_D = 26.0             # belly hollow under the nacelle
+WIRE_CH_W = 6.0                   # motor-wire tunnel bore
+WIRE_TUNNEL_Z = 8.0               # below the pad plane
 
-# --------------------------------------------------------------- top plate
-TP_SQ = 66.0
-TP_R = 10.0
-TP_T = 3.0
-TP_VENT_Y = 20.0                  # cooling / lightening holes over the stack
-TP_VENT_D = 15.0
-TP_STRAP_X = 19.0                 # one strap, two slots
-TP_STRAP_W = 22.0                 # along Y, for a 20 mm strap
-TP_STRAP_T = 4.0                  # along X
-TP_ZIP_X = 10.0                   # RX / VTX tie points, clear of the battery
-TP_ZIP_Y = 28.5
+NACELLE_L = 46.0                  # pod length
+NACELLE_D = 30.0                  # pod max width, just over the 28 mm bell
+NACELLE_NOSE = 14.0               # rounded leading portion
 
-# --------------------------------------------------------------- standoff
-SO_LEN = 20.0
-SO_OD = 7.0
 
-# --------------------------------------------------------------- camera cage
-CAM_WIDTH = 19.5                  # inner gap; micro cams mount 19.0 across
-CAM_WALL = 3.0
-CAM_BASE_T = 3.0
-CAM_WALL_H = 29.0
-CAM_WALL_X0 = 1.0                 # frame X = 22, first station wide enough
-CAM_WALL_X1 = 26.0
-# Pivot sits as far forward and as high as the top plate allows, so the
-# lens ends up AHEAD of the battery nose. See camera_cage.py.
-CAM_PIVOT_X = 18.0                # frame X = 39; far enough forward that the
-                                  # camera's rear corner clears the web when
-                                  # it is tilted back
-CAM_PIVOT_Z = 18.0
-CAM_RAKE_Z = 20.0                 # front-top rake: (X1+2, RAKE_Z) -> (RAKE_BACK, top)
-CAM_RAKE_BACK = 17.0
-CAM_WEB_T = 2.5                   # rear web tying the two walls together
+# --------------------------------------------------------------- tail fin
+FIN_X = -104.0                    # root leading edge
+FIN_LEN = 46.0
+FIN_H = 44.0
+FIN_T = 5.0
+FIN_FOOT_W = 26.0                 # saddle foot straddling the tail cone
+FIN_BOLT_SP = 26.0
+FIN_SWEEP = 26.0                  # LE sweep, mm aft over the height
+ANT_BORE = 6.0                    # VTX antenna shaft, up the fin
 
-# --------------------------------------------------------------- antenna mount
-ANT_BASE_T = 3.0
-ANT_BLADE_T = 5.0                 # thickness in Y
-ANT_TILT = 30.0                   # degrees back from vertical
-ANT_BORE = 6.0                    # flexible antenna shaft
-ANT_HEAD_L = 20.0
-ANT_HEAD_W = 11.0
-ANT_HEAD_D = 14.0
-
-# Blade profile in local XZ, leaning toward -X (rearward on the airframe).
-ANT_BLADE = (
-    (4.0, 0.0),
-    (0.0, 10.0),
-    (-24.0, 46.0),
-    (-36.0, 46.0),
-    (-15.0, 8.0),
-    (-15.0, 0.0),
-)
-ANT_HEAD_AT = (-30.0, 41.0)       # local XZ, centre of the head block
+# --------------------------------------------------------------- cooling
+# Enclosed electronics cook. Annular nose inlet, ducted past the stack, out
+# through the tail. Without this the ESC and VTX will thermal-throttle.
+INLET_D = 15.0                    # nose aperture; at X=99 the OML radius is
+INLET_X = 99.0                    # only 12.5, so 22 mm would remove the nose
+EXIT_D = 26.0
+GILL_X = -66.0                    # side gills over the stack
+GILL_W, GILL_H, GILL_N = 3.5, 14.0, 4
 
 # --------------------------------------------------------------- print
 NEPTUNE4_BED = (225.0, 225.0, 265.0)
+PETG_RHO = 1.27e-3
+SHELL_FILL = 0.85                 # thin shells print nearly solid
+PYLON_FILL = 0.50                 # 4 walls + light infill; stress is low

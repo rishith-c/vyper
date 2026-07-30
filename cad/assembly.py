@@ -1,96 +1,82 @@
-"""VYPER-5 full airframe assembly -- verification model, not a printed part.
+"""VYPER-5F full airframe assembly -- verification model, not a printed part."""
 
-Places every printed part at its real frame location, plus 2207 motor
-envelopes and prop discs as reference bodies, so the stack-up and the prop
-clearances can be checked visually rather than trusted.
+from build123d import Color, Compound, Pos, Rot
 
-Reference bodies are labelled REF_* and are NOT for printing.
-"""
-
-from build123d import Color, Compound, Cylinder, Location, Pos, Rot
-
+import body
+import components as C
+import pylon
+import shells
 import vy_params as P
 
-import antenna_mount
-import arm as arm_mod
-import bottom_plate
-import camera_cage
-import standoff
-import top_plate
+# angle -> (hand, extra yaw)
+PYLONS = {45.0: ("a", 0.0), 225.0: ("a", 180.0), 315.0: ("b", 0.0), 135.0: ("b", 180.0)}
 
-ARM_SEAT = P.BP_T - P.BP_GROOVE_D   # arms drop into the locating grooves
-ARM_TOP = ARM_SEAT + P.ARM_H              # 18.0
-TP_Z = ARM_TOP + P.SO_LEN               # 38.0
+SHELL = Color(0.22, 0.24, 0.28)
+FAIRING = Color(0.80, 0.28, 0.10)
+GUTS = Color(0.30, 0.75, 0.45)
+REF = Color(0.30, 0.65, 0.90)
 
-MOTOR_D = 28.0                          # 2207 bell
-MOTOR_H = 27.0                          # mount face -> prop seat
-PROP_T = 1.5
+
+def placed_pylons():
+    out = {}
+    cache = {h: pylon.gen(h) for h in ("a", "b")}
+    for ang, (hand, yaw) in PYLONS.items():
+        mx, my, mz = body.motor_pos(ang)
+        out[ang] = Pos(mx, my, mz) * Rot(0, 0, yaw) * cache[hand]
+    return out
+
+
+def placed_components():
+    names = ("battery", "stack", "vtx", "rx")
+    out = dict(zip(names, shells.component_envelopes()))
+    out["camera"] = Pos(P.CAM_FACE_X, 0, 0) * C.camera()
+    return out
 
 
 def gen_step():
     parts = []
 
-    bp = bottom_plate.gen_step()
-    bp.label = "bottom_plate"
-    bp.color = Color(0.20, 0.22, 0.26)
-    parts.append(bp)
-
-    one_arm = arm_mod.gen_step()
-    for i, ang in enumerate(P.ARM_ANGLES):
-        a = Rot(0, 0, ang) * Pos(P.ARM_R0, 0, ARM_SEAT) * one_arm
-        a.label = f"arm_{i + 1}"
-        a.color = Color(0.85, 0.30, 0.10)
-        parts.append(a)
-
-    one_so = standoff.gen_step()
-    for i, ang in enumerate(P.ARM_ANGLES):
-        s = Rot(0, 0, ang) * Pos(P.R_ARM_OUT, 0, ARM_TOP) * one_so
-        s.label = f"standoff_{i + 1}"
-        s.color = Color(0.55, 0.57, 0.60)
+    for name, fn, col in (
+        ("fuselage_lower", shells.fuselage_lower, SHELL),
+        ("fuselage_upper", shells.fuselage_upper, SHELL),
+        ("nose_cone", shells.nose_cone, FAIRING),
+        ("tail_cone", shells.tail_cone, FAIRING),
+        ("tail_fin", shells.tail_fin, FAIRING),
+    ):
+        s = fn()
+        s.label = name
+        s.color = col
         parts.append(s)
 
-    tp = Pos(0, 0, TP_Z) * top_plate.gen_step()
-    tp.label = "top_plate"
-    tp.color = Color(0.20, 0.22, 0.26)
-    parts.append(tp)
+    for ang, solid in placed_pylons().items():
+        solid.label = f"pylon_{int(ang)}"
+        solid.color = FAIRING
+        parts.append(solid)
 
-    cc = Pos(P.ACC_X, 0, P.BP_T) * camera_cage.gen_step()
-    cc.label = "camera_cage"
-    cc.color = Color(0.85, 0.30, 0.10)
-    parts.append(cc)
+    for name, solid in placed_components().items():
+        solid.label = f"PART_{name}"
+        solid.color = GUTS
+        parts.append(solid)
 
-    am = Pos(-P.ACC_X, 0, P.BP_T) * antenna_mount.gen_step()
-    am.label = "antenna_mount"
-    am.color = Color(0.85, 0.30, 0.10)
-    parts.append(am)
-
-    # ---------------------------------------------------- reference bodies
-    for i, ang in enumerate(P.ARM_ANGLES):
-        m = (
-            Rot(0, 0, ang)
-            * Pos(P.R_MOTOR, 0, ARM_TOP + MOTOR_H / 2)
-            * Cylinder(MOTOR_D / 2, MOTOR_H)
-        )
-        m.label = f"REF_motor_{i + 1}"
-        m.color = Color(0.35, 0.37, 0.40)
+    for ang in P.ARM_ANGLES:
+        mx, my, mz = body.motor_pos(ang)
+        m = Pos(mx, my, mz) * C.motor()
+        m.label = f"PART_motor_{int(ang)}"
+        m.color = Color(0.45, 0.47, 0.50)
         parts.append(m)
 
-        d = (
-            Rot(0, 0, ang)
-            * Pos(P.R_MOTOR, 0, ARM_TOP + MOTOR_H + PROP_T / 2)
-            * Cylinder(P.PROP_R, PROP_T)
-        )
-        d.label = f"REF_propdisc_{i + 1}"
-        d.color = Color(0.30, 0.65, 0.90)
+        d = Pos(mx, my, mz + C.MOTOR_PAD_TO_PROP) * C.prop_disc()
+        d.label = f"REF_propdisc_{int(ang)}"
+        d.color = REF
         parts.append(d)
 
     asm = Compound(children=parts)
-    asm.label = "VYPER5"
+    asm.label = "VYPER5F"
     return asm
 
 
 if __name__ == "__main__":
     a = gen_step()
     bb = a.bounding_box()
-    print("assembly bbox mm:", [round(v, 2) for v in bb.size])
-    print("assembly Z range:", round(bb.min.Z, 2), "->", round(bb.max.Z, 2))
+    print("assembly bbox mm:", [round(v, 1) for v in bb.size])
+    print("Z range:", round(bb.min.Z, 1), "->", round(bb.max.Z, 1))

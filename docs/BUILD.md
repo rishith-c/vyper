@@ -1,4 +1,4 @@
-# VYPER-5 — Printing and Assembly
+# VYPER-5F — Printing and Assembly
 
 ## Part 1: Printing
 
@@ -30,38 +30,40 @@ length of the arm; a wall laid down at 100 mm/s bonds worse than one at 50.
 
 | Part | Orientation | Why |
 |---|---|---|
-| **Arm** | **Motor pad face DOWN on the bed. Flat side down.** | Non-negotiable. See below. |
-| Bottom plate | Flat, as exported | Plate loads are in-plane |
-| Top plate | Flat, as exported | |
-| Camera cage | Base down, as exported | |
-| Antenna mount | Base down, as exported | Blade rakes ≤34° from vertical |
-| Standoff | Standing up | |
+| **Pylon A / B** | **Flat top DOWN on the bed** | Non-negotiable. See below. |
+| Fuselage lower | Cut face down (as exported) | Half-tube, section shrinks upward |
+| Fuselage upper | Cut face down (as exported) | Same |
+| Nose cone | Open end down (as exported) | A dome; shrinks all the way to the tip |
+| Tail cone | Open end down (as exported) | Same |
+| Tail fin | Flat on its side (as exported) | Loads are in-plane |
 
 Every STL is already oriented correctly. **Drop them in the slicer and do not
 rotate anything.**
 
 #### If you take one thing from this document
 
-The arm's flat face is the motor mounting surface, and it goes **on the bed**.
+The pylon's flat top is the motor mounting surface, and it goes **on the bed**.
 
-- All the arm's taper is on the *other* side, so the cross-section only shrinks
+- All the pylon's fairing hangs on the *other* side, so the cross-section only shrinks
   going upward. No overhangs, no supports, nothing to clean up.
-- Bed contact is the entire 111 x 26 mm plan area. It will not lift.
+- Bed contact is the entire 90 x 67 mm plan area. It will not lift.
 - The bending fibres end up as continuous perimeters running the full length.
 - Layer adhesion only sees transverse shear (~0.6 MPa against a bond good for
   25+ MPa).
 
-Print an arm standing on edge or on its end and it will snap at the root on
-the first hard landing, because you will have put the layer boundaries square
-across the tension face.
+Print a pylon on its side or on its end and it will snap at the root on the
+first hard landing, because you will have put the layer boundaries square
+across the tension face. It also puts a 77 degree overhang along the whole
+upper surface.
 
 ### Print order
 
-Print **one arm first** and check it: the two root holes should pass an M3
-freely, the motor pad should sit flat on glass with no rock, and the pad should
-measure 4.0 mm. If that arm is good, print the other three plus everything else.
+Print **one pylon first** and check it: the four flange holes should pass an M3
+freely, the flat top should sit on glass with no rock, and the pad under the
+motor should measure 4.0 mm. Then print the rest.
 
-Total print time is roughly 7-9 hours for the full set. About 80 g of filament.
+Total print time is roughly 18-24 hours for the full set. About 190 g of
+filament, so budget 350 g including one failure.
 
 ### Post-print
 
