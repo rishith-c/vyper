@@ -147,13 +147,16 @@ NACELLE_NOSE = 14.0               # rounded leading portion
 
 
 # --------------------------------------------------------------- tail fin
-FIN_X = -104.0                    # root leading edge
-FIN_LEN = 46.0
-FIN_H = 44.0
+FIN_X = -104.0                    # root LE. Must sit well forward of the
+                                  # tail tip at -142 or the foot hangs in air.
+FIN_LEN = 30.0
+FIN_H = 58.0                      # measured from the fuselage AXIS, so only
+                                  # ~38 mm of it shows above the tail surface
 FIN_T = 5.0
-FIN_FOOT_W = 26.0                 # saddle foot straddling the tail cone
-FIN_BOLT_SP = 26.0
-FIN_SWEEP = 26.0                  # LE sweep, mm aft over the height
+FIN_FOOT_W = 20.0                 # saddle foot; must be narrower than the
+                                  # local tail diameter so it wraps, not overhangs
+FIN_BOLT_SP = 20.0
+FIN_SWEEP = 20.0                  # LE sweep, mm aft over the height
 ANT_BORE = 6.0                    # VTX antenna shaft, up the fin
 
 # --------------------------------------------------------------- cooling

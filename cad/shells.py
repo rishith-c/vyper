@@ -262,7 +262,12 @@ def tail_fin():
     # itself so the mating face IS the mould line. The tail is only ~11 mm in
     # radius here, so a spigot deep enough to be useful would punch straight
     # out the bottom -- same reasoning as the pylon root flanges.
-    part += Pos(root - P.FIN_LEN / 2, 0, 4) * Box(P.FIN_LEN - 2, P.FIN_FOOT_W, 24)
+    # Foot spans Z 0..30 so it still stands proud of the tail where the cone
+    # is fattest (r = 21.6 at the forward end). A shallower foot gets entirely
+    # swallowed by the saddle cut up there.
+    part += Pos(root - P.FIN_LEN / 2, 0, 12) * Box(
+        P.FIN_LEN - 2, P.FIN_FOOT_W, 26
+    )
     part -= body.outer(P.SADDLE_GAP)
 
     # Antenna bore up the trailing edge.
