@@ -9,7 +9,7 @@
 | Layer height | 0.20 mm |
 | **Walls / perimeters** | **5** — this is the important one |
 | Top / bottom layers | 5 |
-| Infill | 40% gyroid (plates), 50% gyroid (arms) |
+| Infill | 20% gyroid (shells), 15% gyroid (pylons) |
 | Nozzle | 240 °C |
 | Bed | 80 °C |
 | Cooling | 40-50% |
@@ -17,14 +17,14 @@
 | Supports | **None. Not on any part.** |
 | Brim | None needed |
 
-**Why 5 walls matters more than infill.** These parts are thin. At 9 mm wide
-with 0.4 mm extrusions, five perimeters per side is already 4 mm of the 9 —
-the walls *are* the structure and infill is close to irrelevant. Going from
-40% to 80% infill adds mass and buys you almost nothing. Going from 3 walls to
-5 is most of the strength.
+**Why 5 walls matters more than infill.** Almost every part here is a shell.
+The walls *are* the structure and infill is close to irrelevant — the pylon
+strut only sees about 1.8 MPa against ~45 MPa PETG yield, because a fairing
+gets a deep section for free. Going from 3 walls to 5 is most of the strength;
+going from 20 % to 60 % infill just adds mass.
 
 Slow the walls down. Peak stress is carried by the outer perimeters running the
-length of the arm; a wall laid down at 100 mm/s bonds worse than one at 50.
+length of the pylon; a wall laid down at 100 mm/s bonds worse than one at 50.
 
 ### Orientation — the part that actually matters
 
@@ -67,107 +67,97 @@ filament, so budget 350 g including one failure.
 
 ### Post-print
 
-- Run a **2 mm drill by hand** through the camera cage's M2 pivot holes. They
-  are horizontal and will bridge with slight droop — the only hole on the whole
-  frame that needs cleanup.
-- Test-fit an M3 through the arm and plate holes. If tight, run a 3.3 mm drill
-  through rather than forcing the bolt; forcing it splits the layers.
+- The **wire tunnel** through each pylon and the **M2 camera holes** are the
+  only horizontal bores; they bridge with slight droop. Run a drill through by
+  hand before assembly.
+- Test-fit an M3 through the pylon flange holes. If tight, run a 3.3 mm drill
+  rather than forcing the bolt — forcing it splits the layers.
 - Deburr the motor pads so the motors seat flat.
+- Dry-fit the pylon saddles against the fuselage before you bolt anything. They
+  are cut from the mould line with 0.6 mm of clearance, so they should drop on
+  without persuasion.
 
 ---
 
 ## Part 2: Assembly
 
-### Vertical stack-up, for reference
+### Layout, for reference
 
 ```
-   0.0 .. 4.0    bottom plate
-   3.2 .. 17.2   arms (seated 0.8 mm down into the locating grooves)
-  17.2 .. 37.2   M3x20 standoffs; ESC and FC live in this space
-  37.2 .. 40.2   top plate
-  40.2 ..        battery
-  ~43.2          prop disc
+  X = +112 .. +68   nose cone (removable) -- camera + cooling inlet
+  X = +68 .. -92    main body: lower shell (structure) + canopy
+  X = -92 .. -142   tail cone -- cooling exit; fin bolts on top
+  X = +60 .. -16    battery bay, floor at Z = -18, canopy closes at Z = +13
+  X = -39           stack, on four posts at 30.5 x 30.5
+  Z = +16           pylon roots on the shoulder, and the motor pad plane
+  Z = +42           prop plane
 ```
 
 ### Order
 
-**1. Arms to bottom plate.**
-Each arm drops into its 0.8 mm locating groove — that groove is what makes the
-arms land straight without a jig, so make sure each one is properly seated
-before bolting. Two M3 per arm, both from underneath, **washer under every
-head**:
+**1. Pylons to the lower shell.**
+Four **M3x20** per pylon, from outside, through the shell wall into the backing
+ribs. Washer under every head. The saddle face is cut from the fuselage mould
+line itself, so each pylon should sit flush with no rocking — if it does rock,
+you have the wrong hand. Hand A goes to the 45° and 225° stations, hand B to
+315° and 135°.
 
-- inner bolt (R = 21.6 mm) — **M3x35**, this is also the stack column
-- outer bolt (R = 38 mm) — **M3x25**, this also carries the top-plate standoff
+Work diagonally and do not fully tighten until all four are on.
 
-Do not fully tighten yet.
+**2. Motors.**
+Four **M3x8** each, up through the 4 mm pad into the motor. **Nothing longer** —
+the belly pocket exists precisely so an M3x8 is right; a longer screw goes into
+the windings and kills the motor.
 
-**2. Standoffs.**
-Thread the four aluminium M3x20 standoffs onto the four M3x25 outer bolts, on
-top of the arms. Now tighten all eight arm bolts, working diagonally.
+Drop the phase wires through the bell bore into the belly pocket, then feed them
+through the wire tunnel and out the flange into the fuselage.
 
-**3. Motors.**
-Four **M3x8** each, up through the pad into the motor. The pad is 4.0 mm, so
-the screw reaches 4 mm into the bell. **Nothing longer.** Snug, not gorilla —
-you are threading into aluminium.
+**3. Stack.**
+Four **M3x8** self-tapping into the printed posts, ESC below, FC above. FC arrow
+points forward (+X). Solder the four motors, then the XT60 pigtail, then the
+**470 µF capacitor directly across the XT60 pads** — on 6S that capacitor is not
+optional.
 
-Route the phase wires along the top of the arm and take up the slack through
-the 2.6 mm hole at mid-arm with a zip tie.
+**4. VTX and RX.**
+Their bays are aft of the stack. Keep the VTX against a gill so it has airflow.
 
-**4. ESC.**
-It sits on top of the four arm roots on its rubber grommets, over the M3x35
-bolts. Solder the four motors (order does not matter yet — you fix rotation in
-software), then the XT60 pigtail, then the **470 µF capacitor directly across
-the XT60 pads**. On 6S the capacitor is not optional; without it, switching
-spikes will eventually take out the ESC.
+**5. Tail cone and fin.**
+Two **M3x12** join the tail cone to the main body. The fin saddles on top of the
+cone with two more. Antenna shaft up the 6 mm bore in the fin — the centreline
+is the one place on this airframe that is prop-safe at any height, because the
+rear discs sit 77.8 mm off centre against a 63.5 mm radius.
 
-Feed the XT60 lead down through the slot at the rear of the bottom plate as
-strain relief.
+**6. Nose cone and camera.**
+Camera slides into its socket from behind; one **M2x8** per side sets the tilt by
+friction, **30-40°** for this power class. Two **M3x12** hold the nose cone on.
+Leave enough slack in the camera lead to pull the nose off without unplugging.
 
-**5. FC.**
-Nylon spacers above the ESC, then the FC, then M3 nylocs. Arrow points forward
-(+X, toward the camera). Connect the ESC ribbon, RX, VTX, and camera.
-
-**6. Camera cage.**
-Two **M3x12** up through the bottom plate, nylocs on top of the cage base.
-Camera drops between the walls, one **M2x8** per side. Set the tilt as you
-tighten — **30-40°** for this power class. Friction on the M2s is what holds
-the angle; that is how every micro camera mount works.
-
-**7. Antenna mount.**
-Same two-bolt pattern at the rear. Antenna shaft through the 6 mm bore, zip tie
-through the cross hole. The bore already points the antenna up and aft, clear
-of the rear prop discs.
-
-**8. Top plate.**
-Four **M3x8** down into the standoff tops. Tie the RX and VTX leads through the
-four 4 mm holes near the corners — those sit outboard of the battery footprint
-so nothing gets crushed.
-
-**9. Battery.**
-Strap through the two slots. Pack centred fore-aft; the CG wants to be at the
-frame centre.
+**7. Battery and canopy.**
+The pack drops into the bay onto the floor at Z = -18. **The canopy is the
+retainer** — there is no strap. Four **M3x10** close it. If the lid will not sit
+down, the pack is not fully seated.
 
 ### Before the first flight
 
 **Props off for all of this.**
 
-1. Flash/verify Betaflight. Set the correct motor order and directions in the
-   Motors tab.
-2. Bind the RX. Check failsafe actually cuts the motors.
-3. Check the accelerometer and that the FC arrow really is forward.
-4. Set the VTX band and power. **25 mW indoors**, and never power the VTX
-   without an antenna — it will cook the output stage.
-5. Set a **3.5 V/cell** low-voltage warning. A 6S 1050 at 100 A does not last
-   long and racing packs do not like being run flat.
-6. Props on last, and check each direction against the Betaflight diagram.
+1. Flash/verify Betaflight; set motor order and directions in the Motors tab.
+2. Bind the RX. Confirm failsafe actually cuts the motors.
+3. Check the FC arrow really is forward.
+4. Set VTX band and power. **25 mW indoors**, and never power a VTX without an
+   antenna.
+5. Set a **3.5 V/cell** low-voltage warning.
+6. **Run a 30-second bench spool-up with the canopy ON and feel the ESC after.**
+   This airframe is a closed tube; if the cooling path is blocked the ESC will
+   thermal-throttle and you want to find that out on the bench.
+7. Props on last, checking each direction against the Betaflight diagram.
 
 ### Expect to break things
 
-The camera cage and the antenna mount are **designed as fuses**. They hang off
-the nose and tail on two bolts each and are meant to snap before they lever the
-bottom plate. That is 6-7 g of filament each. Print a spare of both with the
-first batch, and a spare arm.
+The **nose cone, tail cone and fin** are the fuses — they are on two bolts each
+and are meant to come off rather than lever the shell. 7-15 g of filament each.
+Print spares of all three with the first batch, plus one pylon of each hand.
 
-If you break the bottom plate, you hit something hard enough that a carbon
-frame would have bent its arms instead.
+The expensive part to lose is the **lower shell** at 68 g and several hours. It
+is the one part worth protecting, which is the real cost of a faired airframe
+compared with the plate version, where the sacrificial item was a 10 g arm.

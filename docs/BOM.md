@@ -124,12 +124,7 @@ more torque, slightly heavier.
 
 **Digital video (HDZero / DJI / Walksnail).** Do not try. The cheapest digital
 VTX alone is most of this budget, and the air units do not fit the 19 mm camera
-cage. Analog is what makes a sub-$200 racer possible.
-
-**Printed standoffs.** [stl/standoff.stl](../stl/standoff.stl) exists, but it
-is a plain spacer with no thread — you would need a single M3x45 all the way
-through and a nyloc on top, and it crushes if you overtighten. The aluminium
-set is $4. Buy the aluminium set.
+socket. Analog is what makes a sub-$200 racer possible.
 
 ---
 
@@ -140,7 +135,7 @@ which matters for a part that lives in the sun and gets thrown at the ground.
 PLA+ works and prints easier but cracks more readily in cold weather. ASA/ABS
 are better again but warp badly on the Neptune 4's open frame.
 
-One 1 kg spool prints roughly a dozen complete airframes. Budget 250 g for the
+One 1 kg spool prints about five complete airframes. Budget 350 g for the
 first build including one failure.
 
 ---
