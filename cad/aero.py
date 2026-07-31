@@ -11,13 +11,13 @@ Run:  python aero.py
 
 import math
 
-from build123d import Cylinder, Plane, Pos, Rot, extrude, section
+from build123d import Cylinder, Plane, Pos, Rot, section
 
 import body
 import components as C
 import shells
 import vy_params as P
-import wing
+import arm
 
 RHO = 1.225          # kg/m^3, sea level
 NU = 1.46e-5         # m^2/s, kinematic viscosity of air
@@ -25,7 +25,7 @@ NU = 1.46e-5         # m^2/s, kinematic viscosity of air
 # ---------------------------------------------------------------- drag coefficients
 # All referenced to the area named alongside them.
 CD_FUSELAGE = 0.10   # streamlined body of revolution, fineness ~5, on frontal area
-CD_WING_P0 = 0.020   # profile drag of a thick flat-ish section, on planform
+CD_BLADE = 0.20      # rounded rectangular strut, on frontal area (t x span)
 CD_MOTOR = 0.80      # exposed cylinder in crossflow, on frontal area
 CD_PLATE = 1.17      # flat plate normal to flow, on frontal area
 K_INTERFERENCE = 1.15
@@ -35,30 +35,32 @@ K_INTERFERENCE = 1.15
 CDA_OPEN_RACER = 0.0075
 
 
-def wing_planform_m2():
-    """Net planform of BOTH panels, measured off the solid rather than the
-    parameters, so the lightening bay and the root saddle are accounted for."""
-    total = 0.0
-    for hand in wing.HANDS:
-        w = wing.gen(hand)
-        # Slice at mid-skin and take the face area: the panel is prismatic in
-        # plan over the skin thickness, so this is the projected planform.
-        sec = section(w, Plane.XY.offset(-P.WING_SKIN / 2))
-        total += sum(f.area for f in sec.faces())
-    return total * 1e-6
+def blade_frontal_m2():
+    """Silhouette of the two blades looking down the flight axis.
+
+    Each blade is ARM_W thick and ARM_H deep, crossing at ARM_ANGLE, so the
+    span it projects onto Y is len*sin(angle). Frontal area is that projected
+    span times the depth, minus the part hidden behind the body.
+    """
+    proj = arm.ARM_LEN * math.sin(math.radians(arm.ARM_ANGLE))
+    exposed = max(proj - 2 * P.FUSE_R_MAX, 0.0)
+    return 2 * exposed * P.ARM_H * 1e-6
 
 
 def plate_under_discs_m2():
-    """Wing area actually sitting inside the prop discs -- this is what
-    generates rotor download in the hover."""
+    """Blade area inside the prop discs -- the rotor-download term."""
     total = 0.0
-    for hand in wing.HANDS:
-        w = Pos(0, 0, P.MOTOR_PAD_Z) * wing.gen(hand)
-        for mx, my in wing.motor_stations(hand):
+    for notch, sign in (("top", 1.0), ("bottom", -1.0)):
+        a = (
+            Pos(0, 0, P.MOTOR_PAD_Z)
+            * Rot(0, 0, sign * arm.ARM_ANGLE)
+            * arm.gen(notch)
+        )
+        for mx, my in P.MOTOR_XY:
             disc = Pos(mx, my, P.MOTOR_PAD_Z) * Cylinder(P.PROP_R, 200)
             try:
-                inter = w & disc
-                sec = section(inter, Plane.XY.offset(P.MOTOR_PAD_Z - P.WING_SKIN / 2))
+                sec = section(a & disc,
+                              Plane.XY.offset(P.MOTOR_PAD_Z - 1.0))
                 total += sum(f.area for f in sec.faces())
             except Exception:
                 pass
@@ -73,54 +75,36 @@ def report(auw_g, thrust_g):
     W = auw_g * 9.81e-3
     T = thrust_g * 9.81e-3
 
-    Sw = wing_planform_m2()
-    span = 2 * (P.WING_TIP_Y - P.WING_ROOT_Y) * 1e-3 + 2 * P.FUSE_R_MAX * 1e-3
-    ar = span ** 2 / Sw if Sw else 0.0
+    Sb = blade_frontal_m2()
 
-    print("=== wing ===")
-    print(f"planform (both panels)   {Sw * 1e4:8.1f} cm^2   (measured off the solids)")
-    print(f"span (tip to tip)        {span * 1e3:8.0f} mm")
-    print(f"aspect ratio             {ar:8.2f}")
-    print(f"wing loading             {auw_g / (Sw * 1e4):8.2f} g/cm^2")
-
-    # Speed at which the wings alone carry the aircraft, at a usable CL.
-    CL = 0.55
-    v_carry = math.sqrt(2 * W / (RHO * Sw * CL))
-    print(f"speed for wings to carry AUW at CL={CL}: "
-          f"{v_carry:5.1f} m/s = {v_carry * 3.6:5.0f} km/h")
-    for v in (20.0, 30.0, 40.0):
-        L = 0.5 * RHO * v * v * Sw * CL
-        print(f"  lift at {v:4.0f} m/s ({v * 3.6:3.0f} km/h): "
-              f"{L / 9.81e-3:6.0f} g = {100 * L / W:4.0f} % of AUW")
-
-    # Reynolds number, to say whether the coefficients above are even valid.
-    chord = (P.WING_PLAN[0][0] - P.WING_PLAN[-1][0]) * 1e-3
-    re30 = 30.0 * chord / NU
-    print(f"wing chord {chord * 1e3:.0f} mm -> Re at 30 m/s = {re30:,.0f}")
-    print("  Re ~4e5 is transitional -- high enough that the 0.020 profile")
-    print("  drag figure is defensible, low enough that it is still the")
-    print("  softest number in this analysis.")
+    print("=== arms ===")
+    print(f"two blades, {P.ARM_W:.0f} x {P.ARM_H:.0f} mm, "
+          f"{arm.ARM_LEN:.0f} mm long, crossing at "
+          f"{2 * arm.ARM_ANGLE:.0f} deg")
+    print(f"blade frontal silhouette  {Sb * 1e4:8.1f} cm^2")
+    print("  The blades make no useful lift and are not meant to. The whole")
+    print("  point of this layout is that a 9 mm blade edge-on costs almost")
+    print("  nothing, so the drag budget is body + motors and nothing else.")
 
     print("\n=== frame geometry ===")
     xs = sorted({abs(x) for x, _ in P.MOTOR_XY})
     ys = sorted({abs(y) for _, y in P.MOTOR_XY})
     fa, lat = 2 * xs[0], 2 * ys[0]
-    frontal_wing = (P.WING_TIP_Y - P.FUSE_R_MAX) * 2 * P.WING_DEPTH * 1e-6
+    frontal_wing = Sb
     print(f"stretched X: {fa:.0f} mm fore-aft / {lat:.0f} mm lateral"
           f" = {fa / lat:.2f}:1")
     print(f"lateral spacing sits at the 127 mm prop minimum + "
           f"{lat - P.PROP_DIA:.0f} mm")
-    print(f"exposed wing frontal area {frontal_wing * 1e4:5.1f} cm^2"
-          "   (this is what narrowing buys)")
+    print(f"exposed blade frontal area {frontal_wing * 1e4:5.1f} cm^2")
 
     print("\n=== drag build-up ===")
     a_fuse = math.pi * (P.FUSE_R_MAX * 1e-3) ** 2
     a_motor = 4 * (C.MOTOR_BELL_D * C.MOTOR_H) * 1e-6
     d_fuse = CD_FUSELAGE * a_fuse
-    d_wing = CD_WING_P0 * Sw
+    d_wing = CD_BLADE * Sb
     d_motor = CD_MOTOR * a_motor
     cda = (d_fuse + d_wing + d_motor) * K_INTERFERENCE
-    for name, v in (("fuselage", d_fuse), ("wings (profile)", d_wing),
+    for name, v in (("fuselage", d_fuse), ("2 blades", d_wing),
                     ("4 motor bells", d_motor)):
         print(f"  {name:18s} CdA = {v * 1e4:6.2f} cm^2  ({100 * v / (cda / K_INTERFERENCE):4.0f} %)")
     print(f"  interference x{K_INTERFERENCE}")
@@ -167,20 +151,19 @@ def report(auw_g, thrust_g):
     # Download scales with the blocked fraction; ~0.06 of thrust for a plate
     # fully covering the disc at this spacing (gap/R = 0.41).
     dl = frac * 0.06
-    print(f"wing area inside the discs {plate * 1e4:6.0f} cm^2 = {100 * frac:4.1f} %"
+    print(f"blade area inside the discs {plate * 1e4:5.0f} cm^2 = {100 * frac:4.1f} %"
           " of disc area  (measured)")
     print(f"estimated hover download   {100 * dl:4.1f} % of thrust"
           f"  = {dl * thrust_g:4.0f} g")
-    print("  This is the price of the wing layout. The lightening bay between")
-    print("  the motors exists partly to keep it down.")
+    print("  Two thin blades block far less of the disc than the wing panels")
+    print("  did, which is the other half of why this layout is better here.")
 
     return {
-        "wing_area_m2": Sw,
+        "blade_frontal_m2": Sb,
         "cda_m2": cda,
         "v_max_ms": v_max,
         "download_frac": dl,
         "plate_frac": frac,
-        "aspect_ratio": ar,
     }
 
 
@@ -189,8 +172,8 @@ def airframe_mass_g():
     for fn in (shells.fuselage_lower, shells.fuselage_upper, shells.nose_cone,
                shells.tail_cone, shells.tail_fin):
         g += fn().volume * P.SHELL_FILL * P.PETG_RHO
-    for h in wing.HANDS:
-        g += wing.gen(h).volume * P.WING_FILL * P.PETG_RHO
+    for n in ("top", "bottom"):
+        g += arm.gen(n).volume * P.ARM_FILL * P.PETG_RHO
     return g
 
 

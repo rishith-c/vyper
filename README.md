@@ -9,7 +9,7 @@ Seven printed parts, no supports, no carbon fibre, Elegoo Neptune 4 in PETG.
 
 ![VYPER-5W](docs/img/v_iso.png)
 
-**Printed frame 261 g. AUW 706 g. Static thrust ~6.4 kg. T/W 9.1:1.**
+**Printed frame 168 g. AUW 613 g. Static thrust ~6.4 kg. T/W 10.4:1.**
 
 **41 automated checks pass.** Full output in [docs/VERIFY_REPORT.txt](docs/VERIFY_REPORT.txt)
 and [docs/AERO_REPORT.txt](docs/AERO_REPORT.txt).
@@ -65,12 +65,12 @@ Run `python cad/aero.py` and `python cad/verify.py`. The headline results:
 
 | | |
 |---|---|
-| Wing planform (measured off the solids) | 234 cm² |
-| Speed at which the wings carry the **whole aircraft** | 30 m/s (108 km/h) |
-| Total drag area (CdA) | 41.8 cm² |
-| vs. a conventional open racer | **44 % less drag** |
+| Blade frontal silhouette (measured) | 34.8 cm² |
+| Arms | two 9×18 mm blades, half-lapped, crossing at 77° |
+| Total drag area (CdA) | 44.5 cm² |
+| vs. a conventional open racer | **41 % less drag** |
 | Top speed | **149 km/h — limited by prop pitch, not thrust** |
-| Hover download from the wing under the discs | 2.4 % (155 g), measured by boolean |
+| Hover download from the blades under the discs | **0.5 % (31 g)**, measured by boolean |
 
 Three findings worth acting on:
 
@@ -83,8 +83,9 @@ Three findings worth acting on:
    thrust available against 4.4 N of drag. Fairing the airframe does **not**
    raise the ceiling. It cuts the power needed to sit at it by 44 %, which
    buys flight time and less voltage sag.
-3. **The wings genuinely work.** At 108 km/h they carry 100 % of the weight,
-   which is what makes this different from bolting fairings onto a quad.
+3. **Rotor download is now negligible.** Two thin blades block 8.2 % of the
+   disc area against 36 % for the wing panels they replaced — 0.5 % of thrust
+   instead of 2.2 %.
 
 ## Why this shape, honestly
 
@@ -142,12 +143,12 @@ than taking my word for it.
 |---|---|
 | Layout | **stretched X 1.26:1** — 176 mm fore-aft / 140 mm lateral, 225 mm diagonal |
 | Fuselage | 320 mm long, 62 mm max dia, fineness 5.2 |
-| Wing | 216 cm² planform, 200 mm span |
+| Arms | 2 crossed blades, 9×18 mm, 255 mm — **print diagonally** |
 | Motors | 2207 1750KV, 6S, 5x4.3x3 |
 | Battery | 6S 1050, **inside the fuselage**; the canopy is the retainer |
-| Printed frame | 261 g (7 parts, 8 prints) |
-| AUW | 706 g |
-| Thrust-to-weight | 9.1:1 |
+| Printed frame | 168 g (7 parts, 7 prints) |
+| AUW | 613 g |
+| Thrust-to-weight | 10.4:1 |
 | Min prop tip gap | 13.0 mm (lateral pair, at the 127 mm prop minimum) |
 
 Cooling is **not optional**: annular nose inlet around the camera, ducted the

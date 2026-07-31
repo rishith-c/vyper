@@ -1,50 +1,43 @@
-=== wing ===
-planform (both panels)      219.0 cm^2   (measured off the solids)
-span (tip to tip)             214 mm
-aspect ratio                 2.09
-wing loading                 3.22 g/cm^2
-speed for wings to carry AUW at CL=0.55:  30.6 m/s =   110 km/h
-  lift at   20 m/s ( 72 km/h):    301 g =   43 % of AUW
-  lift at   30 m/s (108 km/h):    677 g =   96 % of AUW
-  lift at   40 m/s (144 km/h):   1203 g =  170 % of AUW
-wing chord 210 mm -> Re at 30 m/s = 431,507
-  Re ~4e5 is transitional -- high enough that the 0.020 profile
-  drag figure is defensible, low enough that it is still the
-  softest number in this analysis.
+=== arms ===
+two blades, 9 x 18 mm, 255 mm long, crossing at 77 deg
+blade frontal silhouette      34.8 cm^2
+  The blades make no useful lift and are not meant to. The whole
+  point of this layout is that a 9 mm blade edge-on costs almost
+  nothing, so the drag budget is body + motors and nothing else.
 
 === frame geometry ===
 stretched X: 176 mm fore-aft / 140 mm lateral = 1.26:1
 lateral spacing sits at the 127 mm prop minimum + 13 mm
-exposed wing frontal area  19.3 cm^2   (this is what narrowing buys)
+exposed blade frontal area  34.8 cm^2
 
 === drag build-up ===
   fuselage           CdA =   3.02 cm^2  (   8 %)
-  wings (profile)    CdA =   4.38 cm^2  (  12 %)
-  4 motor bells      CdA =  28.67 cm^2  (  79 %)
+  2 blades           CdA =   6.96 cm^2  (  18 %)
+  4 motor bells      CdA =  28.67 cm^2  (  74 %)
   interference x1.15
-  TOTAL              CdA =  41.48 cm^2
-  open racer, same class   75.00 cm^2   -> 45 % less drag
+  TOTAL              CdA =  44.45 cm^2
+  open racer, same class   75.00 cm^2   -> 41 % less drag
   NOTE: the motors are now the single largest drag item. Fairing
   the airframe has made the bare bells the thing worth attacking.
 
 === top speed ===
 prop 5x4.3 at ~30,303 rpm -> pitch speed  55.2 m/s
 realistic max level speed       41.4 m/s =   149 km/h
-drag there  4.35 N against  62.8 N available
+drag there  4.66 N against  62.8 N available
   Thrust is NOT the limit -- prop pitch is. This is the single most
   important result here: the fairing does not raise the ceiling,
   it lowers what it costs to sit at the ceiling.
 
 === what the fairing actually buys ===
-  at 30 m/s (108 km/h): drag 2.29 N vs 4.13 N open  ->  45 % less power to hold speed
-  at 40 m/s (144 km/h): drag 4.07 N vs 7.35 N open  ->  45 % less power to hold speed
+  at 30 m/s (108 km/h): drag 2.45 N vs 4.13 N open  ->  41 % less power to hold speed
+  at 40 m/s (144 km/h): drag 4.36 N vs 7.35 N open  ->  41 % less power to hold speed
 
 === hover ===
 disc area (4 props)           507 cm^2
-disc loading                136.7 N/m^2
-induced velocity              7.5 m/s
-ideal hover power              52 W  (x ~1.9 for real figure of merit -> 98 W)
-wing area inside the discs    178 cm^2 = 35.2 % of disc area  (measured)
-estimated hover download    2.1 % of thrust  =  135 g
-  This is the price of the wing layout. The lightening bay between
-  the motors exists partly to keep it down.
+disc loading                118.6 N/m^2
+induced velocity              7.0 m/s
+ideal hover power              42 W  (x ~1.9 for real figure of merit -> 79 W)
+blade area inside the discs    42 cm^2 =  8.2 % of disc area  (measured)
+estimated hover download    0.5 % of thrust  =   31 g
+  Two thin blades block far less of the disc than the wing panels
+  did, which is the other half of why this layout is better here.
