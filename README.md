@@ -7,9 +7,7 @@ motors. Not arms — the motors sit on the wing, which is drawn around them.
 
 Seven printed parts, no supports, no carbon fibre, Elegoo Neptune 4 in PETG.
 
-![VYPER-5F](docs/img/asm_iso.png)
-
-*Blue discs are true 127 mm prop keep-out volumes, not parts.*
+![VYPER-5W](docs/img/v_iso.png)
 
 **Printed frame 267 g. AUW 711 g. Static thrust ~6.4 kg. T/W 9.0:1.**
 
@@ -26,7 +24,7 @@ lighter, cheaper-to-crash airframe.
 Every bought part is modelled at its spec-sheet size in
 [cad/components.py](cad/components.py), and the bays are **carved out of the
 structure using those solids** rather than drawn by hand and hoped to be big
-enough. [cad/verify.py](cad/verify.py) then boolean-tests all 46 conditions:
+enough. [cad/verify.py](cad/verify.py) then boolean-tests 39 conditions:
 every component against every printed part, every component against the
 fuselage cavity, everything against the prop discs, every part against every
 other, and every part against the bed.
@@ -110,35 +108,31 @@ and re-run verify.
 So: meaningfully faster than the plate version. Not the 40 % a wind-tunnel-
 aligned body would give.
 
-**It costs 112 g.** 188 g printed against 76 g for the plate frame. T/W drops
-from 11.8 to 10.1, which is still firmly in racing territory.
+**It costs 191 g.** 267 g printed against 76 g for the flat-plate frame. T/W
+falls from 11.8 to 9.0, still firmly in racing territory.
 
 ---
 
 ## Print orientation is still the whole design
 
-Same argument as before, applied to a fairing.
+**Each wing panel is flat-topped over its entire area.** That one plane is
+simultaneously the bed face and *both* motor mounting faces; every bit of
+fairing hangs below it, so the section only ever shrinks going up and there is
+no overhang anywhere on the part.
 
-**The pylon is flat-topped over its entire length** — strut and nacelle share
-one plane at the motor mounting height, and every bit of fairing hangs below
-it. That flat top is both the bed face and the motor mounting face, the section
-only ever shrinks going up, and the bending fibres are continuous perimeters
-root to tip. **This is why the pylons leave the fuselage at Z = +16, on the
-shoulder, rather than at the waterline** — a pylon rising from the waterline to
-the pad would put a 77° overhang along its whole upper surface and you would be
-printing primary structure on supports.
+That also makes hollowing free. The panel is a shell — 2.2 mm skin, 1.8 mm
+perimeter, six chordwise ribs, and a lightening bay between the motors — and
+because the belly is the **last** surface laid, an open underside needs no
+bridging at all. That took each panel from 92 g solid to 31 g.
 
-The rounded belly comes from lofting one plan outline downward with a growing
-inset, so strut and nacelle round off together and monotonic shrink is
-guaranteed by construction.
+The shells split so nose and tail cones print **open end down** (domes,
+shrinking to the tip) and the main body splits horizontally at Z = +13 so both
+halves print **cut face down**. The fin is separate because a fin moulded into
+the tail cone would be a horizontal plate hanging in mid-air.
 
-The shells split three ways for the same reason: nose and tail cones print
-**open end down** (domes, section shrinks to the tip), the main body splits
-horizontally at Z = +13 so both halves print **cut face down**, and the fin is
-separate because a fin moulded into the tail cone would be a horizontal plate
-hanging in mid-air.
-
-**Nothing needs supports.**
+**Nothing needs supports.** [cad/tolerance_coupon.py](cad/tolerance_coupon.py)
+includes an overhang fan so you can confirm that on your own machine rather
+than taking my word for it.
 
 ---
 
@@ -146,15 +140,15 @@ hanging in mid-air.
 
 | | |
 |---|---|
-| Class | 5" / 220 mm wheelbase, true X |
-| Fuselage | 254 mm long, 62 mm max dia, fineness 4.1 |
-| Motors | 2207 1750KV, 6S |
+| Layout | stretched X, motors at (±70, ±72), 201 mm diagonal |
+| Fuselage | 320 mm long, 62 mm max dia, fineness 5.2 |
+| Wing | 234 cm² planform, 250 mm span, AR 2.67 |
+| Motors | 2207 1750KV, 6S, 5x4.3x3 |
 | Battery | 6S 1050, **inside the fuselage**; the canopy is the retainer |
-| Printed frame | 188 g (7 parts, 9 prints) |
-| AUW | 632 g |
-| Static thrust | ~6.4 kg |
-| Thrust-to-weight | 10.1:1 |
-| Adjacent prop tip gap | 28.6 mm |
+| Printed frame | 267 g (7 parts, 8 prints) |
+| AUW | 711 g |
+| Thrust-to-weight | 9.0:1 |
+| Min prop tip gap | 13.0 mm |
 
 Cooling is **not optional**: annular nose inlet around the camera, ducted the
 length of the cavity over the stack, out through the tail, with side gills as
@@ -172,11 +166,17 @@ thermal-throttle.
 | Nose cone | 1 | 10 g | [stl/nose_cone.stl](stl/nose_cone.stl) |
 | Tail cone | 1 | 7 g | [stl/tail_cone.stl](stl/tail_cone.stl) |
 | Tail fin (carries the VTX antenna) | 1 | 15 g | [stl/tail_fin.stl](stl/tail_fin.stl) |
-| Pylon hand A (45° and 225°) | 2 | 17 g | [stl/pylon_a.stl](stl/pylon_a.stl) |
-| Pylon hand B (315° and 135°) | 2 | 17 g | [stl/pylon_b.stl](stl/pylon_b.stl) |
+| Wing panel, left | 1 | 31 g | [stl/wing_l.stl](stl/wing_l.stl) |
+| Wing panel, right | 1 | 31 g | [stl/wing_r.stl](stl/wing_r.stl) |
+| **Tolerance coupon — print this FIRST** | 1 | 39 g | [stl/tolerance_coupon.stl](stl/tolerance_coupon.stl) |
 
-Two pylon hands, not one: the nacelle is streamwise while the strut is swept,
-so front-left and rear-left are mirror images rather than rotations.
+Two wing hands, mirror images of each other.
+
+**Print [tolerance_coupon.stl](stl/tolerance_coupon.stl) before anything else.**
+It carries M3 and M2 hole ladders, a saddle gauge cut to the real fuselage
+radius, the real 16×16 motor pattern in a real 4.0 mm pad, a wall-thickness
+ladder, bridge tests at both bore sizes used, and an overhang fan. Twenty
+minutes and 39 g, against nine hours for a fuselage half that might not fit.
 
 Read next: [docs/BOM.md](docs/BOM.md), [docs/BUILD.md](docs/BUILD.md).
 
