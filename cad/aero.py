@@ -101,6 +101,18 @@ def report(auw_g, thrust_g):
     print("  drag figure is defensible, low enough that it is still the")
     print("  softest number in this analysis.")
 
+    print("\n=== frame geometry ===")
+    xs = sorted({abs(x) for x, _ in P.MOTOR_XY})
+    ys = sorted({abs(y) for _, y in P.MOTOR_XY})
+    fa, lat = 2 * xs[0], 2 * ys[0]
+    frontal_wing = (P.WING_TIP_Y - P.FUSE_R_MAX) * 2 * P.WING_DEPTH * 1e-6
+    print(f"stretched X: {fa:.0f} mm fore-aft / {lat:.0f} mm lateral"
+          f" = {fa / lat:.2f}:1")
+    print(f"lateral spacing sits at the 127 mm prop minimum + "
+          f"{lat - P.PROP_DIA:.0f} mm")
+    print(f"exposed wing frontal area {frontal_wing * 1e4:5.1f} cm^2"
+          "   (this is what narrowing buys)")
+
     print("\n=== drag build-up ===")
     a_fuse = math.pi * (P.FUSE_R_MAX * 1e-3) ** 2
     a_motor = 4 * (C.MOTOR_BELL_D * C.MOTOR_H) * 1e-6

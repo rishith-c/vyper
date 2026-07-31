@@ -48,6 +48,18 @@ gaps = [
 ]
 check("min prop tip gap", min(gaps) > 5.0,
       f"{min(gaps):.1f} mm between the closest pair of discs")
+# Frame geometry: a stretched X (longer fore-aft than lateral) is what a
+# speed airframe wants -- narrower frontal area, and the rear discs pulled
+# out of the front discs' wake. A square layout is a true X in name only.
+xs = sorted({abs(x) for x, _ in P.MOTOR_XY})
+ys = sorted({abs(y) for _, y in P.MOTOR_XY})
+fore_aft, lateral = 2 * xs[0], 2 * ys[0]
+stretch = fore_aft / lateral
+check("stretched-X geometry", 1.10 <= stretch <= 1.45,
+      f"{fore_aft:.0f} mm fore-aft / {lateral:.0f} mm lateral = {stretch:.2f}:1")
+check("lateral spacing at prop minimum", lateral - P.PROP_DIA < 20.0,
+      f"{lateral - P.PROP_DIA:.0f} mm tip gap -- narrow is the point")
+
 check("motor tilt shipped", P.MOTOR_TILT == 0.0,
       f"{P.MOTOR_TILT:.0f} deg -- conventional; see vy_params docstring")
 

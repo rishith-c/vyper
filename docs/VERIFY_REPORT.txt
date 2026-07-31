@@ -1,5 +1,7 @@
 === airframe geometry ===
 [PASS] min prop tip gap: 13.0 mm between the closest pair of discs
+[PASS] stretched-X geometry: 176 mm fore-aft / 140 mm lateral = 1.26:1
+[PASS] lateral spacing at prop minimum: 13 mm tip gap -- narrow is the point
 [PASS] motor tilt shipped: 0 deg -- conventional; see vy_params docstring
 
 === bought parts vs printed parts ===
@@ -40,16 +42,16 @@
 [PASS] wing_r connected: 1 solid(s)
 
 === Neptune 4 bed (225 x 225 x 265) ===
-[PASS] fuselage_lower x1: 190 x 62 x 48 mm, 89.3 g ea
+[PASS] fuselage_lower x1: 190 x 62 x 48 mm, 89.1 g ea
 [PASS] fuselage_upper x1: 190 x 57 x 18 mm, 28.5 g ea
 [PASS] nose_cone x1: 47 x 55 x 55 mm, 13.2 g ea
 [PASS] tail_cone x1: 49 x 50 x 50 mm, 13.4 g ea
 [PASS] tail_fin x1: 28 x 20 x 51 mm, 6.8 g ea
-[PASS] wing_l x1: 205 x 94 x 14 mm, 57.7 g ea
-[PASS] wing_r x1: 205 x 94 x 14 mm, 57.7 g ea
+[PASS] wing_l x1: 210 x 76 x 14 mm, 55.2 g ea
+[PASS] wing_r x1: 210 x 76 x 14 mm, 55.2 g ea
 
 === mass ===
-printed frame         267 g
+printed frame         261 g
   motors x4                        136 g
   stack                             34 g
   battery                          180 g
@@ -59,8 +61,8 @@ printed frame         267 g
   props x4                          18 g
   wiring, XT60, cap, heatshrink     25 g
   fasteners                         26 g
-AUW                   711 g
+AUW                   706 g
 static thrust        6400 g
-[PASS] thrust-to-weight: 9.0:1
+[PASS] thrust-to-weight: 9.1:1
 
 all checks passed

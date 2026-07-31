@@ -49,14 +49,27 @@ import components as C
 # angle, because the layout is a stretched X (wider than it is long), not the
 # 45-degree true X of a conventional racer.
 #
-#   front pair  (+70, +-72)
-#   rear pair   (-70, +-72)
+#   front pair  (+88, +-70)
+#   rear pair   (-88, +-70)
 #
-# Every motor pair is at least 140 mm apart, which leaves a 13 mm tip gap on
-# 127 mm props. That spacing is the hard constraint the whole planform is
-# built around -- 5 inch props simply cannot be packed tighter.
-MOTOR_XY = ((70.0, 72.0), (-70.0, 72.0), (-70.0, -72.0), (70.0, -72.0))
-WHEELBASE = 200.8                 # diagonal, for reference only
+# STRETCHED X, 176 mm fore-aft against 140 mm lateral -- a 1.26:1 stretch.
+# The previous layout was 140 x 144, i.e. square, which is a true X in name
+# only and gets none of the benefit of either. Two reasons a stretched X is
+# the right geometry for a speed airframe:
+#
+#   1. It is NARROWER. Frontal area is what you pay for at speed, and pulling
+#      the lateral spacing in to the prop-clearance minimum takes ~20 % out of
+#      the exposed wing frontal area.
+#   2. It pulls the rear props out of the front props' wake. On a square
+#      layout the rear discs sit 140 mm behind the front ones and ingest
+#      disturbed air; at 176 mm they are substantially clearer.
+#
+# Lateral spacing is pinned at 140 mm because that is the minimum for 127 mm
+# props (13 mm tip gap). The fore-aft stretch is then limited by the Neptune 4
+# bed: the wing has to reach 15 mm past each motor pad, so 2*88+34 = 210 mm,
+# which fits. That bed dimension is what caps the stretch ratio, not aero.
+MOTOR_XY = ((88.0, 70.0), (-88.0, 70.0), (-88.0, -70.0), (88.0, -70.0))
+WHEELBASE = 224.9                 # diagonal, for reference only
 R_MOTOR = WHEELBASE / 2.0
 ARM_ANGLES = (45.0, 135.0, 225.0, 315.0)   # legacy
 
@@ -148,14 +161,14 @@ RX_X = -88.0
 # edge kinks so it stays 15 mm ahead of the front motor, and the trailing edge
 # kinks to stay 15 mm behind the rear one.
 WING_PLAN = (
-    (100.0, 24.0),
-    (85.0, 72.0),
-    (55.0, 118.0),
-    (-95.0, 118.0),
-    (-88.0, 72.0),
+    (105.0, 24.0),
+    (105.0, 70.0),
+    (78.0, 100.0),
+    (-92.0, 100.0),
+    (-105.0, 70.0),
     (-105.0, 24.0),
 )
-WING_TIP_Y = 118.0
+WING_TIP_Y = 100.0
 WING_ROOT_Y = 24.0
 WING_DEPTH = 14.0                 # max thickness, at the root
 
@@ -170,18 +183,18 @@ WING_BELLY = ((0.0, 0.0), (3.5, 0.6), (7.0, 1.8), (10.0, 3.6),
 WING_SKIN = 2.2                   # top skin; also the motor mounting face
 WING_WALL = 1.8                   # perimeter and rib thickness
 WING_PAD_BOSS_D = 30.0            # local 4 mm pad under each motor
-WING_RIBS_X = (78.0, 44.0, 12.0, -24.0, -56.0, -88.0)
+WING_RIBS_X = (84.0, 50.0, 16.0, -18.0, -52.0, -86.0)
 
 # Lightening bay between the two motors. Takes a third of the planform out,
 # and takes the same third of the plate out from under the prop discs, which
 # is where rotor download comes from.
 WING_BAY_X = 0.0
-WING_BAY_Y = 76.0
-WING_BAY_L = 92.0
-WING_BAY_W = 46.0
+WING_BAY_Y = 66.0
+WING_BAY_L = 96.0
+WING_BAY_W = 40.0
 WING_BAY_R = 14.0
 
-WING_BOLTS_X = (72.0, 26.0, -30.0, -80.0)   # four M3 per side into ribs
+WING_BOLTS_X = (78.0, 28.0, -32.0, -82.0)   # four M3 per side into ribs
 WING_BOLT_Z = 6.0
 
 MOTOR_PAD_T = 4.0                 # material left under each motor -> M3x8
