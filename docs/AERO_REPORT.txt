@@ -1,0 +1,45 @@
+=== wing ===
+planform (both panels)      234.0 cm^2   (measured off the solids)
+span (tip to tip)             250 mm
+aspect ratio                 2.67
+wing loading                 3.04 g/cm^2
+speed for wings to carry AUW at CL=0.55:  29.7 m/s =   107 km/h
+  lift at   20 m/s ( 72 km/h):    321 g =   45 % of AUW
+  lift at   30 m/s (108 km/h):    723 g =  102 % of AUW
+  lift at   40 m/s (144 km/h):   1286 g =  181 % of AUW
+wing chord 205 mm -> Re at 30 m/s = 421,233
+  Re ~4e5 is transitional -- high enough that the 0.020 profile
+  drag figure is defensible, low enough that it is still the
+  softest number in this analysis.
+
+=== drag build-up ===
+  fuselage           CdA =   3.02 cm^2  (   8 %)
+  wings (profile)    CdA =   4.68 cm^2  (  13 %)
+  4 motor bells      CdA =  28.67 cm^2  (  79 %)
+  interference x1.15
+  TOTAL              CdA =  41.83 cm^2
+  open racer, same class   75.00 cm^2   -> 44 % less drag
+  NOTE: the motors are now the single largest drag item. Fairing
+  the airframe has made the bare bells the thing worth attacking.
+
+=== top speed ===
+prop 5x4.3 at ~30,303 rpm -> pitch speed  55.2 m/s
+realistic max level speed       41.4 m/s =   149 km/h
+drag there  4.38 N against  62.8 N available
+  Thrust is NOT the limit -- prop pitch is. This is the single most
+  important result here: the fairing does not raise the ceiling,
+  it lowers what it costs to sit at the ceiling.
+
+=== what the fairing actually buys ===
+  at 30 m/s (108 km/h): drag 2.31 N vs 4.13 N open  ->  44 % less power to hold speed
+  at 40 m/s (144 km/h): drag 4.10 N vs 7.35 N open  ->  44 % less power to hold speed
+
+=== hover ===
+disc area (4 props)           507 cm^2
+disc loading                137.7 N/m^2
+induced velocity              7.5 m/s
+ideal hover power              52 W  (x ~1.9 for real figure of merit -> 99 W)
+wing area inside the discs    205 cm^2 = 40.4 % of disc area  (measured)
+estimated hover download    2.4 % of thrust  =  155 g
+  This is the price of the wing layout. The lightening bay between
+  the motors exists partly to keep it down.

@@ -62,11 +62,12 @@ def despeck(part, min_vol=1.0):
 
 def _shrink_marker(gap):
     # Cheap inward offset of the cavity: reuse the revolve with reduced radii.
-    stations = []
-    for x, r in P.FUSE_PROFILE:
-        if not (-130.0 <= x <= 104.0):
-            continue
-        stations.append((x, max(r - P.FUSE_WALL - gap - 1.6, 0.8)))
+    fwd, aft = P.CAVITY_X
+    stations = [
+        (x, max(r - P.FUSE_WALL - gap - 1.6, 0.8))
+        for x, r in P.FUSE_PROFILE
+        if aft < x < fwd
+    ]
     return body._revolved(stations)
 
 
@@ -116,51 +117,32 @@ def _main_shell():
     )
 
 
-def _pylon_ribs():
-    """Backing ribs behind each pylon flange, carrying the four M3."""
-    ribs = None
-    for ang in P.ARM_ANGLES:
-        rx, ry, rz = body.pylon_root(ang)
-        mx, my, _ = body.motor_pos(ang)
-        import math
+def _wing_ribs():
+    """Transverse ribs backing the wing root bolts.
 
-        ux = (rx - mx) / math.hypot(rx - mx, ry - my)
-        uy = (ry - my) / math.hypot(rx - mx, ry - my)
-        yaw = math.degrees(math.atan2(uy, ux))
-        # Only P.RIB_T deep. The battery bay (+-19 in Y) and the stack bay
-        # (+-22) both pass right through the pylon root station, so a rib that
-        # reaches any further inboard collides with the electronics.
-        blk = (
-            Pos(rx + ux * P.RIB_T / 2, ry + uy * P.RIB_T / 2,
-                rz - P.PYLON_FLANGE_H / 2)
-            * Rot(0, 0, yaw)
-            * Box(P.RIB_T, P.PYLON_FLANGE_W + 4, P.PYLON_FLANGE_H)
+    The wings bolt on horizontally along a 192 mm root, so the ribs are
+    chordwise plates inside the lower shell at each bolt station. They also
+    stiffen the shell against the wing bending moment, which is now fed in as
+    a couple over the root chord rather than through four small flanges.
+    """
+    ribs = None
+    for bx in P.WING_BOLTS_X:
+        r = Pos(bx, 0, P.MOTOR_PAD_Z - P.WING_BOLT_Z - 6) * Box(
+            P.RIB_T, 200, 26
         )
-        ribs = blk if ribs is None else ribs + blk
+        ribs = r if ribs is None else ribs + r
     return ribs
 
 
-def _pylon_bolt_holes():
-    import math
-
+def _wing_bolt_holes():
     holes = None
-    for ang in P.ARM_ANGLES:
-        rx, ry, rz = body.pylon_root(ang)
-        mx, my, _ = body.motor_pos(ang)
-        d = math.hypot(rx - mx, ry - my)
-        ux, uy = (rx - mx) / d, (ry - my) / d
-        yaw = math.degrees(math.atan2(uy, ux))
-        b = P.PYLON_FLANGE_BOLT
-        for sv in (-b, b):
-            for sz in (-b, b):
-                h = (
-                    Pos(rx, ry, rz - P.PYLON_FLANGE_H / 2 + sz)
-                    * Rot(0, 0, yaw)
-                    * Pos(0, sv, 0)
-                    * Rot(0, 90, 0)
-                    * Cylinder(P.M3_TAP / 2, 46)
-                )
-                holes = h if holes is None else holes + h
+    for bx in P.WING_BOLTS_X:
+        h = (
+            Pos(bx, 0, P.MOTOR_PAD_Z - P.WING_BOLT_Z)
+            * Rot(90, 0, 0)
+            * Cylinder(P.M3_TAP / 2, 200)
+        )
+        holes = h if holes is None else holes + h
     return holes
 
 
@@ -201,8 +183,8 @@ def fuselage_lower():
             part -= Pos(px, py, P.STACK_Z - 5) * Cylinder(P.M3_TAP / 2, 16)
 
     # Pylon backing ribs, then the tapped bolt pattern through shell + rib.
-    part += (_pylon_ribs() & body.outer()) - body.above(P.SPLIT_CANOPY_Z)
-    part -= _pylon_bolt_holes()
+    part += (_wing_ribs() & body.outer()) - body.above(P.SPLIT_CANOPY_Z)
+    part -= _wing_bolt_holes()
 
     # Canopy bolts.
     for px in (P.CANOPY_BOLT_X0, P.CANOPY_BOLT_X1):

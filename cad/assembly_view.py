@@ -31,15 +31,14 @@ def gen_step():
         s.color = SHELL if "fuselage" in name else FAIRING
         parts.append(s)
 
-    for ang, solid in assembly.placed_pylons().items():
-        solid.label = f"pylon_{int(ang)}"
+    for hand, solid in assembly.placed_wings().items():
+        solid.label = f"wing_{hand}"
         solid.color = FAIRING
         parts.append(solid)
 
-    for ang in P.ARM_ANGLES:
-        mx, my, mz = body.motor_pos(ang)
+    for i, (mx, my, mz) in enumerate(body.all_motors()):
         m = Pos(mx, my, mz) * C.motor()
-        m.label = f"motor_{int(ang)}"
+        m.label = f"motor_{i}"
         m.color = METAL
         parts.append(m)
 

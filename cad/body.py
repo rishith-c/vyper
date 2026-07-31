@@ -56,15 +56,24 @@ def outer(grow=0.0):
 def cavity(grow=0.0):
     """Internal volume. The outer profile offset inward by the wall thickness,
     truncated short of both tips so the nose and tail stay solid."""
-    inner = []
+    fwd, aft = P.CAVITY_X
+    inner = [(fwd, max(_radius_at(fwd) - P.FUSE_WALL + grow, 1.0))]
     for x, r in P.FUSE_PROFILE:
-        if not (-130.0 <= x <= 104.0):
+        if not (aft < x < fwd):
             continue
         inner.append((x, max(r - P.FUSE_WALL + grow, 1.0)))
-    # Square off both ends of the cavity at the local inner radius.
-    inner.insert(0, (104.0, max(_radius_at(104.0) - P.FUSE_WALL + grow, 1.0)))
-    inner.append((-130.0, max(_radius_at(-130.0) - P.FUSE_WALL + grow, 1.0)))
-    return _revolved(inner)
+    inner.append((aft, max(_radius_at(aft) - P.FUSE_WALL + grow, 1.0)))
+    # A duplicated X station makes GeomAPI_Interpolate throw; the cap
+    # stations can land exactly on a profile station when the profile is
+    # retuned, so dedupe rather than assuming they never collide.
+    seen, clean = set(), []
+    for x, r in inner:
+        k = round(x, 6)
+        if k in seen:
+            continue
+        seen.add(k)
+        clean.append((x, r))
+    return _revolved(clean)
 
 
 def _radius_at(x):
@@ -116,9 +125,14 @@ def pylon_root(angle):
     return (x, sign_y * y, z)
 
 
-def motor_pos(angle):
-    a = math.radians(angle)
-    return (P.R_MOTOR * math.cos(a), P.R_MOTOR * math.sin(a), P.MOTOR_PAD_Z)
+def motor_pos(i):
+    """Motor centre by index into P.MOTOR_XY."""
+    x, y = P.MOTOR_XY[i]
+    return (x, y, P.MOTOR_PAD_Z)
+
+
+def all_motors():
+    return [motor_pos(i) for i in range(len(P.MOTOR_XY))]
 
 
 def pylon_placement(angle):

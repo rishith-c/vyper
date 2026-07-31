@@ -13,12 +13,14 @@ where the airframe expects it, and then boolean-tested:
 Run:  python verify.py
 """
 
+import math
+
 from build123d import Pos
 
 import assembly
 import body
 import components as C
-import pylon
+import wing
 import shells
 import vy_params as P
 
@@ -39,9 +41,13 @@ def vol(x):
 
 
 print("=== airframe geometry ===")
-adj = P.WHEELBASE / (2 ** 0.5)
-check("adjacent prop tip gap", adj - P.PROP_DIA > 10,
-      f"{adj - P.PROP_DIA:.1f} mm between discs")
+import itertools
+gaps = [
+    ((math.dist(a[:2], b[:2])) - P.PROP_DIA)
+    for a, b in itertools.combinations(body.all_motors(), 2)
+]
+check("min prop tip gap", min(gaps) > 5.0,
+      f"{min(gaps):.1f} mm between the closest pair of discs")
 check("motor tilt shipped", P.MOTOR_TILT == 0.0,
       f"{P.MOTOR_TILT:.0f} deg -- conventional; see vy_params docstring")
 
@@ -52,7 +58,7 @@ PRINTED = {
     "tail_cone": shells.tail_cone(),
     "tail_fin": shells.tail_fin(),
 }
-PRINTED.update({f"pylon_{int(a)}": s for a, s in assembly.placed_pylons().items()})
+PRINTED.update({f"wing_{h}": s for h, s in assembly.placed_wings().items()})
 COMPONENTS = assembly.placed_components()
 
 # ------------------------------------------------------- components vs frame
@@ -69,20 +75,18 @@ for cname, csolid in COMPONENTS.items():
           f"{outside:.1f} mm^3 of {vol(csolid):.0f} outside the fuselage")
 
 # Motors must sit on the pads, clear of the fairings.
-for ang in P.ARM_ANGLES:
-    mx, my, mz = body.motor_pos(ang)
+for i, (mx, my, mz) in enumerate(body.all_motors()):
     m = Pos(mx, my, mz) * C.motor()
     worst = max(vol(m & s) for s in PRINTED.values())
-    check(f"motor {int(ang)} seats", worst < 1.0, f"{worst:.1f} mm^3 clash")
+    check(f"motor {i} seats", worst < 1.0, f"{worst:.1f} mm^3 clash")
 
 # --------------------------------------------------------------- prop keep-out
 print("\n=== prop keep-out ===")
 KEEP = 400.0
 keepouts = []
-for ang in P.ARM_ANGLES:
-    mx, my, mz = body.motor_pos(ang)
-    from build123d import Cylinder
+from build123d import Cylinder
 
+for mx, my, mz in body.all_motors():
     keepouts.append(
         Pos(mx, my, mz + C.MOTOR_PAD_TO_PROP - 3 + KEEP / 2)
         * Cylinder(P.PROP_R, KEEP)
@@ -127,8 +131,8 @@ TO_PRINT = [
     ("nose_cone", shells.nose_cone(), 1, P.SHELL_FILL),
     ("tail_cone", shells.tail_cone(), 1, P.SHELL_FILL),
     ("tail_fin", shells.tail_fin(), 1, P.SHELL_FILL),
-    ("pylon_a", pylon.gen("a"), 2, P.PYLON_FILL),
-    ("pylon_b", pylon.gen("b"), 2, P.PYLON_FILL),
+    ("wing_l", wing.gen("l"), 1, P.WING_FILL),
+    ("wing_r", wing.gen("r"), 1, P.WING_FILL),
 ]
 printed_g = 0.0
 for name, solid, qty, fill in TO_PRINT:

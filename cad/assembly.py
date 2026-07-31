@@ -4,12 +4,12 @@ from build123d import Color, Compound, Pos, Rot
 
 import body
 import components as C
-import pylon
+import wing
 import shells
 import vy_params as P
 
 # angle -> (hand, extra yaw)
-PYLONS = {45.0: ("a", 0.0), 225.0: ("a", 180.0), 315.0: ("b", 0.0), 135.0: ("b", 180.0)}
+
 
 SHELL = Color(0.22, 0.24, 0.28)
 FAIRING = Color(0.80, 0.28, 0.10)
@@ -17,12 +17,10 @@ GUTS = Color(0.30, 0.75, 0.45)
 REF = Color(0.30, 0.65, 0.90)
 
 
-def placed_pylons():
+def placed_wings():
     out = {}
-    cache = {h: pylon.gen(h) for h in ("a", "b")}
-    for ang, (hand, yaw) in PYLONS.items():
-        mx, my, mz = body.motor_pos(ang)
-        out[ang] = Pos(mx, my, mz) * Rot(0, 0, yaw) * cache[hand]
+    for hand in wing.HANDS:
+        out[hand] = Pos(0, 0, P.MOTOR_PAD_Z) * wing.gen(hand)
     return out
 
 
@@ -48,8 +46,8 @@ def gen_step():
         s.color = col
         parts.append(s)
 
-    for ang, solid in placed_pylons().items():
-        solid.label = f"pylon_{int(ang)}"
+    for hand, solid in placed_wings().items():
+        solid.label = f"wing_{hand}"
         solid.color = FAIRING
         parts.append(solid)
 
@@ -58,15 +56,14 @@ def gen_step():
         solid.color = GUTS
         parts.append(solid)
 
-    for ang in P.ARM_ANGLES:
-        mx, my, mz = body.motor_pos(ang)
+    for i, (mx, my, mz) in enumerate(body.all_motors()):
         m = Pos(mx, my, mz) * C.motor()
-        m.label = f"PART_motor_{int(ang)}"
+        m.label = f"PART_motor_{i}"
         m.color = Color(0.45, 0.47, 0.50)
         parts.append(m)
 
         d = Pos(mx, my, mz + C.MOTOR_PAD_TO_PROP) * C.prop_disc()
-        d.label = f"REF_propdisc_{int(ang)}"
+        d.label = f"REF_propdisc_{i}"
         d.color = REF
         parts.append(d)
 

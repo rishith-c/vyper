@@ -1,15 +1,20 @@
-# VYPER-5F
+# VYPER-5W
 
-A 5-inch, 6S, true-X FPV racing quadcopter with a fully faired airframe: a
-streamlined body-of-revolution fuselage with the battery and stack buried
-inside, and four swept faired pylons ending in motor nacelles. Seven printed
-parts, no supports, no carbon fibre, Elegoo Neptune 4 in PETG.
+A fully 3D-printed high-speed quadcopter in the style of the **Peregreen V4**
+(the 657 km/h Guinness record holder): a rocket fuselage with the battery and
+stack buried inside, and two swept arrowhead **wing panels** carrying the
+motors. Not arms — the motors sit on the wing, which is drawn around them.
+
+Seven printed parts, no supports, no carbon fibre, Elegoo Neptune 4 in PETG.
 
 ![VYPER-5F](docs/img/asm_iso.png)
 
 *Blue discs are true 127 mm prop keep-out volumes, not parts.*
 
-**Printed frame 188 g. AUW 632 g. Static thrust ~6.4 kg. Thrust-to-weight 10.1:1.**
+**Printed frame 267 g. AUW 711 g. Static thrust ~6.4 kg. T/W 9.0:1.**
+
+**39 automated checks pass.** Full output in [docs/VERIFY_REPORT.txt](docs/VERIFY_REPORT.txt)
+and [docs/AERO_REPORT.txt](docs/AERO_REPORT.txt).
 
 The earlier flat-plate version is in git history (`git log`) if you want the
 lighter, cheaper-to-crash airframe.
@@ -55,6 +60,33 @@ Different stack or pack? Edit the dimensions in `components.py`, re-run
 `verify.py`, regenerate. That is the whole point of the setup.
 
 ---
+
+## What the tests say
+
+Run `python cad/aero.py` and `python cad/verify.py`. The headline results:
+
+| | |
+|---|---|
+| Wing planform (measured off the solids) | 234 cm² |
+| Speed at which the wings carry the **whole aircraft** | 30 m/s (108 km/h) |
+| Total drag area (CdA) | 41.8 cm² |
+| vs. a conventional open racer | **44 % less drag** |
+| Top speed | **149 km/h — limited by prop pitch, not thrust** |
+| Hover download from the wing under the discs | 2.4 % (155 g), measured by boolean |
+
+Three findings worth acting on:
+
+1. **The motors are now 79 % of total drag.** Once the body and arms are
+   faired, four bare 28 mm bells in crossflow dominate everything else. Motor
+   fairings are the single highest-value thing left to add — that is exactly
+   what Peregreen does.
+2. **Top speed is prop-pitch limited.** At ~30,300 rpm a 5x4.3 has a 55 m/s
+   pitch speed, so ~41 m/s is the realistic ceiling and there is 62.8 N of
+   thrust available against 4.4 N of drag. Fairing the airframe does **not**
+   raise the ceiling. It cuts the power needed to sit at it by 44 %, which
+   buys flight time and less voltage sag.
+3. **The wings genuinely work.** At 108 km/h they carry 100 % of the weight,
+   which is what makes this different from bolting fairings onto a quad.
 
 ## Why this shape, honestly
 
