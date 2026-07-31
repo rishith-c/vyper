@@ -50,9 +50,28 @@ for n, o in (("shell", shell), ("arm", arm), ("hub", hub)):
 
 check("wall printable at 0.4 nozzle", M.WALL >= 1.2,
       f"{M.WALL} mm = {M.WALL / 0.4:.0f} extrusions")
-check("motor pad grip", abs(M.MOTOR_PAD_T - 4.0) < 0.01,
-      f"{M.MOTOR_PAD_T} mm -> M3x8 reaches 4.0 mm into a 3.0 mm thread. "
-      "USE M3x6 IF YOUR MOTOR BOTTOMS OUT")
+# 2207-class motors are built for 4-5 mm carbon arms and ship M3x8; their
+# blind threads are 4.5-5.0 mm deep. A 4.0 mm pad is the standard stack-up.
+MOTOR_THREAD_DEPTH = 4.5
+SCREW_LEN = 8.0
+engage = SCREW_LEN - M.MOTOR_PAD_T
+check("motor screw engagement", 2.5 <= engage <= MOTOR_THREAD_DEPTH - 0.2,
+      f"M3x{SCREW_LEN:.0f} through a {M.MOTOR_PAD_T} mm pad = {engage:.1f} mm "
+      f"into a {MOTOR_THREAD_DEPTH} mm blind thread "
+      f"({MOTOR_THREAD_DEPTH - engage:.1f} mm spare, does not bottom out)")
+
+# Head bearing on PETG rather than carbon.
+head_d, hole_d = 5.5, 3.2
+seat = math.pi * (head_d ** 2 - hole_d ** 2) / 4
+per_screw = 4 * 1150.0 * 9.81e-3 / 4 / 4      # max thrust / 4 motors / 4 screws
+check("screw head bearing on PETG", per_screw / seat < 5.0,
+      f"{per_screw / seat:.2f} MPa on {seat:.1f} mm^2 -- use washers anyway, "
+      "vibration embeds a bare head over time")
+
+pad_r = M.MOTOR_PATTERN / 2.0 * math.sqrt(2) + 4.0
+edge = pad_r - (M.MOTOR_PATTERN / 2.0 * math.sqrt(2) + hole_d / 2)
+check("material outboard of motor holes", edge > 1.5,
+      f"{edge:.1f} mm of pad beyond each hole")
 nose_slope = math.degrees(math.atan2(M.R_MAX, M.TOTAL_LEN - M.Z_NOSE_BASE))
 check("nose self-supporting", nose_slope < 45.0,
       f"{nose_slope:.1f} deg from vertical at the ogive base")

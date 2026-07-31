@@ -11,7 +11,9 @@
 [PASS] arm fits Neptune 4: 124 x 31 x 80 mm
 [PASS] hub fits Neptune 4: 47 x 47 x 26 mm
 [PASS] wall printable at 0.4 nozzle: 2.0 mm = 5 extrusions
-[PASS] motor pad grip: 4.0 mm -> M3x8 reaches 4.0 mm into a 3.0 mm thread. USE M3x6 IF YOUR MOTOR BOTTOMS OUT
+[PASS] motor screw engagement: M3x8 through a 4.0 mm pad = 4.0 mm into a 4.5 mm blind thread (0.5 mm spare, does not bottom out)
+[PASS] screw head bearing on PETG: 0.18 MPa on 15.7 mm^2 -- use washers anyway, vibration embeds a bare head over time
+[PASS] material outboard of motor holes: 2.4 mm of pad beyond each hole
 [PASS] nose self-supporting: 11.3 deg from vertical at the ogive base
 
 === tolerances ===
