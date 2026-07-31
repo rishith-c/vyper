@@ -1,4 +1,4 @@
-# VYPER-5F — Printing and Assembly
+# VYPER-5X — Printing and Assembly
 
 ## Part 1: Printing
 
@@ -30,37 +30,43 @@ length of the pylon; a wall laid down at 100 mm/s bonds worse than one at 50.
 
 | Part | Orientation | Why |
 |---|---|---|
-| **Pylon A / B** | **Flat top DOWN on the bed** | Non-negotiable. See below. |
+| **Arm ×2** | **Flat top DOWN, rotated 45° on the bed** | 255 mm will not fit a 225 mm bed square. See below. |
 | Fuselage lower | Cut face down (as exported) | Half-tube, section shrinks upward |
 | Fuselage upper | Cut face down (as exported) | Same |
 | Nose cone | Open end down (as exported) | A dome; shrinks all the way to the tip |
 | Tail cone | Open end down (as exported) | Same |
 | Tail fin | Flat on its side (as exported) | Loads are in-plane |
 
+**The arms must be rotated on the bed.** They are 255 × 30 mm; rotated 45° they
+need (255+30)/√2 = 201 mm in both axes, so they fit a 225 mm bed with 24 mm to
+spare. There is no rotation angle at which they fit unrotated — 255 > 225 in one
+axis no matter what.
+
+
 Every STL is already oriented correctly. **Drop them in the slicer and do not
 rotate anything.**
 
 #### If you take one thing from this document
 
-The pylon's flat top is the motor mounting surface, and it goes **on the bed**.
+The arm's flat top is the motor mounting surface, and it goes **on the bed**.
 
-- All the pylon's fairing hangs on the *other* side, so the cross-section only shrinks
+- The arm's belly rounds away on the *other* side, so the cross-section only shrinks
   going upward. No overhangs, no supports, nothing to clean up.
-- Bed contact is the entire 90 x 67 mm plan area. It will not lift.
+- Bed contact is a 255 × 9 mm strip plus two 30 mm pads. Use a brim.
 - The bending fibres end up as continuous perimeters running the full length.
 - Layer adhesion only sees transverse shear (~0.6 MPa against a bond good for
   25+ MPa).
 
-Print a pylon on its side or on its end and it will snap at the root on the
+Print an arm on its side or on its end and it will snap at the root on the
 first hard landing, because you will have put the layer boundaries square
 across the tension face. It also puts a 77 degree overhang along the whole
 upper surface.
 
 ### Print order
 
-Print **one pylon first** and check it: the four flange holes should pass an M3
-freely, the flat top should sit on glass with no rock, and the pad under the
-motor should measure 4.0 mm. Then print the rest.
+Print the **tolerance coupon** first (20 min, 39 g), then **one arm**. Check the
+half-lap notch is 9.0 mm deep, the flat top sits on glass with no rock, and the
+pad under each motor measures 4.0 mm. Then print the rest.
 
 Total print time is roughly 18-24 hours for the full set. About 190 g of
 filament, so budget 350 g including one failure.
@@ -95,47 +101,32 @@ filament, so budget 350 g including one failure.
 
 ### Order
 
-**1. Pylons to the lower shell.**
-Four **M3x20** per pylon, from outside, through the shell wall into the backing
-ribs. Washer under every head. The saddle face is cut from the fuselage mould
-line itself, so each pylon should sit flush with no rocking — if it does rock,
-you have the wrong hand. Hand A goes to the 45° and 225° stations, hand B to
-315° and 135°.
+**1. Interlock the arms.**
+`arm_top` is notched from the top, `arm_bottom` from the bottom. They slide
+together into a flat X — 9 mm of depth each, so the assembled crossing is the
+same 18 mm as the rest of the blade. If they will not seat, check the notch
+depth against the coupon rather than forcing them.
 
-Work diagonally and do not fully tighten until all four are on.
+**2. Arms to the fuselage spine.**
+Four M3 down through the crossing into the shell, two per arm either side of
+the centre. Washer under every head.
 
-**2. Motors.**
-Four **M3x8** each, up through the 4 mm pad into the motor. **Nothing longer** —
-the belly pocket exists precisely so an M3x8 is right; a longer screw goes into
-the windings and kills the motor.
+**3. Motors.**
+Four **M3x8** each, up through the 4 mm pad into the bell. **Nothing longer** —
+the belly pocket exists so an M3x8 is exactly right. Route the phase wires
+along the blade underside into the body.
 
-Drop the phase wires through the bell bore into the belly pocket, then feed them
-through the wire tunnel and out the flange into the fuselage.
+**4. Stack, VTX, RX.**
+Stack on the four printed posts at 30.5 × 30.5. Solder motors, then the XT60,
+then the **470 µF capacitor across the XT60 pads** — not optional on 6S.
 
-**3. Stack.**
-Four **M3x8** self-tapping into the printed posts, ESC below, FC above. FC arrow
-points forward (+X). Solder the four motors, then the XT60 pigtail, then the
-**470 µF capacitor directly across the XT60 pads** — on 6S that capacitor is not
-optional.
+**5. Nose cone and camera.**
+Camera into its socket, one M2 per side sets tilt by friction. Two M3 hold the
+nose on. Leave slack in the camera lead so the nose comes off without
+unplugging.
 
-**4. VTX and RX.**
-Their bays are aft of the stack. Keep the VTX against a gill so it has airflow.
-
-**5. Tail cone and fin.**
-Two **M3x12** join the tail cone to the main body. The fin saddles on top of the
-cone with two more. Antenna shaft up the 6 mm bore in the fin — the centreline
-is the one place on this airframe that is prop-safe at any height, because the
-rear discs sit 77.8 mm off centre against a 63.5 mm radius.
-
-**6. Nose cone and camera.**
-Camera slides into its socket from behind; one **M2x8** per side sets the tilt by
-friction, **30-40°** for this power class. Two **M3x12** hold the nose cone on.
-Leave enough slack in the camera lead to pull the nose off without unplugging.
-
-**7. Battery and canopy.**
-The pack drops into the bay onto the floor at Z = -18. **The canopy is the
-retainer** — there is no strap. Four **M3x10** close it. If the lid will not sit
-down, the pack is not fully seated.
+**6. Tail cone and fin, then battery and canopy.**
+Pack drops into the bay; **the canopy is the retainer**, there is no strap.
 
 ### Before the first flight
 
@@ -156,8 +147,9 @@ down, the pack is not fully seated.
 
 The **nose cone, tail cone and fin** are the fuses — they are on two bolts each
 and are meant to come off rather than lever the shell. 7-15 g of filament each.
-Print spares of all three with the first batch, plus one pylon of each hand.
+Print spares of all three with the first batch, plus a spare arm of each notch.
 
 The expensive part to lose is the **lower shell** at 68 g and several hours. It
 is the one part worth protecting, which is the real cost of a faired airframe
-compared with the plate version, where the sacrificial item was a 10 g arm.
+— though at 21 g an arm is cheap to replace, which is the advantage of
+this layout over the wing panels.

@@ -1,4 +1,4 @@
-# VYPER-5F — Bill of Materials
+# VYPER-5X — Bill of Materials
 
 > **The airframe is cut to specific parts.** Bays are carved from the actual
 > component solids in `cad/components.py`, so the two below are not
@@ -44,7 +44,7 @@ AliExpress pricing also swings ±30% with coupons and sale events.
 | 6 | ExpressLRS 2.4 GHz RX | nano, UART | 1 | $7-11 |
 | 7 | 5x4.3x3 props | 5 mm bore, tri-blade | 8 (2 sets) | $4-6 |
 | 8 | Hardware kit (below) | | 1 | $10-15 |
-| 9 | PETG filament | ~350 g incl. a failed print | | $7 |
+| 9 | PETG filament | ~250 g incl. a failed print | | $7 |
 | | | | **Total** | **$150-200** |
 
 **Budget midpoint: ~$174.**
@@ -73,7 +73,7 @@ spares. Quantities below are what the airframe consumes.
 
 | Item | Qty | Where it goes |
 |---|---|---|
-| M3 x 20 socket cap | 16 | Pylon flanges: 4 per pylon, through the shell into the backing ribs |
+| M3 x 25 socket cap | 4 | Crossed arms down into the fuselage spine |
 | M3 x 10 button head | 4 | Canopy → lower shell |
 | M3 x 12 button head | 4 | Nose cone and tail cone → main body |
 | M3 x 12 button head | 2 | Tail fin → tail cone |
@@ -87,9 +87,8 @@ spares. Quantities below are what the airframe consumes.
 
 ### The motor screw warning
 
-The nacelle is 17 mm deep, so the belly is hollowed out to leave a **4.0 mm**
-pad under the motor, so an M3x8 reaches exactly 4 mm into the
-motor. **Do not use anything longer.** A screw that is too long punches into the
+The arm is 18 mm deep, so the belly is pocketed out to leave a **4.0 mm** pad
+under each motor, and an M3x8 then reaches exactly 4 mm into the bell. **Do not use anything longer.** A screw that is too long punches into the
 windings and destroys a brand-new motor — it is the single most common way
 people kill their first set. If your motors ship with M3x6, use those and the
 pad still holds fine.
