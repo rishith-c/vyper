@@ -293,7 +293,25 @@ ARM_TIP_OVER = 15.0      # blade reach past the motor centre
 MOTOR_PATTERN = 16.0     # 2207-class M3 square
 MOTOR_PAD_T = 4.0        # left under the motor -> M3x8 and nothing longer
 MOTOR_BORE_D = 9.0       # bell boss relief
+
+# ---- Arm sweep --------------------------------------------------------------
+# On a tail-sitter, "angled down" means swept AFT, because at speed the body
+# axis IS the flight direction. That is worth doing: a strut swept by Lambda
+# sees only the crossflow component, so its profile drag falls roughly as
+# cos^2(Lambda).
+#
+#   0 deg  -> cos^2 = 1.00   (baseline)
+#   20 deg -> cos^2 = 0.88   (-12 % arm drag)
+#   30 deg -> cos^2 = 0.75   (-25 % arm drag)
+#
+# What is NOT done here is canting the MOTORS. The pad stays normal to the
+# body axis, so thrust stays on the flight axis and there is no cos(theta)
+# thrust loss. Tilting the motors themselves would cost 3.4 % of thrust at
+# 15 deg and buy nothing on a tail-sitter -- the body already aligns.
+ARM_SWEEP = 22.0         # degrees aft ("down" when standing on the tail)
 HUB_BOLT_D = 3.2
+PAD_TAIL_L = 14.0        # boat-tail length below the pad
+PAD_TAIL_R = 0.45        # aft radius as a fraction of pad radius
 
 
 def build_arm():
@@ -308,29 +326,56 @@ def build_arm():
         Z = 6 x 26^2 / 6              = 676 mm^3
         sigma = 2.09e3 / 676          = 3.1 MPa   vs ~45 MPa PETG yield
     """
-    length = R_MOTOR + ARM_TIP_OVER - ARM_ROOT_R
-    x_mid = ARM_ROOT_R + length / 2.0
+    sweep = math.radians(ARM_SWEEP)
+    span = R_MOTOR - ARM_ROOT_R                     # horizontal reach
+    drop = span * math.tan(sweep)                   # how far aft the tip sits
+    length = span / math.cos(sweep) + ARM_TIP_OVER  # true blade length
 
+    # Blade, built flat then rotated aft about Y. Rotating about +Y tips +X
+    # toward -Z, which is aft on a nose-up rocket.
     arm = (
         cq.Workplane("XY")
         .box(length, ARM_THICK, ARM_WIDTH)
-        .translate((x_mid, 0, -ARM_WIDTH / 2.0))
+        .translate((length / 2.0, 0, -ARM_WIDTH / 2.0))
+        .rotate((0, 0, 0), (0, 1, 0), ARM_SWEEP)
+        .translate((ARM_ROOT_R, 0, 0))
     )
 
-    # Motor pad: a local boss so the 16 x 16 pattern has meat around it.
+    # Motor pad stays a VERTICAL boss, so its face is normal to the body axis
+    # and thrust is not canted. Streamlined to a teardrop rather than a plain
+    # disc: the blunt trailing side of a cylinder is where most of its drag
+    # comes from, so the aft half is faired out to a point.
     pad_r = MOTOR_PATTERN / 2.0 * math.sqrt(2) + 4.0
-    arm = arm.union(
+    z_pad = -drop
+    # The pad's axis is ALONG the flight direction, so it behaves like a
+    # nacelle, not a bluff cylinder: its drag is base drag off the flat aft
+    # end. The fix is a boat-tail, not a teardrop in plan. Tapering the
+    # underside to 45 % radius removes most of that base area.
+    # Built as a straight boss PLUS a separate boat-tail cone. A single loft
+    # from pad_r straight down to the tail radius leaves the boss too slim
+    # where the blade meets it, and the union comes apart into two solids.
+    boss = (
         cq.Workplane("XY")
-        .workplane(offset=-ARM_WIDTH)
+        .workplane(offset=z_pad - ARM_WIDTH)
         .center(R_MOTOR, 0)
         .circle(pad_r)
         .extrude(ARM_WIDTH)
     )
+    tail = (
+        cq.Workplane("XY")
+        .workplane(offset=z_pad - ARM_WIDTH)
+        .center(R_MOTOR, 0)
+        .circle(pad_r)
+        .workplane(offset=-PAD_TAIL_L)
+        .circle(pad_r * PAD_TAIL_R)
+        .loft()
+    )
+    arm = arm.union(boss).union(tail)
 
     # Hollow the pad from below to leave exactly MOTOR_PAD_T under the motor.
     arm = arm.cut(
         cq.Workplane("XY")
-        .workplane(offset=-ARM_WIDTH - 1.0)
+        .workplane(offset=z_pad - ARM_WIDTH - 1.0)
         .center(R_MOTOR, 0)
         .circle(pad_r - 2.0)
         .extrude(ARM_WIDTH - MOTOR_PAD_T + 1.0)
@@ -342,14 +387,14 @@ def build_arm():
         for sy in (-half, half):
             arm = arm.cut(
                 cq.Workplane("XY")
-                .workplane(offset=-MOTOR_PAD_T - 1.0)
+                .workplane(offset=z_pad - MOTOR_PAD_T - 1.0)
                 .center(R_MOTOR + sx, sy)
                 .circle(3.2 / 2.0)
                 .extrude(MOTOR_PAD_T + 2.0)
             )
     arm = arm.cut(
         cq.Workplane("XY")
-        .workplane(offset=-MOTOR_PAD_T - 1.0)
+        .workplane(offset=z_pad - MOTOR_PAD_T - 1.0)
         .center(R_MOTOR, 0)
         .circle(MOTOR_BORE_D / 2.0)
         .extrude(MOTOR_PAD_T + 2.0)

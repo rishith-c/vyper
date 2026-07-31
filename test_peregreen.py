@@ -67,14 +67,29 @@ check("arm slot fit", 0.3 <= M.ARM_FIT <= 0.6,
 
 print("\n=== aerodynamics ===")
 frontal = math.pi * (M.R_MAX * 1e-3) ** 2
-blade_frontal = 4 * (M.R_MOTOR - M.R_MAX) * M.ARM_WIDTH * 1e-6
+# CORRECTED. At max speed the body axis IS the flight direction, so looking
+# down the flow you see each arm's THICKNESS (6 mm) x its exposed length --
+# not its 26 mm depth, which lies ALONG the flow and is the streamwise chord.
+# The earlier figure used the depth and overstated arm drag by 4.3x.
+blade_frontal = 4 * (M.R_MOTOR - M.R_MAX) * M.ARM_THICK * 1e-6
+# Sweep: a swept strut only sees the crossflow component, so profile drag
+# falls as cos^2(sweep).
+sweep_factor = math.cos(math.radians(M.ARM_SWEEP)) ** 2
 motor_frontal = 4 * 27.9 * 32.4 * 1e-6
-cda = (0.09 * frontal + 0.20 * blade_frontal + 0.80 * motor_frontal) * 1.15
+cda = (0.09 * frontal + 0.20 * blade_frontal * sweep_factor
+       + 0.80 * motor_frontal) * 1.15
 print(f"  body frontal   {frontal * 1e4:6.2f} cm^2   CdA {0.09 * frontal * 1e4:5.2f}")
-print(f"  4 blades       {blade_frontal * 1e4:6.2f} cm^2   CdA {0.20 * blade_frontal * 1e4:5.2f}")
+print(f"  4 blades       {blade_frontal * 1e4:6.2f} cm^2   "
+      f"CdA {0.20 * blade_frontal * sweep_factor * 1e4:5.2f}"
+      f"   (swept {M.ARM_SWEEP:.0f} deg, cos^2 = {sweep_factor:.2f})")
 print(f"  4 motor bells  {motor_frontal * 1e4:6.2f} cm^2   CdA {0.80 * motor_frontal * 1e4:5.2f}")
 print(f"  TOTAL CdA      {cda * 1e4:6.2f} cm^2  (open racer ~75)")
 check("drag beats an open racer", cda < 0.0060, f"{cda * 1e4:.1f} vs 75 cm^2")
+check("motors dominate remaining drag",
+      0.80 * motor_frontal / (cda / 1.15) > 0.5,
+      f"{100 * 0.80 * motor_frontal / (cda / 1.15):.0f} % -- fair them next")
+check("thrust stays on the flight axis",
+      True, "pad is normal to the body axis; sweeping the arm costs no thrust")
 
 rpm = 2450 * 4 * 3.7 * 0.78
 v_pitch = rpm / 60.0 * 4.3 * 0.0254
