@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 .*.step.glb
 .*.step.topology.json
+text-to-cad/
