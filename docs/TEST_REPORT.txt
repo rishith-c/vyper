@@ -1,0 +1,38 @@
+=== geometry / fit ===
+[PASS] shell is one closed solid: 1 solid(s), 80860 mm^3
+[PASS] arm is one closed solid: 1 solid(s), 19543 mm^3
+[PASS] hub is one closed solid: 1 solid(s), 36171 mm^3
+[PASS] 4S 1500 pack fits cavity: needs 23.0 mm internal radius, has 24.0
+[PASS] 36 mm stack fits shelf: shelf clear dia 48.0 mm vs 36 mm board
+[PASS] arm passes its slot: 0.4 mm total slip fit on a 6.0x26.0 blade
+
+=== printing ===
+[PASS] shell fits Neptune 4: 52 x 52 x 300 mm  [rotate on bed]
+[PASS] arm fits Neptune 4: 114 x 31 x 26 mm
+[PASS] hub fits Neptune 4: 47 x 47 x 26 mm
+[PASS] wall printable at 0.4 nozzle: 2.0 mm = 5 extrusions
+[PASS] motor pad grip: 4.0 mm -> M3x8 reaches 4.0 mm into a 3.0 mm thread. USE M3x6 IF YOUR MOTOR BOTTOMS OUT
+[PASS] nose self-supporting: 11.3 deg from vertical at the ogive base
+
+=== tolerances ===
+[PASS] M3 motor clearance: 3.2 mm hole on 3.0 mm bolt = 0.20 mm
+[PASS] M3 hub clearance: 3.2 mm hole on 3.0 mm bolt = 0.20 mm
+[PASS] M3 stack clearance: 3.2 mm hole on 3.0 mm bolt = 0.20 mm
+[PASS] arm slot fit: 0.4 mm -- slide fit, no hammer
+
+=== aerodynamics ===
+  body frontal    21.24 cm^2   CdA  1.91
+  4 blades        87.36 cm^2   CdA 17.47
+  4 motor bells   36.16 cm^2   CdA 28.93
+  TOTAL CdA       55.56 cm^2  (open racer ~75)
+[PASS] drag beats an open racer: 55.6 vs 75 cm^2
+  2450KV on 4S -> ~28,283 rpm, pitch speed 51.5 m/s
+  realistic top speed 38.6 m/s = 139 km/h
+[PASS] prop-pitch limited, not thrust limited: 5.1 N drag at Vmax against ~44 N of 4S thrust
+[PASS] fuselage fineness in the low-drag band: 5.77 (optimum ~5-6)
+
+=== mass ===
+  printed 177 g + payload 390 g = AUW 567 g
+[PASS] thrust-to-weight: 8.1:1
+
+all checks passed

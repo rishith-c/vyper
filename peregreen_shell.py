@@ -66,21 +66,29 @@ import cadquery as cq
 
 # ---- Overall envelope -------------------------------------------------------
 TOTAL_LEN = 300.0        # base (Z=0) to nose tip (Z=TOTAL_LEN)
-R_MAX = 30.0             # max outer radius -> 60 mm diameter body
+# Set by the largest thing that must fit, which after the $150 re-spec is the
+# 4S 1500 pack (75 x 35 x 30): half-diagonal 23.0 + 1.0 fit + 2.0 wall = 26.0.
+# The old 60 mm body was sized by a 44 mm-wide SpeedyBee ESC; the budget
+# 36 x 36 stack does not need it, so the aircraft got 25% less frontal area.
+R_MAX = 26.0             # max outer radius -> 52 mm diameter body
 WALL = 2.0               # constant shell wall thickness
 
 # ---- Longitudinal stations --------------------------------------------------
 Z_TAIL_TOP = 60.0        # boat-tail ends / parallel body begins
 Z_NOSE_BASE = 170.0      # parallel body ends / ogive begins
-R_TAIL_BASE = 24.0       # radius at the very base (Z=0)
+R_TAIL_BASE = 21.0       # radius at the very base (Z=0)
 R_TIP = 0.6              # tiny flat at the tip: a knife point will not print
 
 # ---- Arm slots --------------------------------------------------------------
 # Flat carbon plate arms slide in from the INSIDE and out through the wall.
 ARM_COUNT = 4
 ARM_ANGLES = [45.0, 135.0, 225.0, 315.0]   # true-X quadcopter
-ARM_WIDTH = 25.0         # carbon plate width  (nominal 25 mm)
-ARM_THICK = 5.0          # carbon plate thickness (nominal 5 mm)
+# The blade stands ON EDGE: 26 mm tall, 6 mm thick streamwise. Motor thrust
+# is vertical, so depth in Z is what resists bending -- a 6 mm-thick flat
+# plate lying horizontally would be 18x less stiff for the same material.
+# It is also the low-drag orientation, since 6 mm is what the air sees.
+ARM_THICK = 6.0          # streamwise thickness (horizontal)
+ARM_WIDTH = 26.0         # vertical depth -- carries the bending
 ARM_FIT = 0.4            # total slip fit added to BOTH slot dimensions
 ARM_Z = 95.0             # slot centre height -- lower-middle of the body
 ARM_REACH = 60.0         # how far the cutter runs past R_MAX
@@ -90,7 +98,7 @@ SHELF_Z = 135.0          # top face of the shelf
 SHELF_T = 3.0            # shelf thickness
 STACK_PITCH = 30.5       # standard 30.5 x 30.5 mounting pattern
 STACK_HOLE_D = 3.2       # M3 clearance in printed PETG (see note below)
-SHELF_VENT_D = 22.0      # central pass-through for the ESC / motor looms
+SHELF_VENT_D = 18.0      # central pass-through for the ESC / motor looms
 
 # ---- Cavity extent ----------------------------------------------------------
 CAVITY_BOTTOM = -1.0     # below Z=0, so the base is OPEN for assembly
@@ -258,14 +266,14 @@ def build_shell():
     # ---- 4. Arm slots --------------------------------------------------------
     # Each cutter starts on the axis and runs radially outward, so the slot is
     # open to the cavity: the carbon plate feeds in from inside and pushes out.
-    slot_w = ARM_WIDTH + ARM_FIT
-    slot_t = ARM_THICK + ARM_FIT
+    slot_w = ARM_WIDTH + ARM_FIT      # vertical
+    slot_t = ARM_THICK + ARM_FIT      # streamwise
     cut_len = R_MAX + ARM_REACH
 
     for angle in ARM_ANGLES:
         cutter = (
             cq.Workplane("XY")
-            .box(cut_len, slot_w, slot_t)
+            .box(cut_len, slot_t, slot_w)
             .translate((cut_len / 2.0, 0, ARM_Z))
             .rotate((0, 0, 0), (0, 0, 1), angle)
         )
@@ -275,10 +283,132 @@ def build_shell():
 
 
 # =============================================================================
+# ARM  --  four identical blades, slid in through the slots from inside
+# =============================================================================
+
+R_MOTOR = 110.0          # motor centre radius -> 220 mm true-X wheelbase
+HUB_CORE_R = 10.0        # solid core the four hub slots stop short of
+ARM_ROOT_R = 11.0        # arm root radius -- four arms cannot all cross centre
+ARM_TIP_OVER = 15.0      # blade reach past the motor centre
+MOTOR_PATTERN = 16.0     # 2207-class M3 square
+MOTOR_PAD_T = 4.0        # left under the motor -> M3x8 and nothing longer
+MOTOR_BORE_D = 9.0       # bell boss relief
+HUB_BOLT_D = 3.2
+
+
+def build_arm():
+    """One arm, built lying along +X with its TOP FACE at Z = 0.
+
+    Printed top-face-down: that face is both the bed face and the motor
+    mounting face, and every feature hangs below it, so the section only
+    shrinks going up and nothing needs support.
+
+    Root bending check, 2207 on 6S (~19 N at the tip):
+        M = 19 N x 0.110 m            = 2.09 N.m
+        Z = 6 x 26^2 / 6              = 676 mm^3
+        sigma = 2.09e3 / 676          = 3.1 MPa   vs ~45 MPa PETG yield
+    """
+    length = R_MOTOR + ARM_TIP_OVER - ARM_ROOT_R
+    x_mid = ARM_ROOT_R + length / 2.0
+
+    arm = (
+        cq.Workplane("XY")
+        .box(length, ARM_THICK, ARM_WIDTH)
+        .translate((x_mid, 0, -ARM_WIDTH / 2.0))
+    )
+
+    # Motor pad: a local boss so the 16 x 16 pattern has meat around it.
+    pad_r = MOTOR_PATTERN / 2.0 * math.sqrt(2) + 4.0
+    arm = arm.union(
+        cq.Workplane("XY")
+        .workplane(offset=-ARM_WIDTH)
+        .center(R_MOTOR, 0)
+        .circle(pad_r)
+        .extrude(ARM_WIDTH)
+    )
+
+    # Hollow the pad from below to leave exactly MOTOR_PAD_T under the motor.
+    arm = arm.cut(
+        cq.Workplane("XY")
+        .workplane(offset=-ARM_WIDTH - 1.0)
+        .center(R_MOTOR, 0)
+        .circle(pad_r - 2.0)
+        .extrude(ARM_WIDTH - MOTOR_PAD_T + 1.0)
+    )
+
+    # 16 x 16 M3 + centre bore, through the 4 mm pad only.
+    half = MOTOR_PATTERN / 2.0
+    for sx in (-half, half):
+        for sy in (-half, half):
+            arm = arm.cut(
+                cq.Workplane("XY")
+                .workplane(offset=-MOTOR_PAD_T - 1.0)
+                .center(R_MOTOR + sx, sy)
+                .circle(3.2 / 2.0)
+                .extrude(MOTOR_PAD_T + 2.0)
+            )
+    arm = arm.cut(
+        cq.Workplane("XY")
+        .workplane(offset=-MOTOR_PAD_T - 1.0)
+        .center(R_MOTOR, 0)
+        .circle(MOTOR_BORE_D / 2.0)
+        .extrude(MOTOR_PAD_T + 2.0)
+    )
+
+    # Root bolt: one M3 through the blade into the internal hub.
+    arm = arm.cut(
+        cq.Workplane("XZ")
+        .workplane(offset=-ARM_THICK)
+        .center(ARM_ROOT_R + 8.0, -ARM_WIDTH / 2.0)
+        .circle(HUB_BOLT_D / 2.0)
+        .extrude(ARM_THICK * 2.0)
+    )
+    return arm
+
+
+def build_hub():
+    """Internal hub the four arm roots bolt into.
+
+    Sits at the slot height inside the cavity. Cross-drilled on the same four
+    axes as the slots, so each arm is captured in double shear rather than
+    hanging off the shell wall.
+    """
+    hub_r = R_MAX - WALL - 0.5
+    hub = (
+        cq.Workplane("XY")
+        .workplane(offset=ARM_Z - ARM_WIDTH / 2.0)
+        .circle(hub_r)
+        .extrude(ARM_WIDTH)
+    )
+    # Slots for the four arm roots to plug into.
+    for angle in ARM_ANGLES:
+        # Stops at HUB_CORE_R: a slot run to the centre would sever the hub
+        # into four disconnected wedges.
+        slot_len = hub_r * 1.4 - HUB_CORE_R
+        hub = hub.cut(
+            cq.Workplane("XY")
+            .box(slot_len, ARM_THICK + ARM_FIT, ARM_WIDTH + 0.4)
+            .translate((HUB_CORE_R + slot_len / 2.0, 0, ARM_Z))
+            .rotate((0, 0, 0), (0, 0, 1), angle)
+        )
+    # Matching bolt holes.
+    for angle in ARM_ANGLES:
+        hub = hub.cut(
+            cq.Workplane("XY")
+            .box(hub_r - HUB_CORE_R, HUB_BOLT_D, HUB_BOLT_D)
+            .translate((ARM_ROOT_R + 8.0, 0, ARM_Z))
+            .rotate((0, 0, 0), (0, 0, 1), angle)
+        )
+    return hub
+
+
+# =============================================================================
 # BUILD
 # =============================================================================
 
 result = build_shell()
+arm = build_arm()
+hub = build_hub()
 
 # CQ-Editor picks this up automatically. Uncomment to export:
 # cq.exporters.export(result, "peregreen_shell.stl")
