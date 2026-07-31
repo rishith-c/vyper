@@ -4,7 +4,7 @@ from build123d import Color, Compound, Pos, Rot
 
 import body
 import components as C
-import wing
+import arm
 import shells
 import vy_params as P
 
@@ -17,10 +17,15 @@ GUTS = Color(0.30, 0.75, 0.45)
 REF = Color(0.30, 0.65, 0.90)
 
 
-def placed_wings():
+def placed_arms():
+    """Two blades crossed at +/- the half-angle, half-lapped at the centre."""
     out = {}
-    for hand in wing.HANDS:
-        out[hand] = Pos(0, 0, P.MOTOR_PAD_Z) * wing.gen(hand)
+    for notch, sign in (("top", 1.0), ("bottom", -1.0)):
+        out[notch] = (
+            Pos(0, 0, P.MOTOR_PAD_Z)
+            * Rot(0, 0, sign * arm.ARM_ANGLE)
+            * arm.gen(notch)
+        )
     return out
 
 
@@ -46,8 +51,8 @@ def gen_step():
         s.color = col
         parts.append(s)
 
-    for hand, solid in placed_wings().items():
-        solid.label = f"wing_{hand}"
+    for hand, solid in placed_arms().items():
+        solid.label = f"arm_{hand}"
         solid.color = FAIRING
         parts.append(solid)
 

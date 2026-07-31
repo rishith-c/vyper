@@ -31,8 +31,8 @@ def gen_step():
         s.color = SHELL if "fuselage" in name else FAIRING
         parts.append(s)
 
-    for hand, solid in assembly.placed_wings().items():
-        solid.label = f"wing_{hand}"
+    for hand, solid in assembly.placed_arms().items():
+        solid.label = f"arm_{hand}"
         solid.color = FAIRING
         parts.append(solid)
 

@@ -83,9 +83,17 @@ PROP_R = PROP_DIA / 2.0
 # first article ships conventional. Raise this for a dedicated speed airframe
 # and expect to re-verify the root lands.
 MOTOR_TILT = 0.0
-MOTOR_PAD_Z = 16.0                # pad height above the fuselage axis; also
-                                  # the height the pylons leave the fuselage,
-                                  # so the whole pylon is flat-topped
+# The crossed arms sit ON TOP of the fuselage spine, not through it.
+#
+# Threading them through the middle is what the shape wants, but it does not
+# survive packaging: the two blades sweep the body's whole X = -39..+39 band
+# at Z = -2..+16, which is exactly where a 76 x 38 x 31 battery and a 45.6 mm
+# ESC have to live. There is nowhere else in a 62 mm body to put them. So the
+# X rides on the spine and the faired body hangs beneath it.
+#
+# Cost of that decision, stated plainly: the prop plane ends up ~77 mm above
+# the CG, so the airframe is pendulous. It flies, but it is not free.
+MOTOR_PAD_Z = 50.0                # arm top face; body top is +31
 
 # --------------------------------------------------------------- fasteners
 M3_CLR = 3.3
@@ -145,6 +153,24 @@ STACK_X = -43.0                   # stack centre
 STACK_Z = -4.0                    # ESC underside
 VTX_X = -76.0
 RX_X = -88.0
+
+
+# --------------------------------------------------------------- crossed arms
+# Two straight blades crossing in an X, half-lapped at the centre, with the
+# faired body threaded through the crossing. Minimum frontal area: a 9 mm
+# blade edge-on presents almost nothing.
+ARM_W = 9.0                       # streamwise width -- keep it small
+ARM_H = 18.0                      # vertical depth -- carries the bending
+ARM_TIP_OVER = 15.0               # blade reach past each motor centre
+ARM_PAD_D = 30.0                  # motor pad; 16x16 M3 needs >= 29
+ARM_BOLT_R = 34.0                 # body bolts, either side of the crossing
+ARM_LAP_FIT = 2.0                 # half-lap clearance, both blades
+ARM_FILL = 0.62                   # 5 walls, small section -> mostly perimeter
+
+# Insets must stay under ARM_W/2 = 4.5, or the blade section collapses to
+# nothing partway down and the loft fails.
+ARM_BELLY = ((0.0, 0.0), (5.0, 0.3), (10.0, 0.9), (14.0, 1.8),
+             (16.5, 2.8), (18.0, 3.8))
 
 # --------------------------------------------------------------- wings
 # Two broad swept panels, each carrying TWO motors, instead of four separate

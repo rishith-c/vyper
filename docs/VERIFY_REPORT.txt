@@ -26,11 +26,11 @@
 [PASS] nose_cone vs props: 0.0 mm^3
 [PASS] tail_cone vs props: 0.0 mm^3
 [PASS] tail_fin vs props: 0.0 mm^3
-[PASS] wing_l vs props: 0.0 mm^3
-[PASS] wing_r vs props: 0.0 mm^3
+[PASS] arm_top vs props: 0.0 mm^3
+[PASS] arm_bottom vs props: 0.0 mm^3
 
 === printed part interference ===
-[PASS] no part overlaps: worst none = 0.0 mm^3 (~0.00 mm over a saddle face)
+[PASS] no part overlaps: worst arm_top / arm_bottom = 0.0 mm^3 (~0.00 mm over a saddle face)
 
 === each part is one solid ===
 [PASS] fuselage_lower connected: 1 solid(s)
@@ -38,20 +38,20 @@
 [PASS] nose_cone connected: 1 solid(s)
 [PASS] tail_cone connected: 1 solid(s)
 [PASS] tail_fin connected: 1 solid(s)
-[PASS] wing_l connected: 1 solid(s)
-[PASS] wing_r connected: 1 solid(s)
+[PASS] arm_top connected: 1 solid(s)
+[PASS] arm_bottom connected: 1 solid(s)
 
 === Neptune 4 bed (225 x 225 x 265) ===
-[PASS] fuselage_lower x1: 190 x 62 x 48 mm, 89.1 g ea
+[PASS] fuselage_lower x1: 190 x 62 x 48 mm, 64.4 g ea
 [PASS] fuselage_upper x1: 190 x 57 x 18 mm, 28.5 g ea
 [PASS] nose_cone x1: 47 x 55 x 55 mm, 13.2 g ea
 [PASS] tail_cone x1: 49 x 50 x 50 mm, 13.4 g ea
 [PASS] tail_fin x1: 28 x 20 x 51 mm, 6.8 g ea
-[PASS] wing_l x1: 210 x 76 x 14 mm, 55.2 g ea
-[PASS] wing_r x1: 210 x 76 x 14 mm, 55.2 g ea
+[PASS] arm_top x1: 255 x 30 x 18 mm, 20.4 g ea  [print DIAGONALLY]
+[PASS] arm_bottom x1: 255 x 30 x 18 mm, 21.5 g ea  [print DIAGONALLY]
 
 === mass ===
-printed frame         261 g
+printed frame         168 g
   motors x4                        136 g
   stack                             34 g
   battery                          180 g
@@ -61,8 +61,8 @@ printed frame         261 g
   props x4                          18 g
   wiring, XT60, cap, heatshrink     25 g
   fasteners                         26 g
-AUW                   706 g
+AUW                   613 g
 static thrust        6400 g
-[PASS] thrust-to-weight: 9.1:1
+[PASS] thrust-to-weight: 10.4:1
 
 all checks passed

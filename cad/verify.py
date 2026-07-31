@@ -15,12 +15,12 @@ Run:  python verify.py
 
 import math
 
-from build123d import Pos
+from build123d import Pos, Rot
 
 import assembly
 import body
 import components as C
-import wing
+import arm
 import shells
 import vy_params as P
 
@@ -70,7 +70,7 @@ PRINTED = {
     "tail_cone": shells.tail_cone(),
     "tail_fin": shells.tail_fin(),
 }
-PRINTED.update({f"wing_{h}": s for h, s in assembly.placed_wings().items()})
+PRINTED.update({f"arm_{h}": s for h, s in assembly.placed_arms().items()})
 COMPONENTS = assembly.placed_components()
 
 # ------------------------------------------------------- components vs frame
@@ -143,16 +143,20 @@ TO_PRINT = [
     ("nose_cone", shells.nose_cone(), 1, P.SHELL_FILL),
     ("tail_cone", shells.tail_cone(), 1, P.SHELL_FILL),
     ("tail_fin", shells.tail_fin(), 1, P.SHELL_FILL),
-    ("wing_l", wing.gen("l"), 1, P.WING_FILL),
-    ("wing_r", wing.gen("r"), 1, P.WING_FILL),
+    ("arm_top", arm.gen("top"), 1, P.ARM_FILL),
+    ("arm_bottom", arm.gen("bottom"), 1, P.ARM_FILL),
 ]
 printed_g = 0.0
 for name, solid, qty, fill in TO_PRINT:
     s = solid.bounding_box().size
-    fits = s.X < BX - 10 and s.Y < BY - 10 and s.Z < BZ - 10
+    # A long thin part that will not fit axis-aligned may still fit rotated.
+    # The arms are 255 mm on a 225 mm bed and go on at 45 degrees.
+    diag_ok = (s.X + s.Y) / (2 ** 0.5) < BX - 10
+    fits = (s.X < BX - 10 and s.Y < BY - 10 or diag_ok) and s.Z < BZ - 10
     g = solid.volume * fill * P.PETG_RHO
     printed_g += g * qty
-    check(f"{name} x{qty}", fits, f"{s.X:.0f} x {s.Y:.0f} x {s.Z:.0f} mm, {g:.1f} g ea")
+    check(f"{name} x{qty}", fits, f"{s.X:.0f} x {s.Y:.0f} x {s.Z:.0f} mm, {g:.1f} g ea"
+        + ("  [print DIAGONALLY]" if s.X > BX - 10 else ""))
 
 # ---------------------------------------------------------------- mass budget
 print("\n=== mass ===")
