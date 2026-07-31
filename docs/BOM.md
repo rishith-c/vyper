@@ -1,4 +1,4 @@
-# Peregreen-X — Bill of Materials, under $150
+# VYPER — Bill of Materials, under $150
 
 Every line carries the **exact dimensions the CAD is cut to**. Substituting a
 part with different dimensions means editing the parameter named in the last

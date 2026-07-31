@@ -1,4 +1,4 @@
-# Peregreen-X
+# VYPER
 
 A fully 3D-printed high-speed FPV quadcopter, generated from parametric CAD
 and verified by an automated test suite. Inspired by the
@@ -23,9 +23,9 @@ and verified by an automated test suite. Inspired by the
 
 | | |
 |---|---|
-| [`peregreen_shell.py`](peregreen_shell.py) | The whole airframe in one CadQuery script — shell, arms, hub |
-| [`test_peregreen.py`](test_peregreen.py) | 24 checks: fit, printing, tolerances, aero, mass |
-| [`pg_assembly.py`](pg_assembly.py) | Assembly for review renders |
+| [`vyper_shell.py`](vyper_shell.py) | The whole airframe in one CadQuery script — shell, arms, hub |
+| [`test_vyper.py`](test_vyper.py) | 24 checks: fit, printing, tolerances, aero, mass |
+| [`vyper_assembly.py`](vyper_assembly.py) | Assembly for review renders |
 | [`firmware/`](firmware/) | Betaflight config + bench and pre-flight procedure |
 | [`docs/BOM.md`](docs/BOM.md) | Every part, exact dimensions, links |
 | [`docs/TEST_REPORT.txt`](docs/TEST_REPORT.txt) | Latest full test output |
@@ -33,8 +33,8 @@ and verified by an automated test suite. Inspired by the
 
 ```bash
 pip install cadquery
-python test_peregreen.py      # verify
-python peregreen_shell.py     # build
+python test_vyper.py      # verify
+python vyper_shell.py     # build
 ```
 
 ---

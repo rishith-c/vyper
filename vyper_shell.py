@@ -456,12 +456,12 @@ arm = build_arm()
 hub = build_hub()
 
 # CQ-Editor picks this up automatically. Uncomment to export:
-# cq.exporters.export(result, "peregreen_shell.stl")
-# cq.exporters.export(result, "peregreen_shell.step")
+# cq.exporters.export(result, "vyper_shell.stl")
+# cq.exporters.export(result, "vyper_shell.step")
 
 show_object = globals().get("show_object")
 if show_object:
-    show_object(result, name="peregreen_shell")
+    show_object(result, name="vyper_shell")
 
 
 if __name__ == "__main__":

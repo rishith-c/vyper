@@ -1,10 +1,10 @@
-# Peregreen-X — LinkedIn project write-up
+# VYPER — LinkedIn project write-up
 
 > Paste into the *Projects* section, or post as-is. Trim to taste.
 
 ---
 
-**Peregreen-X — a fully 3D-printed high-speed FPV drone, designed parametrically and verified by test**
+**VYPER — a fully 3D-printed high-speed FPV drone, designed parametrically and verified by test**
 
 I built a complete rocket-style FPV quadcopter airframe in code — every part
 generated from a parametric CAD script, and every design claim checked by an
@@ -50,6 +50,6 @@ setting the diameter all along.
 
 **Stack:** Python, CadQuery, build123d, OpenCascade, Betaflight
 
-Repo: github.com/rishith-c/peregreen-x
+Repo: github.com/rishith-c/vyper
 
 #Engineering #Aerospace #CAD #3DPrinting #Python #FPV #Drones #Aerodynamics

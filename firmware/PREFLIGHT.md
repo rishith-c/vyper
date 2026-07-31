@@ -1,4 +1,4 @@
-# Peregreen-X — bench and pre-flight procedure
+# VYPER — bench and pre-flight procedure
 
 **Props off for every step except the last.**
 
@@ -6,7 +6,7 @@
 
 1. **Smoke test on a current-limited supply if you have one.** A miswired
    4-in-1 draws hundreds of amps and destroys itself in under a second.
-2. Flash Betaflight, then paste `betaflight_peregreen_x.txt` in the CLI, `save`.
+2. Flash Betaflight, then paste `betaflight_vyper.txt` in the CLI, `save`.
 3. **Motors tab** — verify direction and order. Fix rotation in BLHeli/AM32,
    not by swapping wires.
 4. **Receiver tab** — all channels move the right way, endpoints 1000–2000.

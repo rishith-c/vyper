@@ -2,7 +2,7 @@
 
 This project went through several airframe layouts before the current one.
 They are kept because the reasoning is in the commit history and some of it is
-reusable, but **none of it is part of Peregreen-X**.
+reusable, but **none of it is part of VYPER**.
 
 - `cad_build123d/` — a build123d parametric airframe (flat-plate racer, then a
   faired fuselage with pylons, then swept wing panels, then crossed blades).

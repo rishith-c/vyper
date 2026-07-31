@@ -1,5 +1,5 @@
 # =============================================================================
-#  PEREGREEN-X  --  Betaflight CLI configuration
+#  VYPER  --  Betaflight CLI configuration
 #  4S / 2207 2450KV / 5x4.3x3 / F405 + 40A 4in1 / ExpressLRS
 # =============================================================================
 #
@@ -111,6 +111,6 @@ set osd_vbat_pos = 2433
 set osd_current_pos = 2465
 set osd_craft_name_pos = 2081
 set osd_rssi_dbm_pos = 2049
-set name PEREGREEN-X
+set name VYPER
 
 save

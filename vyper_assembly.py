@@ -1,6 +1,6 @@
-"""Peregreen-X assembly: shell + hub + four arms, for review renders."""
+"""VYPER assembly: shell + hub + four arms, for review renders."""
 import cadquery as cq
-import peregreen_shell as M
+import vyper_shell as M
 
 asm = M.result
 hub = M.hub

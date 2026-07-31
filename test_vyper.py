@@ -1,10 +1,10 @@
-"""Peregreen-X test suite: printability, tolerances, aerodynamics, fit.
+"""VYPER test suite: printability, tolerances, aerodynamics, fit.
 
-Run:  python test_peregreen.py
+Run:  python test_vyper.py
 """
 import math
 import cadquery as cq
-import peregreen_shell as M
+import vyper_shell as M
 
 RHO, NU = 1.225, 1.46e-5
 fails = []
