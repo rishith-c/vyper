@@ -1,10 +1,20 @@
 === geometry / fit ===
 [PASS] shell is one closed solid: 1 solid(s), 80860 mm^3
-[PASS] arm is one closed solid: 1 solid(s), 26777 mm^3
+[PASS] arm is one closed solid: 1 solid(s), 23589 mm^3
 [PASS] hub is one closed solid: 1 solid(s), 36171 mm^3
 [PASS] 4S 1500 pack fits cavity: needs 23.0 mm internal radius, has 24.0
 [PASS] 36 mm stack fits shelf: shelf clear dia 48.0 mm vs 36 mm board
 [PASS] arm passes its slot: 0.4 mm total slip fit on a 6.0x26.0 blade
+
+=== wire routing ===
+[PASS] motor leads fit the arm bore: 6.0 mm bore for a ~4.0 mm bundle of 3x2.3 mm
+[PASS] bore bridges without support: 6.0 mm horizontal bore -- bridges cleanly at this size
+[PASS] bore leaves blade material: 20 mm of blade depth remains around it
+[PASS] leads exit inside the fuselage: root at r=11.0 is inside the r=24.0 cavity
+
+=== pusher configuration ===
+[PASS] motors mounted aft (pusher): props behind the arms; fuselage stays out of the slipstream
+[PASS] thrust still on the flight axis: pad is normal to the body axis -- sweep moves the arm, not the thrust
 
 === printing ===
 [PASS] shell fits Neptune 4: 52 x 52 x 300 mm  [rotate on bed]
@@ -36,7 +46,7 @@
 [PASS] fuselage fineness in the low-drag band: 5.77 (optimum ~5-6)
 
 === mass ===
-  printed 200 g + payload 390 g = AUW 590 g
-[PASS] thrust-to-weight: 7.8:1
+  printed 190 g + payload 390 g = AUW 580 g
+[PASS] thrust-to-weight: 7.9:1
 
 all checks passed

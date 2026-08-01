@@ -18,7 +18,14 @@
 # the 22 deg arm sweep is aerodynamic only and does NOT change the mix,
 # because sweep moves the arm, not the thrust axis.
 mixer QUADX
-set yaw_motors_reversed = OFF
+
+# PUSHER / INVERTED MOTORS.
+# The motors bolt to the AFT face of the arms with the props behind them, so
+# every motor turns the opposite way to a normal tractor quad. Reverse all
+# four in BLHeli/AM32 (or with DShot beacon commands), then set this ON so
+# Betaflight gets the yaw sign right. Get this wrong and the quad will flip
+# on the yaw axis the instant you arm.
+set yaw_motors_reversed = ON
 
 # ---- ESC protocol -----------------------------------------------------------
 # DSHOT600 is the right choice on a 4-in-1 with short traces. Bidirectional
@@ -99,6 +106,13 @@ set failsafe_off_delay = 10
 set small_angle = 180
 set runaway_takeoff_prevention = ON
 set gyro_cal_on_first_arm = OFF
+
+# ---- Pusher-specific note -----------------------------------------------------
+# Props ingest the body and arm wake in this layout, which shows up as
+# blade-loading fluctuation -- broadband, not a clean tone. The dynamic notch
+# above is set to 3 notches partly for that reason. If the blackbox shows a
+# noise floor lift rather than a peak, that is the wake, not a balance problem,
+# and chasing it with prop balancing will not help.
 
 # ---- Motor output ------------------------------------------------------------------
 set motor_output_limit = 100

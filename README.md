@@ -5,7 +5,7 @@ and verified by an automated test suite. Inspired by the
 [Peregreen V4](https://airshaper.com/cases/peregreen-v4-fastest-drone) — the
 3D-printed quadcopter that set the Guinness record at 657.59 km/h.
 
-![assembly](docs/img/pg_iso.png)
+![assembly](docs/img/v_iso.png)
 
 | | |
 |---|---|
@@ -15,7 +15,7 @@ and verified by an automated test suite. Inspired by the
 | Top speed | 139 km/h — **prop-pitch limited, not thrust limited** |
 | Fuselage | 52 × 300 mm, fineness 5.77 |
 | Bill of materials | **$142** |
-| Automated checks | **24, all passing** |
+| Automated checks | **30, all passing** |
 
 ---
 
@@ -57,6 +57,23 @@ the flight direction at speed, so a swept strut sees only the crossflow
 component and its profile drag falls as cos²(sweep). The motor pads stay normal
 to the body axis, so thrust is never canted — tilting the motors themselves
 would cost 3.4 % of thrust at 15° and buy nothing here.
+
+**Pusher, not tractor.** Motors bolt to the *aft* face of the arms with the
+props behind them. A tractor gives the prop clean inflow, but its slipstream
+then washes the entire fuselage above freestream velocity — and skin friction
+scales with local dynamic pressure over what is nearly all the wetted area
+there is. A pusher costs the prop some inflow quality and keeps the body in
+clean air, which is the larger effect here. It is also why high-speed UAVs are
+overwhelmingly pushers.
+
+Consequence: motors are **inverted**, so all four directions reverse in
+BLHeli/AM32 and `yaw_motors_reversed = ON`. Get that wrong and it flips on
+yaw the instant you arm.
+
+**Wire routing.** A 6 mm bore runs the length of each blade from the motor
+pocket to the root, exiting inside the cavity — three 20 AWG leads (~4 mm
+bundled) pull through by hand. Nothing flaps in a 139 km/h airstream. Bored
+along the blade axis so it prints as a horizontal hole and bridges cleanly.
 
 **Boat-tailed nacelles.** The pad's axis lies along the flow, so it behaves as
 a nacelle and its drag is base drag off the flat aft end. Tapering to 45 %

@@ -309,7 +309,31 @@ MOTOR_BORE_D = 9.0       # bell boss relief
 # thrust loss. Tilting the motors themselves would cost 3.4 % of thrust at
 # 15 deg and buy nothing on a tail-sitter -- the body already aligns.
 ARM_SWEEP = 22.0         # degrees aft ("down" when standing on the tail)
+
+# ---- PUSHER configuration ---------------------------------------------------
+# Motors mount on the AFT face of the arm, props behind them, pushing.
+#
+# Why pusher and not tractor, for a speed airframe specifically:
+#
+#   TRACTOR (props at the nose end) gives the prop clean inflow, but its
+#   slipstream then washes the ENTIRE fuselage at well above freestream
+#   velocity. Skin-friction drag scales with local dynamic pressure, so you
+#   pay for that over the whole wetted area -- and this body is nearly all
+#   the wetted area there is.
+#
+#   PUSHER costs the prop some inflow quality (it ingests body and arm wake,
+#   which shows up as blade-loading fluctuation and noise) but leaves the
+#   fuselage in clean, undisturbed air.
+#
+# On a body this slender with this much wetted area relative to disc area,
+# keeping the fuselage out of the slipstream is the larger effect. It is also
+# why high-speed UAVs are overwhelmingly pushers.
+#
+# Practical consequence: the motors are mounted INVERTED. Same props, but
+# motor direction must be reversed in Betaflight -- see firmware/.
+PUSHER = True
 HUB_BOLT_D = 3.2
+WIRE_BORE_D = 6.0        # 3x 20 AWG silicone, hand-pullable
 PAD_TAIL_L = 14.0        # boat-tail length below the pad
 PAD_TAIL_R = 0.45        # aft radius as a fraction of pad radius
 
@@ -342,9 +366,7 @@ def build_arm():
     )
 
     # Motor pad stays a VERTICAL boss, so its face is normal to the body axis
-    # and thrust is not canted. Streamlined to a teardrop rather than a plain
-    # disc: the blunt trailing side of a cylinder is where most of its drag
-    # comes from, so the aft half is faired out to a point.
+    # and thrust is not canted.
     pad_r = MOTOR_PATTERN / 2.0 * math.sqrt(2) + 4.0
     z_pad = -drop
     # The pad's axis is ALONG the flight direction, so it behaves like a
@@ -372,32 +394,64 @@ def build_arm():
     )
     arm = arm.union(boss).union(tail)
 
-    # Hollow the pad from below to leave exactly MOTOR_PAD_T under the motor.
-    arm = arm.cut(
-        cq.Workplane("XY")
-        .workplane(offset=z_pad - ARM_WIDTH - 1.0)
-        .center(R_MOTOR, 0)
-        .circle(pad_r - 2.0)
-        .extrude(ARM_WIDTH - MOTOR_PAD_T + 1.0)
-    )
+    # PUSHER: the motor bolts to the AFT face, so the 4.0 mm pad is at the
+    # BOTTOM of the boss and the relief pocket opens forward (nose-ward)
+    # instead of aft. Tractor would be the mirror of this.
+    if PUSHER:
+        arm = arm.cut(
+            cq.Workplane("XY")
+            .workplane(offset=z_pad - ARM_WIDTH + MOTOR_PAD_T)
+            .center(R_MOTOR, 0)
+            .circle(pad_r - 2.0)
+            .extrude(ARM_WIDTH - MOTOR_PAD_T + 1.0)
+        )
+    else:
+        arm = arm.cut(
+            cq.Workplane("XY")
+            .workplane(offset=z_pad - ARM_WIDTH - 1.0)
+            .center(R_MOTOR, 0)
+            .circle(pad_r - 2.0)
+            .extrude(ARM_WIDTH - MOTOR_PAD_T + 1.0)
+        )
 
     # 16 x 16 M3 + centre bore, through the 4 mm pad only.
+    z_face = (z_pad - ARM_WIDTH) if PUSHER else (z_pad - MOTOR_PAD_T)
     half = MOTOR_PATTERN / 2.0
     for sx in (-half, half):
         for sy in (-half, half):
             arm = arm.cut(
                 cq.Workplane("XY")
-                .workplane(offset=z_pad - MOTOR_PAD_T - 1.0)
+                .workplane(offset=z_face - 1.0)
                 .center(R_MOTOR + sx, sy)
                 .circle(3.2 / 2.0)
                 .extrude(MOTOR_PAD_T + 2.0)
             )
     arm = arm.cut(
         cq.Workplane("XY")
-        .workplane(offset=z_pad - MOTOR_PAD_T - 1.0)
+        .workplane(offset=z_face - 1.0)
         .center(R_MOTOR, 0)
         .circle(MOTOR_BORE_D / 2.0)
         .extrude(MOTOR_PAD_T + 2.0)
+    )
+
+    # ---- WIRE ROUTING ---------------------------------------------------
+    # Three phase wires per motor have to get from the bell to the ESC inside
+    # the fuselage. They are NOT left to flap in a 139 km/h airstream: a bore
+    # runs the length of the blade from the motor pocket to the root, exiting
+    # inside the cavity.
+    #
+    # WIRE_BORE_D = 6.0 takes three 20 AWG silicone leads (about 2.3 mm each)
+    # with room to pull them through by hand. Bored along the blade axis, so
+    # it prints as a horizontal hole and bridges cleanly at this diameter.
+    #
+    # The bore is cut BEFORE the root bolt so the bolt passes through solid
+    # material either side of it rather than into an open channel.
+    arm = arm.cut(
+        cq.Workplane("XY")
+        .box(length + 30.0, WIRE_BORE_D, WIRE_BORE_D)
+        .translate((length / 2.0, 0, -ARM_WIDTH / 2.0))
+        .rotate((0, 0, 0), (0, 1, 0), ARM_SWEEP)
+        .translate((ARM_ROOT_R, 0, 0))
     )
 
     # Root bolt: one M3 through the blade into the internal hub.

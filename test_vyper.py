@@ -38,6 +38,27 @@ check("36 mm stack fits shelf", (M.R_MAX - M.WALL) * 2 >= 36.0 + 2,
 check("arm passes its slot", M.ARM_FIT >= 0.3,
       f"{M.ARM_FIT:.1f} mm total slip fit on a {M.ARM_THICK}x{M.ARM_WIDTH} blade")
 
+print("\n=== wire routing ===")
+# Three 20 AWG silicone leads are ~2.3 mm each; bundled they need ~5 mm.
+LEAD_D, LEADS = 2.3, 3
+bundle = LEAD_D * math.sqrt(LEADS)
+check("motor leads fit the arm bore", M.WIRE_BORE_D >= bundle + 0.8,
+      f"{M.WIRE_BORE_D} mm bore for a ~{bundle:.1f} mm bundle of "
+      f"{LEADS}x{LEAD_D} mm")
+check("bore bridges without support", M.WIRE_BORE_D <= 8.0,
+      f"{M.WIRE_BORE_D} mm horizontal bore -- bridges cleanly at this size")
+check("bore leaves blade material", M.ARM_THICK - M.WIRE_BORE_D >= 0.0
+      or M.ARM_WIDTH - M.WIRE_BORE_D >= 12.0,
+      f"{M.ARM_WIDTH - M.WIRE_BORE_D:.0f} mm of blade depth remains around it")
+check("leads exit inside the fuselage", M.ARM_ROOT_R < M.R_MAX - M.WALL,
+      f"root at r={M.ARM_ROOT_R} is inside the r={M.R_MAX - M.WALL} cavity")
+
+print("\n=== pusher configuration ===")
+check("motors mounted aft (pusher)", M.PUSHER,
+      "props behind the arms; fuselage stays out of the slipstream")
+check("thrust still on the flight axis", abs(M.ARM_SWEEP) < 90,
+      "pad is normal to the body axis -- sweep moves the arm, not the thrust")
+
 print("\n=== printing ===")
 BED = (225.0, 225.0, 265.0)
 for n, o in (("shell", shell), ("arm", arm), ("hub", hub)):
