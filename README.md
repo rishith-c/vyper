@@ -28,6 +28,7 @@ and verified by an automated test suite. Inspired by the
 | [`vyper_assembly.py`](vyper_assembly.py) | Assembly for review renders |
 | [`firmware/`](firmware/) | Betaflight config + bench and pre-flight procedure |
 | [`docs/BOM.md`](docs/BOM.md) | Every part, exact dimensions, links |
+| [`pcb/`](pcb/) + [`docs/PCB_DESIGN.md`](docs/PCB_DESIGN.md) | Custom VYPER-F4 flight controller: KiCad 9 board, 15 interaction checks, dimensioned drawing |
 | [`docs/TEST_REPORT.txt`](docs/TEST_REPORT.txt) | Latest full test output |
 | [`stl/`](stl/) | Ready-to-print STLs |
 
