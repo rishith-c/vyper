@@ -106,6 +106,34 @@ MIN_INNER_R = 2.5        # stop hollowing once the nose gets this thin
 
 PROFILE_STEPS = 60       # spline sample count per curved section
 
+# ---- Print split ------------------------------------------------------------
+# The 300 mm body is printed standing, which is the only sensible orientation
+# for a body of revolution. It does not fit a 265 mm-Z bed: at the 95 % usable
+# height that is 251.75 mm, so the part is 48 mm too tall.
+#
+# Printing it as one piece was the stated intent, following the Peregreen V4.
+# That is worth keeping where it is affordable and it is not affordable here,
+# so the question becomes WHERE to split rather than whether to.
+#
+# Z = 170 is the answer, for three reasons that all point the same way:
+#   * it is the ogive/parallel-body junction, which the Von Karman profile
+#     already meets with zero slope discontinuity. A joint there adds no
+#     shoulder the flow was not already seeing.
+#   * both halves then print standing: 170 mm body and 130 mm nose, against
+#     251.75 mm usable. Neither needs support it did not already need.
+#   * the arms land at Z = 95 and the shelf at Z = 135, both well below the
+#     joint, so the split is entirely outside the loaded region. The nose
+#     carries nothing but its own air load.
+#
+# The joint is a LAP, not a butt: each half keeps half the wall through the
+# overlap, so glue area is the full 25 mm of engagement rather than a 2 mm
+# end-grain ring. A butt joint here would be the stress riser the one-piece
+# argument was trying to avoid.
+SPLIT_ENABLE = True
+SPLIT_Z = 170.0          # ogive base -- see above
+SPIGOT_L = 25.0          # lap engagement length
+SPIGOT_FIT = 0.25        # radial clearance, nose spigot into body socket
+
 
 # =============================================================================
 # PROFILE MATHEMATICS
@@ -237,6 +265,48 @@ def build_shell():
     )
     shell = shell.union(shelf)
 
+    # ---- 3a. Self-supporting ramp under the shelf ----------------------------
+    # The shelf is an annular ledge reaching 15.5 mm inward from the wall with
+    # nothing beneath it: a 90 deg overhang of about 1520 mm^2. That is the
+    # single largest overhang on the airframe, and unlike an external one it
+    # cannot be solved with support material -- this face is 132 mm up a 48 mm
+    # bore, so any support printed under it stays there forever.
+    #
+    # The fix is a cone under the shelf running back down to the wall at 45
+    # deg. Each layer then steps inward by exactly its own height, which is the
+    # self-support limit, so it prints unsupported and the ledge lands on solid
+    # material. It also fillets the shelf-to-wall joint, which is where a
+    # cantilevered ledge would otherwise crack first.
+    #
+    # Cost is 15.5 mm off the top of the battery bay, leaving about 116 mm of
+    # clear cavity for a 75 mm pack. If that ever gets tight, widening
+    # SHELF_VENT_D shortens the ramp one-for-one.
+    # Built as a conical SHELL, not a solid cone. Only the surface has to be
+    # there -- the shelf needs something to land on, not a plug. A solid cone
+    # costs about 20 g, which on a 600 g airframe is 3 % of all-up weight
+    # bought for nothing.
+    ramp_h = shelf_r - SHELF_VENT_D / 2.0
+    ramp_z0 = SHELF_Z - SHELF_T - ramp_h
+    ramp_wall = WALL * math.sqrt(2.0)      # 45 deg cone: vertical offset for
+    #                                        a WALL-thick normal section
+    ramp = (
+        cq.Workplane("XY").workplane(offset=ramp_z0)
+        .circle(shelf_r).extrude(ramp_h)
+    ).cut(
+        cq.Workplane("XY").workplane(offset=ramp_z0)
+        .circle(shelf_r)
+        .workplane(offset=ramp_h)
+        .circle(SHELF_VENT_D / 2.0)
+        .loft()
+    ).cut(
+        cq.Workplane("XY").workplane(offset=ramp_z0)
+        .circle(shelf_r + ramp_wall)
+        .workplane(offset=ramp_h)
+        .circle(SHELF_VENT_D / 2.0 + ramp_wall)
+        .loft()
+    )
+    shell = shell.union(ramp)
+
     # 30.5 x 30.5 stack pattern + a central loom pass-through.
     #
     # Cut with explicit cylinders rather than .faces(">Z").hole(): on a body
@@ -294,6 +364,28 @@ MOTOR_PATTERN = 16.0     # 2207-class M3 square
 MOTOR_PAD_T = 4.0        # left under the motor -> M3x8 and nothing longer
 MOTOR_BORE_D = 9.0       # bell boss relief
 
+# ---- Print orientation ------------------------------------------------------
+# MEASURED, not assumed. The blade underside sits 22 deg off horizontal (it is
+# the swept face), which is a 68 deg overhang if the arm is sliced as modelled.
+# Rotating the part about Y by more than ARM_SWEEP steepens that whole face
+# past the 45 deg self-support limit. Facet-level sweep of the exported STEP:
+#
+#     rotation      overhang area     worst
+#      0 deg        1182 mm^2          68 deg     <- as modelled, needs support
+#     25 deg         510 mm^2          65 deg     <- best
+#     45 deg         464 mm^2          76 deg     but on a cliff edge: 45.5 deg
+#                                                 flips a large face and it
+#                                                 jumps back to 2114 mm^2
+#
+# 25 deg is the setting to use: over half the overhang area gone for free, and
+# it sits in the middle of a stable window rather than on the edge of one.
+#
+# NOTE: an earlier version of this docstring claimed the arm printed
+# "top-face-down with nothing needing support". That is false and was never
+# measured - top-face-down is a 158 deg rotation and scores 1957 mm^2, the
+# WORST of any orientation tried.
+PRINT_ROT_Y = 25.0       # degrees about Y for the print-oriented export
+
 # ---- Arm sweep --------------------------------------------------------------
 # On a tail-sitter, "angled down" means swept AFT, because at speed the body
 # axis IS the flight direction. That is worth doing: a strut swept by Lambda
@@ -334,8 +426,18 @@ ARM_SWEEP = 22.0         # degrees aft ("down" when standing on the tail)
 PUSHER = True
 HUB_BOLT_D = 3.2
 WIRE_BORE_D = 6.0        # 3x 20 AWG silicone, hand-pullable
-PAD_TAIL_L = 14.0        # boat-tail length below the pad
-PAD_TAIL_R = 0.45        # aft radius as a fraction of pad radius
+# Boat-tail behind the motor pad. Two numbers, and both are set by print
+# overhang as much as by drag:
+#   * the cone FLANK is an overhang equal to its own half-angle, and the print
+#     rotation above adds to it. atan((1-PAD_TAIL_R)*pad_r / PAD_TAIL_L) must
+#     stay under (45 - PRINT_ROT_Y) = 20 deg or the flank needs support.
+#   * the flat aft END is a 90 deg face. Shrinking PAD_TAIL_R shrinks it, and
+#     also removes base area, which is what the boat-tail is for.
+# 0.45 over 14 mm gave a 31 deg flank and a 149 mm^2 flat. 0.35 over 24 mm
+# gives a 19.5 deg flank -- self-supporting at 25 deg print rotation -- and
+# drops the flat to 90 mm^2.
+PAD_TAIL_L = 24.0        # boat-tail length below the pad
+PAD_TAIL_R = 0.35        # aft radius as a fraction of pad radius
 
 
 def build_arm():
@@ -465,6 +567,54 @@ def build_arm():
     return arm
 
 
+def split_shell(shell):
+    """Cut the shell at SPLIT_Z into a body and a nose joined by a lap.
+
+    The wall is 2.0 mm and the lap splits it: the nose grows a ring occupying
+    the INNER half (r = R_MAX-WALL .. R_MAX-WALL/2) and hanging SPIGOT_L below
+    the joint; the body has that same annulus removed from its top so the ring
+    drops in. Each half keeps 1.0 mm of wall through the overlap and the pair
+    is 2.0 mm again once assembled.
+
+    The nose ring shares the r = 24..25 band with the nose wall at the split
+    plane, so the union is a real solid overlap. A ring sized flush to the
+    cavity would only touch it tangentially and would come out as two solids.
+
+    Returns (body, nose), both standing on Z = 0 ready to slice.
+    """
+    r_in = R_MAX - WALL                  # 24.0, cavity wall
+    r_mid = R_MAX - WALL / 2.0           # 25.0, mid-wall
+    far = R_MAX * 4.0
+
+    body = shell.cut(
+        cq.Workplane("XY").workplane(offset=SPLIT_Z)
+        .circle(far).extrude(TOTAL_LEN)
+    )
+    nose = shell.cut(
+        cq.Workplane("XY").workplane(offset=SPLIT_Z - TOTAL_LEN)
+        .circle(far).extrude(TOTAL_LEN)
+    )
+
+    # Male lap on the nose, hanging below the joint.
+    spigot = (
+        cq.Workplane("XY").workplane(offset=SPLIT_Z - SPIGOT_L)
+        .circle(r_mid - SPIGOT_FIT).circle(r_in)
+        .extrude(SPIGOT_L)
+    )
+    nose = nose.union(spigot)
+
+    # Matching female socket in the body: take the inner half of the wall out
+    # over the engagement length. Cut 0.2 mm deeper than the spigot is long so
+    # the two halves seat on the OUTER shoulder, which is the surface the air
+    # sees, rather than bottoming out inside on a tolerance stack.
+    body = body.cut(
+        cq.Workplane("XY").workplane(offset=SPLIT_Z - SPIGOT_L - 0.2)
+        .circle(r_mid).circle(r_in - 1.0)
+        .extrude(SPIGOT_L + 0.2)
+    )
+    return body, nose
+
+
 def build_hub():
     """Internal hub the four arm roots bolt into.
 
@@ -509,9 +659,18 @@ result = build_shell()
 arm = build_arm()
 hub = build_hub()
 
+# Print-ready variants. These are what actually goes to the slicer; `result`
+# and `arm` stay in ASSEMBLY orientation so the assembly and the verification
+# checks keep a single unambiguous reference frame.
+shell_body, shell_nose = split_shell(result) if SPLIT_ENABLE else (result, None)
+arm_print = arm.rotate((0, 0, 0), (0, 1, 0), PRINT_ROT_Y)
+
 # CQ-Editor picks this up automatically. Uncomment to export:
 # cq.exporters.export(result, "vyper_shell.stl")
 # cq.exporters.export(result, "vyper_shell.step")
+# cq.exporters.export(shell_body, "cad/vyper_shell_body.step")
+# cq.exporters.export(shell_nose, "cad/vyper_shell_nose.step")
+# cq.exporters.export(arm_print,  "cad/vyper_arm_print.step")
 
 show_object = globals().get("show_object")
 if show_object:
