@@ -24,15 +24,23 @@ Each of the four electrically independent channels uses:
 - One NTC beside the hottest half bridge and the driver's `nFAULT` tied to the
   MCU. Hardware fault action must shut all six inputs low; firmware telemetry
   is secondary.
+- One `WSLF2512R0005FEA` 0.5 mΩ, 10 W shunt in each channel's common low-side
+  return. The DRV8323's 10 V/V CSA therefore reports 5 mV/A to PA2. A
+  `TLV9061IDBVR` equal-resistor averager with gain 4 reports the sum of all
+  four channels to the FC at the same 5 mV/A scale.
 
-One `DRV8323RH` buck-equipped variant supplies the 3.3 V logic rail only after
-its 600 mA budget and startup sequencing are validated. If that rail cannot
-meet the measured four-MCU load with 2× margin, the schematic must change to a
-dedicated 60 V buck. It may not be waved through at layout review.
+A dedicated `LMR16006XDDCR` 60 V / 600 mA buck supplies 3.3 V logic. Four
+AT32F421 devices draw at most 82.8 mA total at the datasheet's 105 °C,
+120 MHz maximum-current point, retaining more than 7× regulator current
+margin before the small analog load. The rail still requires startup, ripple
+and closed-body thermal validation.
 
 ## Board and current path
 
-- 36×36 mm, R5 corners, 30.5×30.5 M3, six layers.
+- 43×43 mm, R12 corners, 30.5×30.5 M3, six layers. The 25.44 mm
+  corner reach leaves 1.06 mm radial allowance in the 53 mm shell cavity.
+  A 36 mm packing study was rejected after true SuperSO8 footprints exposed
+  unavoidable power-stage/pad conflicts.
 - 2 oz outer copper; 1 oz inner copper minimum.
 - F.Cu: three high-side FETs per channel. B.Cu: the three matching low-side
   FETs registered directly below. Dense source/switch-node via fields make a
@@ -47,8 +55,16 @@ dedicated 60 V buck. It may not be waved through at layout review.
   the XT60 does not control the board's commutation loop.
 
 The floorplan is encoded in `vyper_esc_layout.py`; `test_vyper_esc.py` checks
-the fuselage radius, rounded corners, holes, all 40 major courtyards, vertical
+the fuselage radius, rounded corners, holes, all 48 major courtyards, vertical
 half-bridge registration, gate-loop distance and voltage margins.
+
+`vyper_esc_schematic.py` authors the full 159-net electrical design and emits
+`vyper_55a_esc.net`. `test_vyper_esc_netlist.py` verifies the exact AM32 pin
+contract, all 24 manufacturer TDSON land patterns, all four 41-pad drivers,
+three phases and six gates per channel, shunts, ADCs, telemetry isolation,
+regulator feedback and the eight-pin FC harness. SKiDL ERC currently reports
+zero errors and zero warnings; this is schematic evidence, not routed-PCB
+evidence.
 
 ## Current and thermal limits
 

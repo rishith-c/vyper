@@ -33,7 +33,7 @@ the aircraft's real speed.
 - `test_vyper.py`: solid, fit, clearance, fastener, mass and first-order aero
   checks.
 - `pcb/`: VYPER-F4 FC floorplan plus the VYPER-55A custom ESC EVT architecture,
-  floorplan and independent interaction tests.
+  authored netlists, true-footprint unrouted review board and independent tests.
 - `docs/BOM.md`: current purchased-part envelopes, budget and sourcing status.
 - `docs/VALIDATION_GATES.md`: the tests required before LiPo power and flight.
 
@@ -42,6 +42,8 @@ source .venv/bin/activate
 python test_vyper.py
 python pcb/test_vyper_f4.py
 python pcb/test_vyper_esc.py
+python pcb/test_vyper_esc_netlist.py
+python firmware/am32/test_target.py
 python vyper_shell.py
 python vyper_assembly.py
 python render_vyper.py
@@ -68,9 +70,11 @@ Two paths are intentionally separated:
 2. The custom FC and custom four-channel ESC are development boards. The FC is
    presently a validated mechanical floorplan plus a 61-net authored electrical
    netlist that passes its connectivity tests; the reviewed KiCad schematic and
-   routed copper are still open. The ESC is a validated 40-part floorplan and documented architecture
-   using four AT32F421 MCUs, four TI DRV8323 drivers and 24 Infineon 60 V
-   MOSFETs. Neither custom board is orderable or flight-qualified yet.
+   routed copper are still open. The ESC has a validated 48-major-part,
+   43×43 mm R12 floorplan, a 159-net / 195-component authored electrical
+   design, an AM32 target, and a six-layer true-footprint review board. All 715 authored
+   netlist nodes reach physical pads, but KiCad correctly reports 499 unrouted
+   connections. Neither custom board is orderable or flight-qualified yet.
 
 The custom ESC's 55 A label is a **2-second design target**, not a tested
 continuous rating. See [`pcb/FC_ARCHITECTURE.md`](pcb/FC_ARCHITECTURE.md) and
@@ -81,7 +85,7 @@ continuous rating. See [`pcb/FC_ARCHITECTURE.md`](pcb/FC_ARCHITECTURE.md) and
 ## Known blockers before a physical build
 
 - Add and fit-check a camera optical window/fairing in the shell.
-- Complete the reviewed FC schematic and both boards' routing, ERC/DRC and
+- Complete reviewed graphical schematics and both boards' routing, ERC/DRC and
   manufacturing outputs.
 - Print and weigh coupons; G-code now estimates 259.1 g and 19 h 03 min, but
   real spool density, flow calibration and failed-print allowance remain.

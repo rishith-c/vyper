@@ -148,11 +148,13 @@ def build():
                    f'(size {L.HOLE_D} {L.HOLE_D}) (drill {L.HOLE_D}) '
                    f'(layers "*.Cu" "*.Mask") {uid()})\n\t)\n')
 
-    counters = {"Q": 0, "U": 0, "RN": 0, "TH": 0}
+    counters = {"Q": 0, "U": 0, "RN": 0, "TH": 0, "RSH": 0, "L": 0}
     for name, spec in L.PARTS.items():
         prefix = "Q" if name.startswith("Q_") else (
             "RN" if name.startswith("RN_") else (
-                "TH" if name.startswith("TH_") else "U"))
+                "TH" if name.startswith("TH_") else (
+                    "RSH" if name.startswith("RSH_") else (
+                        "L" if name.startswith("L_") else "U"))))
         counters[prefix] += 1
         ref = f"{prefix}{counters[prefix]}"
         x, y = spec["pos"]

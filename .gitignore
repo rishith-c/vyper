@@ -11,3 +11,7 @@ pcb/skidl.erc
 pcb/vyper_f4_schematic.log
 pcb/vyper_f4_schematic.erc
 pcb/vyper_f4_preview.kicad_sch
+*_schematic.log
+*_schematic.erc
+*_schematic_sklib.py
+*.kicad_prl

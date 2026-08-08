@@ -17,6 +17,10 @@ COLORS = {
     "U_MCU": "#355c9a",
     "RN_": "#7a6a9d",
     "TH_": "#35a56b",
+    "RSH_": "#7b4ab8",
+    "U_BUCK": "#e86f3c",
+    "L_BUCK": "#aa6429",
+    "U_ISUM": "#2d8f87",
 }
 
 
@@ -65,10 +69,12 @@ for ax, side, title in zip(axes, ("F", "B"), ("TOP / F.Cu", "BOTTOM / B.Cu")):
                 ha="center", va="center", rotation=90)
 
     ax.text(0, 22.2, title, fontsize=12, fontweight="bold", ha="center")
-    ax.text(0, -22.0, "36×36 R5 | 30.5×30.5 M3 | 6-layer / 2 oz outer",
+    ax.text(0, -25.0,
+            f"{L.BOARD_W:.0f}×{L.BOARD_H:.0f} R{L.CORNER_R:.0f} | "
+            "30.5×30.5 M3 | 6-layer / 2 oz outer",
             fontsize=7.5, ha="center")
-    ax.set_xlim(-28, 28)
-    ax.set_ylim(-25, 26)
+    ax.set_xlim(-30, 30)
+    ax.set_ylim(-28, 29)
     ax.set_aspect("equal")
     ax.axis("off")
 

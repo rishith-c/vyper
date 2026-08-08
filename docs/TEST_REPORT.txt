@@ -7,7 +7,8 @@ Geometry
 - shell, arm, hub and tail cap: one closed solid each
 - DOGCOM 81x39x33 mm battery radial allowance: 0.96 mm
 - battery Z14..95 mm; hub starts Z97 mm
-- 36 mm FC/ESC boards fit the 53 mm cavity
+- 36 mm FC and 43×43 mm R12 ESC fit the 53 mm cavity; ESC corner reach is
+  25.44 mm versus 26.5 mm cavity radius
 - tail: 3x M2x10 positive retainers into 4 mm inserts
 
 Propulsion / clearance
@@ -42,10 +43,19 @@ Additional suites
 - python3 pcb/test_vyper_f4.py: PASS, 15 mechanical floorplan checks
 - python3 pcb/test_vyper_f4_netlist.py: PASS, 61 named FC nets and exact
   MCU/gyro/motor/USB/ADC resource assertions
-- python3 pcb/test_vyper_esc.py: PASS, 40-part floorplan plus voltage/loss checks
+- python3 pcb/test_vyper_esc.py: PASS, 48-major-part floorplan plus
+  regulator/shunt/voltage/loss checks
+- python3 pcb/test_vyper_esc_netlist.py: PASS, 159 named nets; exact AM32,
+  six-PWM, BEMF, shunt, gate, phase, telemetry and harness connectivity
+- python3 firmware/am32/test_target.py: PASS, four PCB pin maps match the
+  open-source VYPER_55A_F421 AM32 target block
+- KiCad Python pcb/test_vyper_esc_board.py: PASS, all 195 references and 715
+  authored netlist nodes reach true physical pads on a six-layer review board
 - FC authored SKiDL ERC: PASS, zero errors and zero warnings
 - FC KiCad PCB DRC: NOT PASS FOR FAB; 55 placement-board warnings and no
   imported netlist/copper
-- ESC KiCad PCB DRC: floorplan parses with no edge-clearance errors; 170
-  presentation/library warnings and no routed electrical nets
+- ESC mechanical KiCad PCB DRC: parses; no electrical nets by design
+- ESC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; no shorts, clearance,
+  courtyard, edge or footprint errors among placed parts; 499 unconnected
+  items remain because 142 support parts are staged and copper is absent
 - G-code validation: PASS for 5 unique parts; see GCODE_REPORT.md

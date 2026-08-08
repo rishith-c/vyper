@@ -80,10 +80,19 @@ Two findings the checks enforce forever:
 The requested custom ESC is now specified in
 [`ESC_ARCHITECTURE.md`](../pcb/ESC_ARCHITECTURE.md) and mechanically encoded in
 `vyper_esc_layout.py`. It uses four AM32-supported AT32F421 MCUs, four TI
-DRV8323 smart gate drivers and 24 Infineon 60 V MOSFETs. It remains an EVT
-design until schematic, routing, independent review and the full current-
-limited/dyno test matrix pass. The repository does not claim it cannot catch
-fire; no responsible design can make that claim before hardware validation.
+DRV8323 smart gate drivers and 24 Infineon 60 V MOSFETs.
+`vyper_esc_schematic.py` now emits the 159-net electrical design, and
+`vyper_esc_unrouted_gen.py` transfers all 195 references and 715 authored
+netlist nodes to true physical pads. The ESC was enlarged from the rejected
+36 mm packing study to a 43×43 mm R12 outline; its 25.44 mm corner reach still
+fits the 26.5 mm fuselage cavity. The generator intentionally stages 142
+passives outside the outline and contains zero tracks/zones. KiCad now finds
+no shorts, clearance failures, courtyard overlaps, edge errors, or footprint
+errors among the placed parts; its 499 unconnected items are an explicit
+routing backlog, not a release. It remains an EVT design until placement,
+routing, independent review and the full
+current-limited/dyno test matrix pass. The repository does not claim it cannot
+catch fire; no responsible design can make that claim before hardware validation.
 
 ## Reproduce
 
@@ -94,6 +103,11 @@ python3 test_vyper_f4.py                # 15 interaction checks
 ../.venv/bin/python vyper_f4_schematic.py # emit authored KiCad netlist
 python3 test_vyper_f4_netlist.py        # connectivity/resource assertions
 ../.venv/bin/python vyper_f4_drawing.py # dimensioned drawing
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  vyper_esc_unrouted_gen.py              # true footprints/nets, still unrouted
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  test_vyper_esc_board.py                # 195 refs / 715 nodes transferred
+python3 test_vyper_esc_drc.py             # rejects hidden placement/copper errors
 kicad-cli pcb render --side top --output top.png vyper_f4.kicad_pcb
 ```
 

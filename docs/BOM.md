@@ -46,10 +46,12 @@ modeled as conservative envelopes rather than disguised generic geometry.
 
 ## Custom-board development cost
 
-The custom ESC active devices alone currently screen at about **$55.40**:
-24 Infineon MOSFETs, four TI drivers and four AT32 MCUs, before passives, PCB,
-assembly, stencil and minimum-order quantities. It is a separate EVT program,
-not part of the $193 prototype cart. See `pcb/ESC_ARCHITECTURE.md`.
+The custom ESC's active power/control subset currently screens at about
+**$65.15**: 24 Infineon MOSFETs, four TI drivers, four AT32 MCUs, the 60 V
+logic regulator/inductor, current-sum amplifier and four high-power shunts.
+That still excludes the remaining passives, PCB, assembly, stencil and
+minimum-order quantities. It is a separate EVT program, not part of the $193
+prototype cart. See `pcb/ESC_ARCHITECTURE.md`.
 
 Radio, goggles, charger, LiPo-safe storage, radar/GNSS instrumentation and
 test shielding are also not included in the aircraft total.

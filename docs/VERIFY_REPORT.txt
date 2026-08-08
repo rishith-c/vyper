@@ -10,6 +10,13 @@ PASS
 - tail cap now has positive three-screw retention
 - custom FC authored netlist passes zero-warning/zero-error SKiDL ERC and 61-net
   independent connectivity/resource checks
+- custom ESC authored netlist passes zero-warning/zero-error SKiDL ERC and
+  159-net independent connectivity checks
+- custom ESC AM32 target agrees with all four AT32F421 PCB pin maps
+- custom ESC true-footprint review board contains 195 electrical references;
+  all 715 authored netlist nodes reach pads on the six-layer stack
+- custom ESC placed-major-part DRC has no shorts, clearance failures,
+  courtyard overlaps, edge errors or footprint errors
 
 OPEN / NOT VERIFIED
 - camera optical aperture and aerodynamic lens fairing
@@ -18,6 +25,7 @@ OPEN / NOT VERIFIED
 - arm proof load, vibration modes, impact behavior and printed anisotropy
 - CFD, wind-tunnel correlation and flight stability
 - reviewed graphical FC schematic, linked/routed PCB and fabrication files
-- custom ESC schematic/routing/thermal/current qualification
+- custom ESC graphical schematic, final in-outline passive placement, 499
+  remaining routed connections, thermal/current qualification and fab outputs
 
 No item in the PASS list implies flightworthiness.

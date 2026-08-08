@@ -129,6 +129,12 @@ check("transient gate below FET rating", L.TRANSIENT_LIMIT_V <= L.MOSFET_VDS_V -
       f"{L.TRANSIENT_LIMIT_V:.0f} V leaves {L.MOSFET_VDS_V - L.TRANSIENT_LIMIT_V:.0f} V")
 check("speed-run burst covers motor bench peak", L.CHANNEL_BURST_A_TARGET >= 45 * 1.2,
       f"{L.CHANNEL_BURST_A_TARGET:.0f} A target vs 45 A motor point")
+ocp_at_hot_screen = L.VDS_OCP_NOMINAL_V / L.FET_RDS_ON_HOT_DESIGN_OHM
+check("VDS OCP guards burst region", ocp_at_hot_screen >= 0.9 * L.CHANNEL_BURST_A_TARGET,
+      f"nominal {ocp_at_hot_screen:.1f} A at conservative hot Rds(on); must be scoped")
+logic_load = L.MCU_COUNT * L.MCU_MAX_105C_A
+check("logic regulator DC margin", L.BUCK_OUTPUT_A >= 2 * logic_load,
+      f"{L.BUCK_OUTPUT_A * 1000:.0f} mA vs {logic_load * 1000:.1f} mA MCU maximum")
 
 # Six-step BLDC has two FETs in the current path.  Doubling the 25 C Rds(on)
 # is a conservative first-order hot-junction screening assumption; switching,
@@ -137,6 +143,12 @@ for current, label in ((L.CHANNEL_CONTINUOUS_A_TARGET, "continuous"),
                        (L.CHANNEL_BURST_A_TARGET, "2 s burst")):
     conduction = 2 * current ** 2 * L.FET_RDS_ON_HOT_DESIGN_OHM
     print(f"  {label:10s}: first-order hot conduction loss {conduction:.1f} W/channel")
+shunt_burst = L.CHANNEL_BURST_A_TARGET ** 2 * L.SHUNT_OHM
+check("current shunt burst loss margin", shunt_burst <= L.SHUNT_POWER_W / 2,
+      f"{shunt_burst:.2f} W at {L.CHANNEL_BURST_A_TARGET:.0f} A vs {L.SHUNT_POWER_W:.0f} W part")
+current_scale = 1000 * L.SHUNT_OHM * L.CSA_GAIN_V_PER_V
+check("AM32 current scale", abs(current_scale - 5.0) < 1e-9,
+      f"{current_scale:.1f} mV/A at PA2 and summed FC output")
 check("burst is explicitly time limited", L.BURST_DURATION_S <= 2.0,
       f"{L.BURST_DURATION_S:.1f} s; rating requires dyno and thermal validation")
 
