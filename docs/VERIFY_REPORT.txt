@@ -11,7 +11,8 @@ PASS
 - custom FC authored netlist passes zero-warning/zero-error SKiDL ERC and 59-net
   independent connectivity/resource checks
 - custom FC true-footprint review board transfers 74 references / 242 nodes;
-  placed-part DRC has no electrical, clearance, courtyard or edge errors
+  all 57 passives are in-outline with proximity gates, and placed-part DRC has
+  no electrical, clearance, courtyard or edge errors
 - custom ESC authored netlist passes zero-warning/zero-error SKiDL ERC and
   159-net independent connectivity checks
 - custom ESC AM32 target agrees with all four AT32F421 PCB pin maps

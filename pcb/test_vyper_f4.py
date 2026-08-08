@@ -46,7 +46,7 @@ check("pattern is 30.5 x 30.5", L.HOLE_PITCH == 30.5,
       f"{L.HOLE_PITCH} mm -- must match the VYPER shelf and any 4-in-1 ESC")
 edge = L.BOARD_W / 2 - L.HOLE_PITCH / 2 - L.HOLE_D / 2
 check("hole edge to board edge", edge >= 0.7,
-      f"{edge:.2f} mm web -- tight but standard for 36x36/30.5")
+      f"{edge:.2f} mm web on the {L.BOARD_W:.0f} mm custom board")
 check("grommet bore", L.HOLE_D == 4.0,
       f"{L.HOLE_D} mm for M3 soft-mount grommets (hard mounting shifts gyro bias)")
 
@@ -55,7 +55,7 @@ print("\n=== board vs VYPER fuselage ===")
 corner_reach = math.sqrt(2) * (L.BOARD_W / 2 - L.CORNER_R) + L.CORNER_R
 check("corners fit the fuselage cavity", corner_reach <= L.FUSE_CAVITY_R - 0.4,
       f"reach {corner_reach:.2f} mm vs cavity R {L.FUSE_CAVITY_R} "
-      f"(a square 36x36 reaches 25.46; R5 adds radial service margin)")
+      f"({L.CORNER_R:.0f} mm corner radius preserves assembly margin)")
 check("board rests on the shelf", L.BOARD_W / 2 < L.SHELF_CLEAR_R,
       f"half-width {L.BOARD_W / 2} vs shelf R {L.SHELF_CLEAR_R}")
 hole_r = math.hypot(L.HOLE_PITCH / 2, L.HOLE_PITCH / 2)

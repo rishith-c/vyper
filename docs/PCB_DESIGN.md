@@ -11,7 +11,7 @@ review board for the VYPER airframe.
 |---|---|
 | Board outline, cut to the fuselage | Reviewed graphical KiCad schematic |
 | 30.5×30.5 Φ4.0 grommet holes | Copper routing |
-| Major ICs and all interfaces placed with true footprints | Final passive placement |
+| All 74 components placed with true footprints | Copper routing |
 | Courtyard / hole / pad interaction checks | Ordering files (gerbers/BOM/CPL) |
 | 59-net / 74-component authored connectivity | 183 routed connections |
 | All 242 authored nodes reach physical pads | Production approval |
@@ -19,8 +19,9 @@ review board for the VYPER airframe.
 `vyper_f4.kicad_pcb` remains the mechanical drawing. The generated
 `vyper_f4_unrouted.kicad_pcb` carries all real footprints and nets. KiCad finds
 no shorts, clearance failures, courtyard overlaps, edge errors or footprint
-errors among placed parts, but 57 passives are staged and 183 connections are
-unrouted. It is therefore **not an orderable FC**.
+errors among placed parts. All 57 passives are in-outline and checked against
+functional proximity gates, but 183 connections are unrouted. It is therefore
+**not an orderable FC**.
 
 ## The AI-tool landscape (verified August 2026)
 
@@ -47,7 +48,7 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
    because a rotated gyro is a config error you chase for a week.
 2. **Gyro ≥ 10 mm from anything that switches.** The buck inductor's field
    couples into the MEMS structure and reads as vibration that no filter
-   fully removes. Measured on this board: **10.7 mm**, checked.
+   fully removes. Nearest noisy-part distance: **15.3 mm**, checked.
 3. **Gyro-to-MCU SPI under 10 mm.** Courtyard gap here: ~0.3 mm.
 4. **Soft mounting is a requirement, not a preference.** Hard-bolting the
    board flexes it and permanently shifts gyro bias — hence Φ4.0 holes for
@@ -67,10 +68,11 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
 
 Two findings the checks enforce forever:
 
-- **R5 corners preserve service clearance.** The 6S battery enlarged the
-  cavity radius to 26.5 mm, so a square 36 mm board now fits at a 25.46 mm
-  half-diagonal, but leaves only 1.04 mm radial allowance. R5 reduces corner
-  reach to 23.38 mm and leaves 3.12 mm for wire and assembly tolerance.
+- **The custom FC is 43×43 mm R12.** Its 25.44 mm corner reach fits the
+  26.5 mm cavity with 1.06 mm radial allowance. The 36 mm study fit the major
+  ICs but could not preserve both a compact TPS54360 loop and the gyro noise
+  exclusion once true passive footprints were introduced. The purchased
+  prototype stack remains 36 mm.
 - **Duplicate corner motor pads were rejected.** The tested 8-pin ESC harness
   already carries M1–M4. Extra corner pads entered grommet/part keepouts and
   added stubs, so the physical design removes them instead of hiding the clash.

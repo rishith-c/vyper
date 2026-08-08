@@ -2,8 +2,9 @@
 
 Status: **authored netlist passes SKiDL ERC with zero errors and zero warnings;
 not orderable**. A four-layer true-footprint review board now transfers all 74
-references and 242 netlist nodes to physical pads. It has no placement/copper
-DRC errors, but 57 passives remain staged and 183 connections are unrouted.
+references and 242 netlist nodes to physical pads. All 57 passives are placed
+in-outline with functional proximity gates and no placement/copper DRC errors;
+183 connections remain unrouted.
 The automatically drawn KiCad preview is excluded from release because its
 flat-sheet placer can overlap labels. `vyper_f4.net` remains the reviewed
 connectivity artifact; a zero-error human-readable schematic is a release gate.
@@ -78,7 +79,7 @@ value, 60 V buck selection and netlist-to-pad transfer.
 
 - Redraw/review the human-readable KiCad schematic with zero ERC errors and no
   merged-net warnings.
-- Place the 57 staged passives, route all 183 remaining connections on four
-  layers, and pass fab-profile DRC with zero warnings/errors.
+- Route all 183 remaining connections on four layers and pass fab-profile DRC
+  with zero warnings/errors.
 - Independent schematic/layout review, assembly outputs, bench bring-up,
   vibration/thermal tests, and Betaflight target build/USB/DFU validation.

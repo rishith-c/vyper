@@ -7,8 +7,8 @@ Geometry
 - shell, arm, hub and tail cap: one closed solid each
 - DOGCOM 81x39x33 mm battery radial allowance: 0.96 mm
 - battery Z14..95 mm; hub starts Z97 mm
-- 36 mm FC and 43×43 mm R12 ESC fit the 53 mm cavity; ESC corner reach is
-  25.44 mm versus 26.5 mm cavity radius
+- purchased 36 mm stack and both 43×43 mm R12 custom boards fit the 53 mm
+  cavity; custom-board corner reach is 25.44 mm versus 26.5 mm cavity radius
 - tail: 3x M2x10 positive retainers into 4 mm inserts
 
 Propulsion / clearance
@@ -44,7 +44,8 @@ Additional suites
 - python3 pcb/test_vyper_f4_netlist.py: PASS, 59 named FC nets and exact
   MCU/gyro/motor/UART/USB/SWD/ADC resource assertions
 - KiCad Python pcb/test_vyper_f4_board.py: PASS, all 74 references and 242
-  authored netlist nodes reach physical pads on a four-layer review board
+  authored netlist nodes reach physical pads on a four-layer review board; all
+  57 passives are in-outline and pass functional proximity gates
 - python3 pcb/test_vyper_f4_drc.py: PASS, no shorts, clearance, courtyard,
   edge or footprint errors; 183 unconnected items remain
 - python3 pcb/test_vyper_esc.py: PASS, 48-major-part floorplan plus
@@ -56,9 +57,9 @@ Additional suites
 - KiCad Python pcb/test_vyper_esc_board.py: PASS, all 195 references and 715
   authored netlist nodes reach true physical pads on a six-layer review board
 - FC authored SKiDL ERC: PASS, zero errors and zero warnings
-- FC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; 57 passives remain staged,
-  all 183 electrical connections remain unrouted, and presentation/library
-  warnings remain
+- FC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; all 74 components are
+  in-outline without placement/copper errors, but all 183 electrical
+  connections remain unrouted and presentation/library warnings remain
 - ESC mechanical KiCad PCB DRC: parses; no electrical nets by design
 - ESC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; no shorts, clearance,
   courtyard, edge or footprint errors among placed parts; 499 unconnected

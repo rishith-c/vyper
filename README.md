@@ -70,10 +70,11 @@ Two paths are intentionally separated:
 1. The under-$200 prototype budget uses a purchased 6S F405/55–60 A stack.
    That is the only sensible path for initial restrained and low-speed tests.
 2. The custom FC and custom four-channel ESC are development boards. The FC is
-   presently a validated mechanical floorplan plus a 59-net / 74-component
-   authored design and true-footprint four-layer review board. All 242 nodes
-   reach pads without placement/copper DRC errors, but 183 connections remain
-   unrouted. The reviewed graphical schematic is also open. The ESC has a validated 48-major-part,
+   presently a validated 43×43 mm R12 floorplan plus a 59-net / 74-component
+   authored design and true-footprint four-layer review board. All 57 passives
+   are in-outline, and all 242 nodes reach pads without placement/copper DRC
+   errors, but 183 connections remain unrouted. The reviewed graphical
+   schematic is also open. The ESC has a validated 48-major-part,
    43×43 mm R12 floorplan, a 159-net / 195-component authored electrical
    design, an AM32 target, and a six-layer true-footprint review board. All 715 authored
    netlist nodes reach physical pads, but KiCad correctly reports 499 unrouted

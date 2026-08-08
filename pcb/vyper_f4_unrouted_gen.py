@@ -1,8 +1,8 @@
 """Build a true-footprint, true-net KiCad FC review board.
 
-Run with KiCad's bundled Python 3.9. Major ICs and all external interfaces are
-placed at the mechanically checked coordinates. Passives remain staged outside
-the outline so the ratsnest is explicit. This file is NOT a routing or fab
+Run with KiCad's bundled Python 3.9. Major ICs, external interfaces and every
+passive are placed at mechanically/electrically checked coordinates. The
+ratsnest remains explicit because no copper is routed. This file is NOT a fab
 release.
 """
 
@@ -130,6 +130,8 @@ def placed_components():
                        ("J5", "J5_aux_uart4"), ("J6", "J6_vtx_uart6")):
         pads = L.PAD_GROUPS[group]
         result[ref] = (pads[0][0], -sum(p[1] for p in pads) / len(pads), "F", 0)
+    for ref, spec in L.PASSIVES.items():
+        result[ref] = (*layout_xy(spec["pos"]), spec["side"], spec["rot"])
     return result
 
 
@@ -195,8 +197,8 @@ def main():
     pcbnew.SaveBoard(str(OUT), board)
     print(f"wrote {OUT}")
     print(f"components: {len(components)}; true-net pads: {len(pin_nets)}")
-    print(f"major/interface placements: {len(major)}; staged passives: {len(staged)}")
-    print("NOT FOR FAB: passive placement and all routing remain open")
+    print(f"in-board placements: {len(major)}; staged components: {len(staged)}")
+    print("NOT FOR FAB: routing, review and hardware qualification remain open")
 
 
 if __name__ == "__main__":

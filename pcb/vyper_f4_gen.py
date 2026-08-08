@@ -48,7 +48,7 @@ HEADER = """(kicad_pcb
 \t(title_block
 \t\t(title "VYPER-F4 flight controller")
 \t\t(rev "A")
-\t\t(comment 1 "36x36, 30.5x30.5 M3, placement-complete / unrouted")
+\t\t(comment 1 "43x43 R12, 30.5x30.5 M3, placement study / unrouted")
 \t)
 \t(layers
 \t\t(0 "F.Cu" signal)
@@ -183,7 +183,7 @@ def build():
     out.append(gr_line(gx, gy + 3.4, gx, gy + 5.2, "F.SilkS", 0.2))
     out.append(gr_text("FWD", gx + 2.8, gy + 4.3, "F.SilkS", 0.7))
     out.append(gr_text("VYPER-F4", 0, 16.6, "F.SilkS", 1.1))
-    out.append(gr_text("36x36 / 30.5", 0, -16.9, "F.SilkS", 0.8))
+    out.append(gr_text("43x43 R12 / 30.5", 0, -20.3, "F.SilkS", 0.8))
 
     out.append(")\n")
     OUT.write_text("".join(out))

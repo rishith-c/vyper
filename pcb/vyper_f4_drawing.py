@@ -43,7 +43,8 @@ ax.text(-L.FUSE_CAVITY_R * 0.02, L.FUSE_CAVITY_R + 0.7,
         color="#2060c0", ha="center", fontsize=9)
 reach = math.sqrt(2) * (w2 - r) + r
 ax.annotate(f"corner reach {reach:.1f} < R{L.FUSE_CAVITY_R:.0f}  "
-            f"(square board = 25.5; R5 adds service margin)",
+            f"(R{L.CORNER_R:.0f} leaves "
+            f"{L.FUSE_CAVITY_R - reach:.1f} mm radial allowance)",
             xy=(reach / math.sqrt(2), reach / math.sqrt(2)),
             xytext=(6.5, 27.5), color="#2060c0", fontsize=8.5,
             arrowprops=dict(arrowstyle="->", color="#2060c0", lw=0.9))
@@ -112,7 +113,7 @@ ax.annotate(f"gyro ({gx:.0f}, {gy:+.1f})", xy=(gx, gy), xytext=(-27, 21),
             arrowprops=dict(arrowstyle="->", color=NOTE, lw=0.9))
 
 ax.text(0, -h2 - 13.5,
-        "VYPER-F4  36 x 36 / 30.5 x 30.5   |   dashed = B side   |   all mm",
+        "VYPER-F4  43 x 43 R12 / 30.5 x 30.5   |   dashed = B side   |   all mm",
         ha="center", fontsize=10, color=NOTE)
 
 ax.set_xlim(-34, 34)
