@@ -4,3 +4,10 @@ __pycache__/
 .*.step.glb
 .*.step.topology.json
 text-to-cad/
+skidl.log
+skidl.erc
+pcb/skidl.log
+pcb/skidl.erc
+pcb/vyper_f4_schematic.log
+pcb/vyper_f4_schematic.erc
+pcb/vyper_f4_preview.kicad_sch

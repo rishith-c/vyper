@@ -1,68 +1,23 @@
-=== airframe geometry ===
-[PASS] min prop tip gap: 13.0 mm between the closest pair of discs
-[PASS] stretched-X geometry: 176 mm fore-aft / 140 mm lateral = 1.26:1
-[PASS] lateral spacing at prop minimum: 13 mm tip gap -- narrow is the point
-[PASS] motor tilt shipped: 0 deg -- conventional; see vy_params docstring
+VYPER INTEGRATION STATUS — 2026-08-08
 
-=== bought parts vs printed parts ===
-[PASS] battery clash: 0.0 mm^3 into printed material
-[PASS] battery inside cavity: 0.0 mm^3 of 89528 outside the fuselage
-[PASS] stack clash: 0.0 mm^3 into printed material
-[PASS] stack inside cavity: 0.0 mm^3 of 32303 outside the fuselage
-[PASS] vtx clash: 0.0 mm^3 into printed material
-[PASS] vtx inside cavity: 0.0 mm^3 of 5400 outside the fuselage
-[PASS] rx clash: 0.0 mm^3 into printed material
-[PASS] rx inside cavity: 0.0 mm^3 of 660 outside the fuselage
-[PASS] camera clash: 0.0 mm^3 into printed material
-[PASS] camera inside cavity: 0.0 mm^3 of 7942 outside the fuselage
-[PASS] motor 0 seats: 0.0 mm^3 clash
-[PASS] motor 1 seats: 0.0 mm^3 clash
-[PASS] motor 2 seats: 0.0 mm^3 clash
-[PASS] motor 3 seats: 0.0 mm^3 clash
+PASS
+- 47-solid fit-check assembly exports to cad/vyper_assembly.step
+- selected battery, FC/ESC envelopes, camera/VTX/RX envelopes, motors, props,
+  four printed arms, hub, shell, nose, tail and 16 exact M3x8 STEP screws
+- battery, stack, prop-disc and body clearances are represented in CAD
+- three 20 AWG phase wires per motor fit each arm bore
+- main shell, split nose, tail, arm and hub fit Neptune 4 build limits
+- tail cap now has positive three-screw retention
+- custom FC authored netlist passes zero-warning/zero-error SKiDL ERC and 61-net
+  independent connectivity/resource checks
 
-=== prop keep-out ===
-[PASS] fuselage_lower vs props: 0.0 mm^3
-[PASS] fuselage_upper vs props: 0.0 mm^3
-[PASS] nose_cone vs props: 0.0 mm^3
-[PASS] tail_cone vs props: 0.0 mm^3
-[PASS] tail_fin vs props: 0.0 mm^3
-[PASS] arm_top vs props: 0.0 mm^3
-[PASS] arm_bottom vs props: 0.0 mm^3
+OPEN / NOT VERIFIED
+- camera optical aperture and aerodynamic lens fairing
+- physical battery restraint and XT60 strain relief geometry
+- exact purchased-board component heights and connector keepouts
+- arm proof load, vibration modes, impact behavior and printed anisotropy
+- CFD, wind-tunnel correlation and flight stability
+- reviewed graphical FC schematic, linked/routed PCB and fabrication files
+- custom ESC schematic/routing/thermal/current qualification
 
-=== printed part interference ===
-[PASS] no part overlaps: worst arm_top / arm_bottom = 0.0 mm^3 (~0.00 mm over a saddle face)
-
-=== each part is one solid ===
-[PASS] fuselage_lower connected: 1 solid(s)
-[PASS] fuselage_upper connected: 1 solid(s)
-[PASS] nose_cone connected: 1 solid(s)
-[PASS] tail_cone connected: 1 solid(s)
-[PASS] tail_fin connected: 1 solid(s)
-[PASS] arm_top connected: 1 solid(s)
-[PASS] arm_bottom connected: 1 solid(s)
-
-=== Neptune 4 bed (225 x 225 x 265) ===
-[PASS] fuselage_lower x1: 190 x 62 x 48 mm, 64.4 g ea
-[PASS] fuselage_upper x1: 190 x 57 x 18 mm, 28.5 g ea
-[PASS] nose_cone x1: 47 x 55 x 55 mm, 13.2 g ea
-[PASS] tail_cone x1: 49 x 50 x 50 mm, 13.4 g ea
-[PASS] tail_fin x1: 28 x 20 x 51 mm, 6.8 g ea
-[PASS] arm_top x1: 255 x 30 x 18 mm, 20.4 g ea  [print DIAGONALLY]
-[PASS] arm_bottom x1: 255 x 30 x 18 mm, 21.5 g ea  [print DIAGONALLY]
-
-=== mass ===
-printed frame         168 g
-  motors x4                        136 g
-  stack                             34 g
-  battery                          180 g
-  camera                             8 g
-  vtx + antenna                     16 g
-  rx                                 2 g
-  props x4                          18 g
-  wiring, XT60, cap, heatshrink     25 g
-  fasteners                         26 g
-AUW                   613 g
-static thrust        6400 g
-[PASS] thrust-to-weight: 10.4:1
-
-all checks passed
+No item in the PASS list implies flightworthiness.

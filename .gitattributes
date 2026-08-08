@@ -1,1 +1,4 @@
 stl/*.stl -diff
+cad/*.step -diff
+cad/**/*.step -diff
+gcode/*.gcode -diff

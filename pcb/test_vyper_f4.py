@@ -55,7 +55,7 @@ print("\n=== board vs VYPER fuselage ===")
 corner_reach = math.sqrt(2) * (L.BOARD_W / 2 - L.CORNER_R) + L.CORNER_R
 check("corners fit the fuselage cavity", corner_reach <= L.FUSE_CAVITY_R - 0.4,
       f"reach {corner_reach:.2f} mm vs cavity R {L.FUSE_CAVITY_R} "
-      f"(a SQUARE 36x36 board reaches 25.46 and does NOT fit)")
+      f"(a square 36x36 reaches 25.46; R5 adds radial service margin)")
 check("board rests on the shelf", L.BOARD_W / 2 < L.SHELF_CLEAR_R,
       f"half-width {L.BOARD_W / 2} vs shelf R {L.SHELF_CLEAR_R}")
 hole_r = math.hypot(L.HOLE_PITCH / 2, L.HOLE_PITCH / 2)

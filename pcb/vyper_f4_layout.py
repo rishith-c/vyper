@@ -7,13 +7,15 @@ If a dimension is not in this file, it does not exist.
 WHY THESE NUMBERS
 -----------------
 Board 36 x 36 mm on the 30.5 x 30.5 pattern: that is the standard FC format
-the VYPER fuselage shelf was already cut for, and the largest board the 48 mm
+the VYPER fuselage shelf was already cut for, and it fits the 53 mm clear
+shelf diameter with room for a wire loom.
 shelf clear-width accepts.
 
-CORNER RADIUS 5.0 is not cosmetic. The fuselage cavity is R = 24 mm; a square
-36 x 36 board has a 25.46 mm half-diagonal and DOES NOT FIT. Rounding at
-radius rc pulls the corner reach to sqrt(2)*(18-rc)+rc, which needs rc >= 3.5
-to clear 24 mm. 5.0 gives 23.38 mm reach -> 0.6 mm of air.
+CORNER RADIUS 5.0 leaves extra edge clearance for the curved fuselage wall and
+soft-mount grommets. The rounded corner reach is sqrt(2)*(18-5)+5 = 23.38 mm
+against a 26.5 mm cavity radius. After the 6S battery forced the body to Ø57,
+even a sharp 36 mm square would fit at 25.46 mm radius, but with only 1.04 mm
+radial margin; R5 keeps 3.12 mm.
 
 MOUNTING HOLES Phi 4.0, not 3.2: M3 bolts pass through rubber soft-mount
 grommets, per the Betaflight manufacturer guidelines -- board flex from hard
@@ -42,8 +44,8 @@ through the tail opening; the shell has no side hatch).
 BOARD_W = 36.0
 BOARD_H = 36.0
 CORNER_R = 5.0
-FUSE_CAVITY_R = 24.0          # from vyper_shell.py: R_MAX 26 - WALL 2
-SHELF_CLEAR_R = 24.5          # printed shelf radius the board rests on
+FUSE_CAVITY_R = 26.5          # from vyper_shell.py: R_MAX 28.5 - WALL 2
+SHELF_CLEAR_R = 27.0          # printed shelf radius the board rests on
 SHELF_VENT_D = 18.0           # central loom hole in the shelf
 
 HOLE_PITCH = 30.5
@@ -60,19 +62,18 @@ PARTS = {
                                  courtyard=(12.4, 12.4), pkg="LQFP-64 10x10"),
     "Y1_xtal_8MHz": dict(pos=(4.8, 0.3), side="F", courtyard=(3.2, 3.5),
                          pkg="3225"),
-    # 11.3, not 13: at 13 the SOIC-28 courtyard reached x=17 and swallowed
-    # the whole right-hand solder-pad column (the render showed it, the test
-    # confirmed it). At 11.3 the courtyard stops at 15.3, 0.5 mm shy of pads.
-    "U5_osd_AT7456E": dict(pos=(11.3, 0.0), side="F", courtyard=(8.0, 18.5),
-                           pkg="SOIC-28"),
+    # The first revision intentionally omits analog OSD.  The released netlist
+    # uses this quiet area for the mandatory dedicated ICM-42688-P regulator.
+    "U5_gyro_ldo_AP2112K": dict(pos=(7.0, 6.0), side="F",
+                                courtyard=(3.4, 3.2), pkg="SOT-23-5"),
     "U6_flash_W25Q128": dict(pos=(-11.0, 6.2), side="F", courtyard=(6.5, 5.5),
                              pkg="SOIC-8 blackbox"),
     "U7_baro_BMP280": dict(pos=(-13.5, 0.0), side="F", courtyard=(2.5, 3.0),
                            pkg="LGA-8"),
     "L1_buck_inductor": dict(pos=(0.0, 13.2), side="F", courtyard=(4.6, 4.6),
                              pkg="4030 shielded", noisy=True),
-    "U3_buck_TPS54331": dict(pos=(7.2, 13.2), side="F", courtyard=(6.2, 5.2),
-                             pkg="SOIC-8 5V/3A", noisy=True),
+    "U3_buck_TPS54360": dict(pos=(7.2, 13.2), side="F", courtyard=(6.2, 5.2),
+                             pkg="TI PowerPAD-8 60V/3.5A", noisy=True),
     "U4_ldo_3v3": dict(pos=(-7.2, 13.2), side="F", courtyard=(3.4, 3.2),
                        pkg="SOT-23-5"),
     # -14.0 puts the receptacle mouth exactly flush with the -Y board edge,

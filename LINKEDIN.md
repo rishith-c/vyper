@@ -1,55 +1,45 @@
-# VYPER — LinkedIn project write-up
+# LinkedIn project draft
 
-> Paste into the *Projects* section, or post as-is. Trim to taste.
+**VYPER — a code-generated, high-speed rocket-body FPV drone concept**
 
----
+I designed VYPER to explore how a tightly packaged, 3D-printable quadcopter
+could reduce drag without becoming a conventional flat FPV frame. The current
+design uses a hollow Ø57 mm Von Kármán-ogive fuselage, a removable cosine
+boat-tail, four swept true-X blade arms and aft-facing pusher propellers.
 
-**VYPER — a fully 3D-printed high-speed FPV drone, designed parametrically and verified by test**
+The full airframe is generated in Python/CadQuery and exports Neptune-4-sized
+STL and STEP parts. A separate fit-check assembly includes the selected 6S
+battery, motors, 5-inch prop discs, electronics envelopes, wire bores and exact
+ISO M3 motor fasteners.
 
-I built a complete rocket-style FPV quadcopter airframe in code — every part
-generated from a parametric CAD script, and every design claim checked by an
-automated test suite rather than by eye.
+Current analytical screening results:
 
-**The idea.** Inspired by the Peregreen V4, the fully 3D-printed quadcopter
-that took the Guinness record at 657.59 km/h. I wanted to understand what
-actually makes an airframe fast, on a $142 budget and a consumer printer.
+- 717 g slicer-based estimated all-up mass and 8.8:1 static thrust-to-weight;
+- 40 cm² component drag area estimate;
+- 241 km/h ideal prop-pitch speed; 200 km/h would require 83% pitch efficiency;
+- 28.6 mm adjacent prop-tip clearance and 18.0 mm body clearance;
+- all current geometry, tolerance, packaging and first-order ESC checks pass.
 
-**What I built**
-• A parametric CadQuery model of the full airframe: Von Kármán minimum-drag
-  ogive nose, 2 mm hollow fuselage, four swept blade arms, boat-tailed motor
-  nacelles, internal flight-stack shelf.
-• A 24-check automated test suite covering fit, printability, tolerances,
-  aerodynamics and mass — run on every change.
-• A component drag build-up, prop-pitch speed model, and full mass budget.
-• Betaflight firmware configuration with every non-default value justified.
+The most important part of the project is the boundary between modeling and
+proof. VYPER has not flown, the 200 km/h target is not a claim, and the custom
+flight controller/ESC are not orderable yet. The repository labels those
+boards as EVT, documents every remaining ERC/DRC, thermal, structural and dyno
+gate, and separates the under-$200 purchased-stack prototype from the custom-
+electronics development cost.
 
-**Results**
-• 567 g all-up, 8.1:1 thrust-to-weight
-• CdA 39.4 cm² — roughly half a conventional open racer
-• Fuselage fineness ratio 5.77, inside the low-drag optimum band
-• $142 bill of materials
+The custom FC now has a 61-net authored electrical design that passes its
+independent connectivity checks and zero-warning/zero-error SKiDL ERC. Its
+graphical schematic review, linked PCB routing and hardware bring-up remain
+open; the four-channel ESC remains at architecture and floorplan stage.
 
-**What I actually learned — the useful part**
+Building the tests changed the design repeatedly: the 6S battery forced a
+larger honest body diameter; a friction-only tail became a three-screw
+heat-set-insert joint; a full arm cavity became a Ø5.5 mm bore so the printed
+arm retained sidewalls; and the custom ESC changed to 60 V MOSFETs plus 65 V
+smart gate drivers after transient-margin review.
 
-*Top speed was never limited by thrust.* The model showed 3.6 N of drag against
-44 N of available thrust. The real ceiling is propeller pitch speed. Halving
-drag doesn't raise the ceiling — it lowers the power needed to sit at it. That
-reframed the whole project: the fairing buys efficiency and flight time, not
-top speed.
+Stack: Python, CadQuery, OpenCascade, KiCad 9, Betaflight, AM32.
 
-*The tests caught what my eyes didn't.* An internal hub exported as four
-disconnected wedges. An arm's frontal area computed against the wrong axis,
-overstating its drag by 4.3×. A camera bay placed where the nose taper couldn't
-hold it. A spline that self-intersected and produced a negative volume. Every
-one of those looked fine in a render.
+Repository: https://github.com/rishith-c/vyper
 
-*Cheaper parts made the aircraft faster.* Re-specifying to a $150 budget meant a
-smaller flight controller and battery — which let the fuselage shrink from 60 mm
-to 52 mm and lose 25 % of its frontal area. The expensive component had been
-setting the diameter all along.
-
-**Stack:** Python, CadQuery, build123d, OpenCascade, Betaflight
-
-Repo: github.com/rishith-c/vyper
-
-#Engineering #Aerospace #CAD #3DPrinting #Python #FPV #Drones #Aerodynamics
+#AerospaceEngineering #CAD #3DPrinting #Python #KiCad #FPV #Aerodynamics

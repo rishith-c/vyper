@@ -1,52 +1,51 @@
-=== geometry / fit ===
-[PASS] shell is one closed solid: 1 solid(s), 80860 mm^3
-[PASS] arm is one closed solid: 1 solid(s), 23589 mm^3
-[PASS] hub is one closed solid: 1 solid(s), 36171 mm^3
-[PASS] 4S 1500 pack fits cavity: needs 23.0 mm internal radius, has 24.0
-[PASS] 36 mm stack fits shelf: shelf clear dia 48.0 mm vs 36 mm board
-[PASS] arm passes its slot: 0.4 mm total slip fit on a 6.0x26.0 blade
+VYPER TEST REPORT — 2026-08-08
 
-=== wire routing ===
-[PASS] motor leads fit the arm bore: 6.0 mm bore for a ~4.0 mm bundle of 3x2.3 mm
-[PASS] bore bridges without support: 6.0 mm horizontal bore -- bridges cleanly at this size
-[PASS] bore leaves blade material: 20 mm of blade depth remains around it
-[PASS] leads exit inside the fuselage: root at r=11.0 is inside the r=24.0 cavity
+Command: .venv/bin/python test_vyper.py
+Status: PASS
 
-=== pusher configuration ===
-[PASS] motors mounted aft (pusher): props behind the arms; fuselage stays out of the slipstream
-[PASS] thrust still on the flight axis: pad is normal to the body axis -- sweep moves the arm, not the thrust
+Geometry
+- shell, arm, hub and tail cap: one closed solid each
+- DOGCOM 81x39x33 mm battery radial allowance: 0.96 mm
+- battery Z14..95 mm; hub starts Z97 mm
+- 36 mm FC/ESC boards fit the 53 mm cavity
+- tail: 3x M2x10 positive retainers into 4 mm inserts
 
-=== printing ===
-[PASS] shell fits Neptune 4: 52 x 52 x 300 mm  [rotate on bed]
-[PASS] arm fits Neptune 4: 124 x 31 x 80 mm
-[PASS] hub fits Neptune 4: 47 x 47 x 26 mm
-[PASS] wall printable at 0.4 nozzle: 2.0 mm = 5 extrusions
-[PASS] motor screw engagement: M3x8 through a 4.0 mm pad = 4.0 mm into a 4.5 mm blind thread (0.5 mm spare, does not bottom out)
-[PASS] screw head bearing on PETG: 0.18 MPa on 15.7 mm^2 -- use washers anyway, vibration embeds a bare head over time
-[PASS] material outboard of motor holes: 2.4 mm of pad beyond each hole
-[PASS] nose self-supporting: 11.3 deg from vertical at the ogive base
+Propulsion / clearance
+- pusher motors; thrust axes uncanted
+- adjacent 5-inch prop tip gap: 28.6 mm
+- prop-to-fuselage clearance: 18.0 mm
+- M3x8 motor screw nominal engagement: 4.0 mm
 
-=== tolerances ===
-[PASS] M3 motor clearance: 3.2 mm hole on 3.0 mm bolt = 0.20 mm
-[PASS] M3 hub clearance: 3.2 mm hole on 3.0 mm bolt = 0.20 mm
-[PASS] M3 stack clearance: 3.2 mm hole on 3.0 mm bolt = 0.20 mm
-[PASS] arm slot fit: 0.4 mm -- slide fit, no hammer
+Neptune 4
+- body 57x57x170 mm
+- nose 57x57x155 mm
+- arm 124x31x70 mm
+- hub 52x52x26 mm
+- tail 57x57x72 mm
 
-=== aerodynamics ===
-  body frontal    21.24 cm^2   CdA  1.91
-  4 blades        20.16 cm^2   CdA  3.47   (swept 22 deg, cos^2 = 0.86)
-  4 motor bells   36.16 cm^2   CdA 28.93
-  TOTAL CdA       39.45 cm^2  (open racer ~75)
-[PASS] drag beats an open racer: 39.4 vs 75 cm^2
-[PASS] motors dominate remaining drag: 84 % -- fair them next
-[PASS] thrust stays on the flight axis: pad is normal to the body axis; sweeping the arm costs no thrust
-  2450KV on 4S -> ~28,283 rpm, pitch speed 51.5 m/s
-  realistic top speed 38.6 m/s = 139 km/h
-[PASS] prop-pitch limited, not thrust limited: 3.6 N drag at Vmax against ~44 N of 4S thrust
-[PASS] fuselage fineness in the low-drag band: 5.77 (optimum ~5-6)
+Analytical aerodynamics
+- CdA: 39.98 cm2
+- target drag at 200 km/h: 7.6 N
+- ideal propulsive power at target: 420 W
+- ideal 5-inch pitch speed at published 31,613 rpm: 241 km/h
+- required pitch efficiency at 200 km/h: 83.0 percent
+- result: analytically feasible, flight validation required
 
-=== mass ===
-  printed 190 g + payload 390 g = AUW 580 g
-[PASS] thrust-to-weight: 7.9:1
+Mass
+- OrcaSlicer PETG estimate: 259.13 g
+- geometry/fill-factor screen: 244 g (5.8 percent lower)
+- payload allowance: 458 g
+- estimated AUW: 717 g
+- static thrust-to-weight estimate: 8.8:1
 
-all checks passed
+Additional suites
+- python3 pcb/test_vyper_f4.py: PASS, 15 mechanical floorplan checks
+- python3 pcb/test_vyper_f4_netlist.py: PASS, 61 named FC nets and exact
+  MCU/gyro/motor/USB/ADC resource assertions
+- python3 pcb/test_vyper_esc.py: PASS, 40-part floorplan plus voltage/loss checks
+- FC authored SKiDL ERC: PASS, zero errors and zero warnings
+- FC KiCad PCB DRC: NOT PASS FOR FAB; 55 placement-board warnings and no
+  imported netlist/copper
+- ESC KiCad PCB DRC: floorplan parses with no edge-clearance errors; 170
+  presentation/library warnings and no routed electrical nets
+- G-code validation: PASS for 5 unique parts; see GCODE_REPORT.md

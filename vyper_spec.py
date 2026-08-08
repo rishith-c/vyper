@@ -1,0 +1,94 @@
+"""Single source of truth for the VYPER propulsion and purchased-part envelope.
+
+Values in this file are manufacturer-published or explicitly labelled design
+targets.  The calculated speed is an analytical screening result; only a
+radar/GPS flight test can establish the aircraft's real top speed.
+"""
+
+import math
+
+# Mission target
+TARGET_SPEED_KPH = 200.0
+
+# T-Motor Velox V2207 V3, 1950KV, 6S.  The 31,612.6 rpm / 45 A point is the
+# manufacturer's static P49436-3 bench result at full throttle.  The selected
+# HQProp 5x5 biblade is not represented by that thrust table, so the RPM is a
+# conservative screening input rather than a matched-prop guarantee.
+MOTOR_MODEL = "T-Motor Velox V2207 V3 1950KV"
+MOTOR_DIAMETER_MM = 27.5
+MOTOR_LENGTH_MM = 31.8
+MOTOR_MASS_G = 37.1
+MOTOR_MOUNT_PITCH_MM = 16.0
+MOTOR_PEAK_CURRENT_A = 45.0
+MOTOR_STATIC_RPM = 31_612.6
+MOTOR_COUNT = 4
+
+# HQProp 5x5V1S biblade, manufacturer dimensions.
+PROP_MODEL = "HQProp 5x5V1S"
+PROP_DIAMETER_MM = 127.0
+PROP_PITCH_IN = 5.0
+PROP_MASS_G = 3.33
+
+# OrcaSlicer 2.4.2 output using the repository's Neptune 4 / 0.4 mm / 0.20 mm
+# structural PETG profile.  These are slicer estimates, still subject to real
+# spool diameter/density and printer flow calibration.
+SLICED_MASS_G = {
+    "shell_body": 76.57,
+    "shell_nose": 36.92,
+    "arm_each": 24.39,
+    "hub": 27.31,
+    "tail_cap": 20.77,
+}
+
+
+def sliced_airframe_mass_g():
+    return (SLICED_MASS_G["shell_body"] + SLICED_MASS_G["shell_nose"]
+            + 4 * SLICED_MASS_G["arm_each"] + SLICED_MASS_G["hub"]
+            + SLICED_MASS_G["tail_cap"])
+
+# DOGCOM Pro 1380 mAh 180C 6S.  C ratings are manufacturer claims and are not
+# substitutes for measuring voltage sag, connector temperature, and pack
+# temperature on the actual aircraft.
+BATTERY_MODEL = "DOGCOM Pro 1380mAh 180C 6S"
+BATTERY_LENGTH_MM = 81.0
+BATTERY_WIDTH_MM = 39.0
+BATTERY_HEIGHT_MM = 33.0
+BATTERY_MASS_G = 209.0
+BATTERY_CAPACITY_AH = 1.380
+BATTERY_C_RATING_CLAIMED = 180.0
+BATTERY_CELLS = 6
+BATTERY_FULL_VOLTAGE_V = 4.2 * BATTERY_CELLS
+
+# Electrical design limits for the custom 4-in-1 ESC.  These are requirements,
+# not achieved ratings, until EVT hardware passes the validation gates.
+# A sealed rocket fuselage is not the same thermal environment as an open
+# racing frame.  The selected motor reaches 45 A only at the static full-load
+# bench point; the ESC is therefore rated here for 30 A continuous and a
+# deliberately time-limited 55 A / 2 s speed-run burst.  Those remain design
+# requirements until instrumented hardware testing establishes real ratings.
+ESC_CHANNEL_CONTINUOUS_A_TARGET = 30.0
+ESC_CHANNEL_BURST_A_TARGET = 55.0
+ESC_BURST_DURATION_S_TARGET = 2.0
+ESC_MOSFET_VDS_RATING_V = 60.0
+ESC_GATE_DRIVER_ABS_MAX_V = 65.0
+ESC_SWITCH_NODE_TRANSIENT_LIMIT_V = 50.0
+
+# The existing true-X geometry uses 110 mm motor radius (220 mm diagonal).
+MOTOR_RADIUS_MM = 110.0
+
+
+def ideal_pitch_speed_kph(rpm=MOTOR_STATIC_RPM, pitch_in=PROP_PITCH_IN):
+    """No-slip helical pitch speed. Real speed is lower because props slip."""
+    return rpm * pitch_in * 0.0254 / 60.0 * 3.6
+
+
+def required_pitch_efficiency(target_kph=TARGET_SPEED_KPH):
+    return target_kph / ideal_pitch_speed_kph()
+
+
+def adjacent_motor_spacing_mm(radius=MOTOR_RADIUS_MM):
+    return math.sqrt(2.0) * radius
+
+
+def claimed_battery_current_a():
+    return BATTERY_CAPACITY_AH * BATTERY_C_RATING_CLAIMED

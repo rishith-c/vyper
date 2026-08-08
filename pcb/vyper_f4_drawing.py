@@ -43,7 +43,7 @@ ax.text(-L.FUSE_CAVITY_R * 0.02, L.FUSE_CAVITY_R + 0.7,
         color="#2060c0", ha="center", fontsize=9)
 reach = math.sqrt(2) * (w2 - r) + r
 ax.annotate(f"corner reach {reach:.1f} < R{L.FUSE_CAVITY_R:.0f}  "
-            f"(square board = 25.5, does not fit)",
+            f"(square board = 25.5; R5 adds service margin)",
             xy=(reach / math.sqrt(2), reach / math.sqrt(2)),
             xytext=(6.5, 27.5), color="#2060c0", fontsize=8.5,
             arrowprops=dict(arrowstyle="->", color="#2060c0", lw=0.9))

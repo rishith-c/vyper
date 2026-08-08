@@ -1,0 +1,104 @@
+"""Connectivity assertions for the authored VYPER-F4 KiCad netlist."""
+
+import re
+from pathlib import Path
+
+NETLIST = Path(__file__).with_name("vyper_f4.net")
+text = NETLIST.read_text()
+
+
+def child_blocks(source, parent_token, child_token):
+    start = source.index(parent_token)
+    blocks = []
+    depth = 0
+    child_start = None
+    i = start
+    while i < len(source):
+        if source[i] == "(":
+            if depth == 1 and source.startswith(child_token, i):
+                child_start = i
+            depth += 1
+        elif source[i] == ")":
+            depth -= 1
+            if child_start is not None and depth == 1:
+                blocks.append(source[child_start:i + 1])
+                child_start = None
+            if depth == 0:
+                break
+        i += 1
+    return blocks
+
+
+net_blocks = child_blocks(text, "(nets", "(net")
+nets = {}
+for block in net_blocks:
+    name_match = re.search(r'\(name "([^"]+)"\)', block)
+    if not name_match:
+        continue
+    nodes = set(re.findall(
+        r'\(node\s+\(ref "([^"]+)"\)\s+\(pin "([^"]+)"\)', block))
+    nets[name_match.group(1)] = nodes
+
+fails = []
+
+
+def check(name, condition, detail):
+    print(f"[{'PASS' if condition else 'FAIL'}] {name}: {detail}")
+    if not condition:
+        fails.append(name)
+
+
+check("netlist parses", len(nets) >= 55, f"{len(nets)} named nets")
+
+# No pad may silently belong to two electrical nets.
+owners = {}
+duplicates = []
+for net_name, nodes in nets.items():
+    for node in nodes:
+        if node in owners and owners[node] != net_name:
+            duplicates.append((node, owners[node], net_name))
+        owners[node] = net_name
+check("one net per component pin", not duplicates,
+      "no duplicate assignments" if not duplicates else str(duplicates[:3]))
+
+expected_exact = {
+    "BUCK_FB": {("R4", "2"), ("R5", "1"), ("U3", "5")},
+    "SPI1_SCK": {("U1", "21"), ("U2", "13")},
+    "SPI1_MISO": {("U1", "22"), ("U2", "1")},
+    "SPI1_MOSI": {("U1", "23"), ("U2", "14")},
+    "GYRO_CS": {("U1", "20"), ("U2", "12")},
+    "GYRO_INT1": {("U1", "24"), ("U2", "4")},
+    "MOTOR_1": {("J2", "5"), ("U1", "27")},
+    "MOTOR_2": {("J2", "6"), ("U1", "26")},
+    "MOTOR_3": {("J2", "7"), ("U1", "17")},
+    "MOTOR_4": {("J2", "8"), ("U1", "16")},
+    "ESC_TELEM": {("J2", "4"), ("U1", "54")},
+}
+for name, expected in expected_exact.items():
+    actual = nets.get(name, set())
+    check(name, actual == expected, f"{sorted(actual)}")
+
+required_members = {
+    "VBAT_6S": {("J2", "2"), ("U3", "2"), ("R2", "1")},
+    "V3V3_GYRO": {("U2", "5"), ("U2", "8"), ("U5", "5")},
+    "V3V3": {("U1", "1"), ("U1", "19"), ("U4", "5"), ("U6", "8")},
+    "USB_DM": {("U1", "44")},
+    "USB_DP": {("U1", "45")},
+    "ADC_VBAT": {("U1", "25")},
+    "ADC_CURRENT": {("U1", "11")},
+}
+for name, required in required_members.items():
+    actual = nets.get(name, set())
+    check(f"{name} required members", required <= actual,
+          f"required {sorted(required)}")
+
+check("no schematic-only power flags in PCB netlist", "#FLG" not in text,
+      "power-source intent is represented by named external rails")
+check("60 V buck selected", "TPS54360DDA" in text,
+      "TPS54360DDA present")
+check("exact gyro value selected", "ICM-42688-P" in text,
+      "ICM-42688-P value overrides the pin-compatible library symbol")
+
+if fails:
+    raise SystemExit(f"{len(fails)} FAILED: {', '.join(fails)}")
+print("all authored-netlist checks passed; PCB routing/bring-up still required")
