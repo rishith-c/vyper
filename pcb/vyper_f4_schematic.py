@@ -239,21 +239,16 @@ resistor("4.7k", i2c_scl, v3)
 resistor("4.7k", i2c_sda, v3)
 capacitor("100nF", v3, gnd)
 
-# USB-C, ESD, and 22-ohm source termination.
-j1 = Part("Connector", "USB_C_Receptacle_USB2.0_16P", ref="J1",
-          footprint="Connector_USB:USB_C_Receptacle_GCT_USB4105-xx-A_16P_TopMnt_Horizontal")
-j1["VBUS"] += usb5
-j1["GND", "SHIELD"] += gnd
-cc1, cc2 = Net("USB_CC1"), Net("USB_CC2")
-j1["CC1"] += cc1
-j1["CC2"] += cc2
-resistor("5.1k", cc1, gnd)
-resistor("5.1k", cc2, gnd)
+# USB service harness, ESD, and 22-ohm source termination. A four-wire
+# JST-SH-to-USB-C pigtail keeps the bulky receptacle and through-hole shield
+# tabs out of the enclosed FC stack while preserving native USB FS.
+j1 = Part("Connector_Generic", "Conn_01x04", ref="J1",
+          value="USB_SERVICE_SH1.0_4P",
+          footprint="Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal")
 usb_dm_raw, usb_dp_raw = Net("USB_DM_RAW"), Net("USB_DP_RAW")
 usb_dm, usb_dp = Net("USB_DM"), Net("USB_DP")
-j1["D-"] += usb_dm_raw
-j1["D+"] += usb_dp_raw
-NC += j1["SBU1", "SBU2"]
+for pin, net in zip(range(1, 5), (gnd, usb5, usb_dm_raw, usb_dp_raw)):
+    j1[pin] += net
 # Discrete low-capacitance clamps avoid treating the ESD reference as a power
 # input in ERC while preserving a reviewable protection path.
 for ref, protected in (("D5", usb_dm_raw), ("D6", usb_dp_raw),

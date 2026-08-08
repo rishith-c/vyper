@@ -41,8 +41,12 @@ Mass
 
 Additional suites
 - python3 pcb/test_vyper_f4.py: PASS, 15 mechanical floorplan checks
-- python3 pcb/test_vyper_f4_netlist.py: PASS, 61 named FC nets and exact
-  MCU/gyro/motor/USB/ADC resource assertions
+- python3 pcb/test_vyper_f4_netlist.py: PASS, 59 named FC nets and exact
+  MCU/gyro/motor/UART/USB/SWD/ADC resource assertions
+- KiCad Python pcb/test_vyper_f4_board.py: PASS, all 74 references and 242
+  authored netlist nodes reach physical pads on a four-layer review board
+- python3 pcb/test_vyper_f4_drc.py: PASS, no shorts, clearance, courtyard,
+  edge or footprint errors; 183 unconnected items remain
 - python3 pcb/test_vyper_esc.py: PASS, 48-major-part floorplan plus
   regulator/shunt/voltage/loss checks
 - python3 pcb/test_vyper_esc_netlist.py: PASS, 159 named nets; exact AM32,
@@ -52,8 +56,9 @@ Additional suites
 - KiCad Python pcb/test_vyper_esc_board.py: PASS, all 195 references and 715
   authored netlist nodes reach true physical pads on a six-layer review board
 - FC authored SKiDL ERC: PASS, zero errors and zero warnings
-- FC KiCad PCB DRC: NOT PASS FOR FAB; 55 placement-board warnings and no
-  imported netlist/copper
+- FC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; 57 passives remain staged,
+  all 183 electrical connections remain unrouted, and presentation/library
+  warnings remain
 - ESC mechanical KiCad PCB DRC: parses; no electrical nets by design
 - ESC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; no shorts, clearance,
   courtyard, edge or footprint errors among placed parts; 499 unconnected

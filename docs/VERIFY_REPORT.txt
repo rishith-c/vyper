@@ -8,8 +8,10 @@ PASS
 - three 20 AWG phase wires per motor fit each arm bore
 - main shell, split nose, tail, arm and hub fit Neptune 4 build limits
 - tail cap now has positive three-screw retention
-- custom FC authored netlist passes zero-warning/zero-error SKiDL ERC and 61-net
+- custom FC authored netlist passes zero-warning/zero-error SKiDL ERC and 59-net
   independent connectivity/resource checks
+- custom FC true-footprint review board transfers 74 references / 242 nodes;
+  placed-part DRC has no electrical, clearance, courtyard or edge errors
 - custom ESC authored netlist passes zero-warning/zero-error SKiDL ERC and
   159-net independent connectivity checks
 - custom ESC AM32 target agrees with all four AT32F421 PCB pin maps
@@ -24,7 +26,8 @@ OPEN / NOT VERIFIED
 - exact purchased-board component heights and connector keepouts
 - arm proof load, vibration modes, impact behavior and printed anisotropy
 - CFD, wind-tunnel correlation and flight stability
-- reviewed graphical FC schematic, linked/routed PCB and fabrication files
+- reviewed graphical FC schematic, final passive placement/routing and
+  fabrication files
 - custom ESC graphical schematic, final in-outline passive placement, 499
   remaining routed connections, thermal/current qualification and fab outputs
 

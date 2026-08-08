@@ -1,10 +1,12 @@
 # VYPER-F4 Rev A electrical architecture
 
 Status: **authored netlist passes SKiDL ERC with zero errors and zero warnings;
-not orderable**. The PCB is still an unrouted mechanical floorplan, and the
-automatically drawn KiCad preview is excluded from release because its flat
-sheet placer can overlap labels. `vyper_f4.net` is the reviewed connectivity
-artifact; a zero-error human-readable KiCad schematic remains a release gate.
+not orderable**. A four-layer true-footprint review board now transfers all 74
+references and 242 netlist nodes to physical pads. It has no placement/copper
+DRC errors, but 57 passives remain staged and 183 connections are unrouted.
+The automatically drawn KiCad preview is excluded from release because its
+flat-sheet placer can overlap labels. `vyper_f4.net` remains the reviewed
+connectivity artifact; a zero-error human-readable schematic is a release gate.
 
 ## Power tree
 
@@ -13,7 +15,7 @@ artifact; a zero-error human-readable KiCad schematic remains a release gate.
   └─ TPS54360DDA, 60 V / 3.5 A reference design → V5_BUCK
        ├─ external 5 V pads
        └─ SS14 diode ─┐
-USB-C VBUS ─ SS14 ────┴─ LOGIC_IN
+USB service VBUS ─ SS14 ─┘  LOGIC_IN
                          ├─ AP2112K-3.3 → V3V3 (MCU/flash/baro)
                          └─ AP2112K-3.3 → V3V3_GYRO (ICM-42688-P only)
 ```
@@ -37,7 +39,7 @@ earlier 28 V TPS54331, which had inadequate transient margin on 6S.
 | Auxiliary | PA0/PA1 | UART4 |
 | VTX control | PC6/PC7 | UART6 |
 | VBAT/current ADC | PC5/PC3 | 100k:10k divider / filtered ESC current |
-| USB | PA11/PA12 | USB FS with 22 Ω and low-C TVS |
+| USB | PA11/PA12 | USB FS, 4-pin JST-SH service harness, 22 Ω and low-C TVS |
 | SWD | PA13/PA14 | 4-pin debug header |
 
 The matching Betaflight resource contract is
@@ -52,12 +54,17 @@ KICAD9_SYMBOL_DIR=/Applications/KiCad.app/Contents/SharedSupport/symbols \
 KICAD_SYMBOL_DIR=/Applications/KiCad.app/Contents/SharedSupport/symbols \
   .venv/bin/python pcb/vyper_f4_schematic.py
 python3 pcb/test_vyper_f4_netlist.py
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  pcb/vyper_f4_unrouted_gen.py
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  pcb/test_vyper_f4_board.py
+python3 pcb/test_vyper_f4_drc.py
 ```
 
 The generator's authored circuit reports zero SKiDL ERC warnings/errors and
-the test independently checks 61 named nets, unique pin ownership, the complete
-gyro bus, motor/ESC mapping, USB, ADC, power members, exact gyro value and 60 V
-buck selection.
+the tests independently check 59 named nets, unique pin ownership, the complete
+gyro bus, motor/ESC/UART/USB/SWD mapping, ADC and power members, exact gyro
+value, 60 V buck selection and netlist-to-pad transfer.
 
 ## Primary references
 
@@ -71,7 +78,7 @@ buck selection.
 
 - Redraw/review the human-readable KiCad schematic with zero ERC errors and no
   merged-net warnings.
-- Import `vyper_f4.net` into a board carrying exact footprints; replace the
-  current anchor-pad floorplan, route four layers, and pass fab-profile DRC.
+- Place the 57 staged passives, route all 183 remaining connections on four
+  layers, and pass fab-profile DRC with zero warnings/errors.
 - Independent schematic/layout review, assembly outputs, bench bring-up,
   vibration/thermal tests, and Betaflight target build/USB/DFU validation.

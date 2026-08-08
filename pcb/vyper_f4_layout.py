@@ -29,16 +29,15 @@ rotation axes is well inside Betaflight's "near centre" guidance; what
 matters far more is the 10 mm exclusion from the buck inductor (magnetic
 coupling reads as vibration) and a solid ground pour under the package.
 
-STM32F405RGT6 immediately below it: SPI1 runs ~4 mm pad-to-pad, against the
+STM32F405RGT6 immediately below it: SPI1 remains below the 10 mm guideline,
 <10 mm guideline for gyro-to-MCU traces.
 
 POWER STAGE pinned to the +Y edge: the inductor sits 10.7 mm from the gyro
 centre (rule is >= 10), and its courtyard clears the grommet keepouts.
 
-USB-C and the 8-pin SH1.0 ESC socket are on the BOTTOM face -- the ESC stacks
-below the FC, so its harness plugs straight up, and the USB faces the open
-tail of the fuselage (config access is by a short right-angle extension
-through the tail opening; the shell has no side hatch).
+The 4-pin USB service harness and 8-pin SH1.0 ESC socket are on the BOTTOM
+face. The ESC harness plugs straight up, while the removable USB pigtail faces
+the open tail; the shell needs no drag-producing side hatch.
 """
 
 BOARD_W = 36.0
@@ -58,13 +57,13 @@ GROMMET_KEEPOUT_D = 8.0       # mechanical, both sides
 PARTS = {
     "U2_gyro_ICM42688P": dict(pos=(0.0, 2.5), side="F", courtyard=(4.5, 5.0),
                               pkg="LGA-14 2.5x3.0"),
-    "U1_mcu_STM32F405RGT6": dict(pos=(0.0, -8.2), side="F",
+    "U1_mcu_STM32F405RGT6": dict(pos=(0.0, -6.5), side="F",
                                  courtyard=(12.4, 12.4), pkg="LQFP-64 10x10"),
-    "Y1_xtal_8MHz": dict(pos=(4.8, 0.3), side="F", courtyard=(3.2, 3.5),
+    "Y1_xtal_8MHz": dict(pos=(9.5, -1.0), side="F", courtyard=(3.2, 3.5),
                          pkg="3225"),
     # The first revision intentionally omits analog OSD.  The released netlist
     # uses this quiet area for the mandatory dedicated ICM-42688-P regulator.
-    "U5_gyro_ldo_AP2112K": dict(pos=(7.0, 6.0), side="F",
+    "U5_gyro_ldo_AP2112K": dict(pos=(8.0, 2.8), side="F",
                                 courtyard=(3.4, 3.2), pkg="SOT-23-5"),
     "U6_flash_W25Q128": dict(pos=(-11.0, 6.2), side="F", courtyard=(6.5, 5.5),
                              pkg="SOIC-8 blackbox"),
@@ -72,33 +71,37 @@ PARTS = {
                            pkg="LGA-8"),
     "L1_buck_inductor": dict(pos=(0.0, 13.2), side="F", courtyard=(4.6, 4.6),
                              pkg="4030 shielded", noisy=True),
-    "U3_buck_TPS54360": dict(pos=(7.2, 13.2), side="F", courtyard=(6.2, 5.2),
+    "U3_buck_TPS54360": dict(pos=(8.0, 9.5), side="F", courtyard=(6.2, 5.2),
                              pkg="TI PowerPAD-8 60V/3.5A", noisy=True),
     "U4_ldo_3v3": dict(pos=(-7.2, 13.2), side="F", courtyard=(3.4, 3.2),
                        pkg="SOT-23-5"),
-    # -14.0 puts the receptacle mouth exactly flush with the -Y board edge,
-    # which is where a USB-C mouth belongs; at -14.6 it overhung by 0.6.
-    "J1_usbc": dict(pos=(0.0, -14.0), side="B", courtyard=(9.6, 8.0),
-                    pkg="USB-C 16p receptacle"),
+    "J1_usb_service_SH4": dict(pos=(0.0, -14.5), side="B",
+                                courtyard=(7.0, 4.6),
+                                pkg="JST-SH 1.0 4-pin USB service harness"),
     # 5.5, not 8.2: at 8.2 the socket's corner sat 2.9 mm from the top-right
     # grommet centre, inside its Phi 8 keepout.
-    "J2_esc_SH8": dict(pos=(5.5, 12.4), side="B", courtyard=(10.4, 4.4),
+    "J2_esc_SH8": dict(pos=(0.0, 13.5), side="B", courtyard=(10.4, 4.4),
                        pkg="JST-SH 1.0 8-pin, standard 4-in-1 harness"),
+    "J7_swd_testpads": dict(pos=(-7.0, 0.0), side="B", courtyard=(3.2, 3.2),
+                             pkg="2x2 1.27 mm SWD test pads"),
+    "J8_beeper_pads": dict(pos=(-9.5, 11.8), side="B", courtyard=(4.0, 2.4),
+                            pkg="1x2 1.27 mm beeper pads"),
 }
 
 # Solder pad groups: (x, y, label), 1.6 mm square pads, F side.
 PAD_GROUPS = {
-    "uart_left": [(-16.6, y, l) for y, l in
-                  ((-9.0, "T2"), (-6.5, "R2"), (-4.0, "T4"), (-1.5, "R4"),
-                   (1.0, "5V"), (3.5, "G"))],
-    "vtx_cam_right": [(16.6, y, l) for y, l in
-                      ((-9.0, "VTX"), (-6.5, "CAM"), (-4.0, "T6"),
-                       (-1.5, "R6"), (1.0, "9V"), (3.5, "G"))],
-    # Motor signal pads pulled inboard of the grommet keepouts: at the
-    # traditional (+-13, +-13) corners every one of them sat inside a
-    # keepout, and M3 additionally landed inside the blackbox flash courtyard.
-    "motor_pads": [(-10.2, -13.2, "M1"), (10.2, -13.2, "M2"),
-                   (-11.5, 11.0, "M3"), (11.5, 11.0, "M4")],
+    "J3_rx_uart1": [(-16.6, y, l) for y, l in
+                     zip((-9.0, -6.5, -4.0, -1.5),
+                         ("G", "5V", "T1", "R1"))],
+    "J4_gps_uart3": [(-16.6, y, l) for y, l in
+                      zip((1.0, 3.5, 6.0, 8.5),
+                          ("G", "5V", "T3", "R3"))],
+    "J5_aux_uart4": [(16.6, y, l) for y, l in
+                      zip((-9.0, -6.5, -4.0, -1.5),
+                          ("G", "5V", "T4", "R4"))],
+    "J6_vtx_uart6": [(16.6, y, l) for y, l in
+                      zip((1.0, 3.5, 6.0, 8.5),
+                          ("G", "5V", "T6", "R6"))],
 }
 
 # Gyro rules (Betaflight manufacturer guidelines + IMU app notes)

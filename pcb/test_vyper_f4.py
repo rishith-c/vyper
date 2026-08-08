@@ -159,10 +159,10 @@ check("everything inside the rounded outline", bad == 0,
 
 # ----------------------------------------------------------------- system fit
 print("\n=== system integration ===")
-usb = L.PARTS["J1_usbc"]
-check("USB faces the open tail", usb["side"] == "B" and usb["pos"][1] < -12,
-      "bottom side, -Y edge: config access via right-angle extension "
-      "through the tail opening (the shell has no side hatch)")
+usb = L.PARTS["J1_usb_service_SH4"]
+check("USB service harness faces the open tail",
+      usb["side"] == "B" and usb["pos"][1] < -12,
+      "bottom side, -Y edge: removable USB-C pigtail exits through the tail")
 esc = L.PARTS["J2_esc_SH8"]
 check("ESC socket matches 4-in-1 harness", esc["side"] == "B" and "8-pin" in esc["pkg"],
       "SH1.0 8-pin on the bottom face, straight up from the ESC below")

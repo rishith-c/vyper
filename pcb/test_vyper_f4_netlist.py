@@ -73,10 +73,24 @@ expected_exact = {
     "MOTOR_3": {("J2", "7"), ("U1", "17")},
     "MOTOR_4": {("J2", "8"), ("U1", "16")},
     "ESC_TELEM": {("J2", "4"), ("U1", "54")},
+    "USB_5V": {("D3", "2"), ("D7", "2"), ("J1", "2"), ("C28", "1")},
+    "USB_DM_RAW": {("J1", "3"), ("D5", "2"), ("R14", "1")},
+    "USB_DP_RAW": {("J1", "4"), ("D6", "2"), ("R15", "1")},
+    "SWDIO": {("J7", "2"), ("U1", "46")},
+    "SWCLK": {("J7", "3"), ("U1", "49")},
+    "BEEPER": {("J8", "2"), ("U1", "2")},
 }
 for name, expected in expected_exact.items():
     actual = nets.get(name, set())
     check(name, actual == expected, f"{sorted(actual)}")
+
+for ref, prefix in (("J3", "RX_UART1"), ("J4", "GPS_UART3"),
+                    ("J5", "AUX_UART4"), ("J6", "VTX_UART6")):
+    for pin, net_name in ((1, "GND"), (2, "V5_BUCK"),
+                          (3, f"{prefix}_TX"), (4, f"{prefix}_RX")):
+        check(f"{ref}.{pin} {net_name}",
+              (ref, str(pin)) in nets.get(net_name, set()),
+              "physical edge-pad contract")
 
 required_members = {
     "VBAT_6S": {("J2", "2"), ("U3", "2"), ("R2", "1")},

@@ -1,7 +1,7 @@
 # VYPER-F4 — custom flight controller PCB
 
-A placement-complete, dimensionally verified KiCad floorplan for the VYPER
-airframe. **15 automated interaction checks pass** (`pcb/test_vyper_f4.py`).
+A dimensionally verified FC study plus a true-footprint, true-net unrouted
+review board for the VYPER airframe.
 
 ![dimensions](../pcb/vyper_f4_dimensions.png)
 
@@ -11,24 +11,24 @@ airframe. **15 automated interaction checks pass** (`pcb/test_vyper_f4.py`).
 |---|---|
 | Board outline, cut to the fuselage | Reviewed graphical KiCad schematic |
 | 30.5×30.5 Φ4.0 grommet holes | Copper routing |
-| Every major part placed, real package sizes | DRC against a fab profile |
+| Major ICs and all interfaces placed with true footprints | Final passive placement |
 | Courtyard / hole / pad interaction checks | Ordering files (gerbers/BOM/CPL) |
-| 61-net authored FC connectivity + automated test | Exact footprints linked into PCB |
-| KiCad 9 file that parses | Production approval |
+| 59-net / 74-component authored connectivity | 183 routed connections |
+| All 242 authored nodes reach physical pads | Production approval |
 
-The present `.kicad_pcb` is **not an orderable FC**: it still has anchor pads
-rather than the 61-net `vyper_f4.net`, and no copper. KiCad reports zero
-unconnected pads only because the board has no imported electrical nets; that
-is not a pass. See `FC_ARCHITECTURE.md` for the clean authored-netlist result
-and the remaining graphical-schematic gate.
+`vyper_f4.kicad_pcb` remains the mechanical drawing. The generated
+`vyper_f4_unrouted.kicad_pcb` carries all real footprints and nets. KiCad finds
+no shorts, clearance failures, courtyard overlaps, edge errors or footprint
+errors among placed parts, but 57 passives are staged and 183 connections are
+unrouted. It is therefore **not an orderable FC**.
 
-## The AI-tool landscape (researched July 2026)
+## The AI-tool landscape (verified August 2026)
 
 | Tool | What it actually does | Use here? |
 |---|---|---|
-| [Quilter](https://www.quilter.ai/product) | Cloud PCB layout from a completed circuit and constraints. | Candidate after schematic review |
-| [DeepPCB](https://deeppcb.ai/) | AI-assisted PCB routing service. | Alternative candidate |
-| [Flux Copilot](https://www.flux.ai/COPILOT) | Schematic/PCB design assistant in Flux. | Review aid, not qualification |
+| [Quilter](https://www.quilter.ai/product) | Generates placement/routing candidates from a schematic and constraints, with physics checks. | Candidate after schematic review |
+| [DeepPCB](https://deeppcb.ai/) | AI placement/routing with native KiCad support; its own site requires qualified review. | Alternative candidate |
+| [Flux](https://www.flux.ai/p) | AI-assisted schematic and PCB design environment. | Review aid, not qualification |
 | KiCad 9 + this repo | Deterministic generation from a Python layout file | What we did |
 
 None of them design a *flight controller* for you: every tool above starts
@@ -48,7 +48,7 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
 2. **Gyro ≥ 10 mm from anything that switches.** The buck inductor's field
    couples into the MEMS structure and reads as vibration that no filter
    fully removes. Measured on this board: **10.7 mm**, checked.
-3. **Gyro-to-MCU SPI under 10 mm.** Courtyard gap here: ~0.8 mm.
+3. **Gyro-to-MCU SPI under 10 mm.** Courtyard gap here: ~0.3 mm.
 4. **Soft mounting is a requirement, not a preference.** Hard-bolting the
    board flexes it and permanently shifts gyro bias — hence Φ4.0 holes for
    M3 grommets and a Φ8 keepout ring at each corner *on both faces*.
@@ -58,9 +58,10 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
 6. **Power entry short and fat, cap at the connector.** The FC now uses a
    60 V TPS54360 reference-design buck; bulk low-ESR capacitance still belongs
    at the ESC battery entry, close to the switching current loop.
-7. **USB and ESC socket on the bottom face** — the ESC harness plugs
-   straight up from the stack below; USB faces the open tail of the
-   fuselage. This is a case where the *airframe* dictated the PCB.
+7. **USB and ESC service harnesses on the bottom face** — the ESC harness
+   plugs straight up from below; a removable four-wire JST-SH-to-USB-C pigtail
+   faces the open tail. This avoids a through-hole USB shell colliding with the
+   LQFP64 and avoids a drag-producing side hatch.
 
 ## Why the board is shaped by the fuselage
 
@@ -70,10 +71,9 @@ Two findings the checks enforce forever:
   cavity radius to 26.5 mm, so a square 36 mm board now fits at a 25.46 mm
   half-diagonal, but leaves only 1.04 mm radial allowance. R5 reduces corner
   reach to 23.38 mm and leaves 3.12 mm for wire and assembly tolerance.
-- **The classic corner motor-pad position is illegal on this board.** At
-  (±13, ±13) all four pads sit inside the grommet keepouts — and M3
-  additionally landed inside the blackbox-flash courtyard. The checks caught
-  both; pads moved inboard.
+- **Duplicate corner motor pads were rejected.** The tested 8-pin ESC harness
+  already carries M1–M4. Extra corner pads entered grommet/part keepouts and
+  added stubs, so the physical design removes them instead of hiding the clash.
 
 ## ESC: custom EVT architecture, not flight hardware
 
@@ -104,6 +104,11 @@ python3 test_vyper_f4.py                # 15 interaction checks
 python3 test_vyper_f4_netlist.py        # connectivity/resource assertions
 ../.venv/bin/python vyper_f4_drawing.py # dimensioned drawing
 /Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  vyper_f4_unrouted_gen.py               # true footprints/nets, still unrouted
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  test_vyper_f4_board.py                 # 74 refs / 242 nodes transferred
+python3 test_vyper_f4_drc.py              # rejects hidden placement/copper errors
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
   vyper_esc_unrouted_gen.py              # true footprints/nets, still unrouted
 /Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
   test_vyper_esc_board.py                # 195 refs / 715 nodes transferred
@@ -111,5 +116,6 @@ python3 test_vyper_esc_drc.py             # rejects hidden placement/copper erro
 kicad-cli pcb render --side top --output top.png vyper_f4.kicad_pcb
 ```
 
-The `.kicad_pcb` opens directly in KiCad 9, but it must be updated from the
-reviewed netlist and routed before it can pass the release gates.
+Both `.kicad_pcb` files open directly in KiCad 9. Only the `_unrouted` board
+contains the authored electrical nets, and it must be placed and routed before
+it can pass the release gates.
