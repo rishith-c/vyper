@@ -31,11 +31,10 @@ def color_for(name):
 
 fig, axes = plt.subplots(1, 2, figsize=(13, 7), dpi=180)
 for ax, side, title in zip(axes, ("F", "B"), ("TOP / F.Cu", "BOTTOM / B.Cu")):
-    ax.add_patch(FancyBboxPatch((-18, -18), 36, 36,
-                                boxstyle="round,pad=0,rounding_size=5",
+    w2, h2 = L.BOARD_W / 2, L.BOARD_H / 2
+    ax.add_patch(FancyBboxPatch((-w2, -h2), L.BOARD_W, L.BOARD_H,
+                                boxstyle=f"round,pad=0,rounding_size={L.CORNER_R}",
                                 fc="#153b2b", ec="#111111", lw=1.2))
-    ax.add_patch(Circle((0, 0), L.FUSE_CAVITY_R, fill=False,
-                        ec="#2b6fd6", lw=0.9, ls="--"))
     for hx, hy in L.HOLES:
         ax.add_patch(Circle((hx, hy), L.HARDWARE_KEEPOUT_D / 2,
                             fill=False, ec="#ffcf57", lw=0.7, ls=":"))
@@ -68,17 +67,18 @@ for ax, side, title in zip(axes, ("F", "B"), ("TOP / F.Cu", "BOTTOM / B.Cu")):
         ax.text(x, y, label, color="white", fontsize=4.5,
                 ha="center", va="center", rotation=90)
 
-    ax.text(0, 22.2, title, fontsize=12, fontweight="bold", ha="center")
-    ax.text(0, -25.0,
+    ax.text(0, 39.5, title, fontsize=12, fontweight="bold", ha="center")
+    ax.text(0, -40.2,
             f"{L.BOARD_W:.0f}×{L.BOARD_H:.0f} R{L.CORNER_R:.0f} | "
-            "30.5×30.5 M3 | 6-layer / 2 oz outer",
+            f"{L.MOUNT_PITCH_X:.0f}×{L.MOUNT_PITCH_Y:.0f} M2 | "
+            f"6-layer / {L.OUTER_COPPER_OZ} oz outer",
             fontsize=7.5, ha="center")
-    ax.set_xlim(-30, 30)
-    ax.set_ylim(-28, 29)
+    ax.set_xlim(-22, 22)
+    ax.set_ylim(-43, 43)
     ax.set_aspect("equal")
     ax.axis("off")
 
-fig.suptitle("VYPER-55A 4-in-1 ESC — EVT MECHANICAL FLOORPLAN\n"
+fig.suptitle("VYPER-55A 30×72 VERTICAL 4-in-1 ESC — EVT FLOORPLAN\n"
              "55 A / 2 s is a design target, not a tested rating",
              fontsize=13, fontweight="bold")
 fig.tight_layout()

@@ -7,14 +7,15 @@ profile and the Elegoo Generic PETG values (1.27 g/cm³, 240 °C first layer,
 
 | File | Quantity | PETG each | Time each |
 |---|---:|---:|---:|
-| `gcode/vyper_shell_body.gcode` | 1 | 76.57 g | 3:51:48 |
+| `gcode/vyper_shell_body.gcode` | 1 | 60.91 g | 2:45:39 |
 | `gcode/vyper_shell_nose.gcode` | 1 | 36.92 g | 1:57:12 |
 | `gcode/vyper_arm_print.gcode` | 4 | 24.39 g | 2:29:33 |
-| `gcode/vyper_hub.gcode` | 1 | 27.31 g | 2:06:51 |
+| `gcode/vyper_hub.gcode` | 1 | 27.72 g | 2:09:24 |
+| `gcode/vyper_electronics_cassette.gcode` | 1 | 3.02 g | 0:37:19 |
 | `gcode/vyper_tail_cap.gcode` | 1 | 20.77 g | 1:09:21 |
-| **Total** | 8 prints | **259.13 g** | **19:03:24** |
+| **Total** | 9 prints | **246.90 g** | **18:37:07** |
 
-All five unique files pass the G-code skill's static checks for non-empty
+All six unique files pass the G-code skill's static checks for non-empty
 content, movement, extrusion, temperature commands and Neptune 4 XYZ bounds.
 Two reviewed warnings remain:
 

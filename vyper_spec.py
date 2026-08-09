@@ -33,10 +33,11 @@ PROP_MASS_G = 3.33
 # structural PETG profile.  These are slicer estimates, still subject to real
 # spool diameter/density and printer flow calibration.
 SLICED_MASS_G = {
-    "shell_body": 76.57,
+    "shell_body": 60.91,
     "shell_nose": 36.92,
     "arm_each": 24.39,
-    "hub": 27.31,
+    "hub": 27.72,
+    "electronics_cassette": 3.02,
     "tail_cap": 20.77,
 }
 
@@ -44,6 +45,7 @@ SLICED_MASS_G = {
 def sliced_airframe_mass_g():
     return (SLICED_MASS_G["shell_body"] + SLICED_MASS_G["shell_nose"]
             + 4 * SLICED_MASS_G["arm_each"] + SLICED_MASS_G["hub"]
+            + SLICED_MASS_G["electronics_cassette"]
             + SLICED_MASS_G["tail_cap"])
 
 # DOGCOM Pro 1380 mAh 180C 6S.  C ratings are manufacturer claims and are not
@@ -58,6 +60,54 @@ BATTERY_CAPACITY_AH = 1.380
 BATTERY_C_RATING_CLAIMED = 180.0
 BATTERY_CELLS = 6
 BATTERY_FULL_VOLTAGE_V = 4.2 * BATTERY_CELLS
+
+# Longitudinal custom-electronics package.  The airframe is a rocket body, so
+# inheriting a horizontal 30.5 mm racing-stack square wastes the available
+# length and leaves the ESC with poor copper/thermal area.  Both custom boards
+# instead mount vertically in a removable cassette immediately above the arm
+# hub.  PCB local X is aircraft X and PCB local Y maps to aircraft +Z.
+ESC_BOARD_WIDTH_MM = 30.0
+ESC_BOARD_HEIGHT_MM = 72.0
+ESC_BOARD_THICKNESS_MM = 1.6
+ESC_BOARD_CORNER_RADIUS_MM = 3.0
+ESC_MOUNT_PITCH_X_MM = 24.0
+ESC_MOUNT_PITCH_Z_MM = 64.0
+ESC_MOUNT_HOLE_D_MM = 2.4
+
+FC_BOARD_WIDTH_MM = 22.0
+FC_BOARD_HEIGHT_MM = 64.0
+FC_BOARD_THICKNESS_MM = 1.6
+FC_BOARD_CORNER_RADIUS_MM = 3.0
+FC_MOUNT_PITCH_X_MM = 16.0
+FC_MOUNT_PITCH_Z_MM = 56.0
+FC_MOUNT_HOLE_D_MM = 3.2       # M2 silicone isolation grommet envelope
+
+ELECTRONICS_CENTER_Z_MM = 161.0
+ESC_BOARD_CENTER_Y_MM = -4.5
+FC_BOARD_CENTER_Y_MM = 4.5
+ESC_COMPONENT_HEIGHT_MM = 4.5
+FC_COMPONENT_HEIGHT_MM = 4.0
+ESC_HEAT_SPREADER_THICKNESS_MM = 1.0
+ESC_HEAT_SPREADER_WIDTH_MM = 28.0
+ESC_HEAT_SPREADER_SEGMENT_HEIGHT_MM = 27.5
+ESC_HEAT_SPREADER_CENTER_GAP_MM = 6.0
+
+# Removable PETG electronics cassette.  It lands on the hub top face at Z123,
+# uses two M3 screws into heat-set inserts in the intact hub core, and is
+# laterally captured by the ogive/nose when assembled.
+CASSETTE_BOTTOM_Z_MM = 123.0
+CASSETTE_TOP_Z_MM = 200.0
+CASSETTE_WIDTH_MM = 32.0
+CASSETTE_SPINE_THICKNESS_MM = 2.0
+CASSETTE_RAIL_WIDTH_MM = 3.0
+CASSETTE_BOARD_STANDOFF_D_MM = 5.0
+CASSETTE_BOARD_GAP_MM = 2.7
+CASSETTE_BOARD_INSERT_D_MM = 3.2
+CASSETTE_BOARD_INSERT_DEPTH_MM = 2.5
+CASSETTE_HUB_SCREW_PITCH_MM = 10.0
+CASSETTE_HUB_SCREW_D_MM = 3.4
+CASSETTE_HUB_INSERT_D_MM = 4.2
+CASSETTE_HUB_INSERT_DEPTH_MM = 5.0
 
 # Electrical design limits for the custom 4-in-1 ESC.  These are requirements,
 # not achieved ratings, until EVT hardware passes the validation gates.

@@ -28,10 +28,11 @@ tolerance/proof-load coupons. Do not transfer PETG compensation blindly.
 | `vyper_tail_cap.stl` | 1 | 57×57×72 mm | wide shoulder on bed |
 | `vyper_arm_print.stl` | 4 | 124×31×70 mm | exported print orientation; use brim |
 | `vyper_hub.stl` | 1 | 52×52×26 mm | broad face on bed |
+| `vyper_electronics_cassette.stl` | 1 | 32×7.4×77 mm | long rail on bed; verify slots after cooling |
 
-The repository's OrcaSlicer 2.4.2 profile produces **259.1 g total PETG** and
-**19 h 03 min** estimated machine time: body 76.57 g, nose 36.92 g, four arms
-at 24.39 g each, hub 27.31 g and tail 20.77 g. These are G-code estimates, not
+The repository's OrcaSlicer 2.4.2 profile produces **246.9 g total PETG** and
+**18 h 37 min** estimated machine time: body 60.91 g, nose 36.92 g, four arms
+at 24.39 g each, hub 27.72 g, cassette 3.02 g and tail 20.77 g. These are G-code estimates, not
 scale measurements. All five generated files pass static movement, extrusion,
 temperature and machine-bound checks; see `GCODE_REPORT.md`.
 
@@ -53,9 +54,11 @@ a reject.
 4. Measure each motor's blind thread depth. Install each motor with four
    M3×8 screws and Ø7 washers only if the measured depth leaves at least 0.3 mm
    bottoming clearance. Use removable threadlocker in the aluminium threads.
-5. Mount the purchased ESC below the FC on the 30.5 mm pattern. Use silicone
-   grommets on the FC; keep the stack below the modeled 16 mm height envelope.
-   Route motor wires radially from the 18 mm shelf opening with no sharp folds.
+5. For the custom-development path, bolt the 30×72 mm ESC rigidly to the
+   cassette's outward face and soft-mount the 22×64 mm FC behind it. Fit the
+   dielectric thermal pads and two isolated 28×27.5×1 mm aluminium ESC spreaders before
+   inserting the cassette. The under-$200 purchased 30.5 mm stack needs a
+   separate cassette adapter and is not yet mechanically validated in this revision.
 6. Solder motor phases, then a 12 AWG XT60 pigtail and a 470–1000 µF 50 V
    low-ESR capacitor directly at the ESC battery pads. Add strain relief that
    carries cable load into the hub/shelf, not the solder joints.

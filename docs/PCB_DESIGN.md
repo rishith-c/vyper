@@ -9,8 +9,8 @@ review board for the VYPER airframe.
 
 | Done | Not done |
 |---|---|
-| Board outline, cut to the fuselage | Reviewed graphical KiCad schematic |
-| 30.5×30.5 Φ4.0 grommet holes | Copper routing |
+| 22×64 R3 longitudinal board outline | Reviewed graphical KiCad schematic |
+| 16×56 Φ3.2 M2 soft-mount holes | Copper routing |
 | All 74 components placed with true footprints | Copper routing |
 | Courtyard / hole / pad interaction checks | Ordering files (gerbers/BOM/CPL) |
 | 59-net / 74-component authored connectivity | 183 routed connections |
@@ -44,35 +44,32 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
 [TPS54360 data sheet/product page](https://www.ti.com/product/TPS54360).
 
 1. **Gyro near the rotation centre, on the board axes.** ICM-42688-P at
-   (0, +2.5) — 2.5 mm off centre, limit 4. A FWD axis mark is on the silk
+   (0, +4.0) — 4.0 mm off centre, limit 4. A FWD axis mark is on the silk
    because a rotated gyro is a config error you chase for a week.
 2. **Gyro ≥ 10 mm from anything that switches.** The buck inductor's field
    couples into the MEMS structure and reads as vibration that no filter
-   fully removes. Nearest noisy-part distance: **15.3 mm**, checked.
-3. **Gyro-to-MCU SPI under 10 mm.** Courtyard gap here: ~0.3 mm.
+   fully removes. Nearest noisy-part distance: **17.1 mm**, checked.
+3. **Gyro-to-MCU SPI under 10 mm.** Courtyard gap here: ~4.7 mm.
 4. **Soft mounting is a requirement, not a preference.** Hard-bolting the
-   board flexes it and permanently shifts gyro bias — hence Φ4.0 holes for
-   M3 grommets and a Φ8 keepout ring at each corner *on both faces*.
+   board flexes it and permanently shifts gyro bias — hence Φ3.2 holes for
+   M2 soft mounts and a Φ6 keepout ring at each corner *on both faces*.
 5. **Solid ground under the IMU; 4-layer stack** (sig / GND / PWR / sig)
    when routed — a continuous plane under high-frequency parts is the
    cheapest EMI fix there is.
 6. **Power entry short and fat, cap at the connector.** The FC now uses a
    60 V TPS54360 reference-design buck; bulk low-ESR capacitance still belongs
    at the ESC battery entry, close to the switching current loop.
-7. **USB and ESC service harnesses on the bottom face** — the ESC harness
-   plugs straight up from below; a removable four-wire JST-SH-to-USB-C pigtail
-   faces the open tail. This avoids a through-hole USB shell colliding with the
-   LQFP64 and avoids a drag-producing side hatch.
+7. **USB and ESC service harnesses on the inward face** — the 8-pin harness is
+   rotated along the board axis for the back-to-back cassette, while a removable
+   four-wire JST-SH-to-USB-C pigtail faces the open tail.
 
 ## Why the board is shaped by the fuselage
 
 Two findings the checks enforce forever:
 
-- **The custom FC is 43×43 mm R12.** Its 25.44 mm corner reach fits the
-  26.5 mm cavity with 1.06 mm radial allowance. The 36 mm study fit the major
-  ICs but could not preserve both a compact TPS54360 loop and the gyro noise
-  exclusion once true passive footprints were introduced. The purchased
-  prototype stack remains 36 mm.
+- **The custom FC is 22×64 mm R3.** It mounts longitudinally and vertically on
+  a 16×56 mm soft-mount pattern behind the ESC. The true-footprint repack uses
+  both faces and preserves the switcher/gyro exclusion without a square shelf.
 - **Duplicate corner motor pads were rejected.** The tested 8-pin ESC harness
   already carries M1–M4. Extra corner pads entered grommet/part keepouts and
   added stubs, so the physical design removes them instead of hiding the clash.
@@ -85,10 +82,11 @@ The requested custom ESC is now specified in
 DRV8323 smart gate drivers and 24 Infineon 60 V MOSFETs.
 `vyper_esc_schematic.py` now emits the 159-net electrical design, and
 `vyper_esc_unrouted_gen.py` transfers all 195 references and 715 authored
-netlist nodes to true physical pads. The ESC was enlarged from the rejected
-36 mm packing study to a 43×43 mm R12 outline; its 25.44 mm corner reach still
-fits the 26.5 mm fuselage cavity. The generator intentionally stages 142
-passives outside the outline and contains zero tracks/zones. KiCad now finds
+netlist nodes to true physical pads. The ESC is a 30×72 mm R3 longitudinal
+board on a 24×64 mm M2 pattern. All 24 MOSFETs face two isolated external
+28×27.5 mm heat spreaders separated by a 6 mm centre service gap. All 195
+footprints are placed inside the outline; the board still contains zero
+tracks/zones. KiCad now finds
 no shorts, clearance failures, courtyard overlaps, edge errors, or footprint
 errors among the placed parts; its 499 unconnected items are an explicit
 routing backlog, not a release. It remains an EVT design until placement,

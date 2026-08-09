@@ -142,8 +142,8 @@ def custom_footprint(name):
         return fp
     if name == "MOTOR_EDGE_PADS_3X":
         fp = base_custom(name)
-        for number, x in enumerate(L.MOTOR_PAD_STATIONS, 1):
-            add_pth_pad(fp, number, x, 0, 2.2, 2.0, 1.5, 1.3)
+        for number, y in enumerate(L.MOTOR_PAD_STATIONS, 1):
+            add_pth_pad(fp, number, 0, y, *L.MOTOR_PAD_SIZE, 1.3, 1.5)
         return fp
     if name == "BATTERY_PIGTAIL_2X":
         fp = base_custom(name)
@@ -186,29 +186,112 @@ def xy_layout(point):
 def placed_major_components():
     result = {}
     for channel_index, channel in enumerate(L.CHANNELS, 1):
-        deg = L.ROTATION[channel]
         for phase_index, phase in enumerate("ABC", 1):
-            result[f"Q{channel_index}{phase_index * 2 - 1}"] = (
-                *xy_layout(L.PARTS[f"Q_{channel}_{phase}_HS"]["pos"]), "F", -deg)
-            result[f"Q{channel_index}{phase_index * 2}"] = (
-                *xy_layout(L.PARTS[f"Q_{channel}_{phase}_LS"]["pos"]), "B", -deg)
+            for role, ref_offset in (("HS", -1), ("LS", 0)):
+                spec = L.PARTS[f"Q_{channel}_{phase}_{role}"]
+                result[f"Q{channel_index}{phase_index * 2 + ref_offset}"] = (
+                    *xy_layout(spec["pos"]), spec["side"], 0)
         result[f"U{channel_index}2"] = (
-            *xy_layout(L.PARTS[f"U_DRV_{channel}"]["pos"]), "F", -deg)
+            *xy_layout(L.PARTS[f"U_DRV_{channel}"]["pos"]), "B", 0)
         result[f"U{channel_index}1"] = (
-            *xy_layout(L.PARTS[f"U_MCU_{channel}"]["pos"]), "B", -deg)
+            *xy_layout(L.PARTS[f"U_MCU_{channel}"]["pos"]), "B", 0)
         result[f"RSH{channel_index}"] = (
-            *xy_layout(L.PARTS[f"RSH_{channel}"]["pos"]), "B", -deg)
+            *xy_layout(L.PARTS[f"RSH_{channel}"]["pos"]), "B", 0)
         result[f"TH{channel_index}"] = (
-            *xy_layout(L.PARTS[f"TH_{channel}"]["pos"]), "B", -deg)
+            *xy_layout(L.PARTS[f"TH_{channel}"]["pos"]), "B", 0)
+        motor = L.MOTOR_CONNECTORS[channel]
         result[f"JM{channel_index}"] = (
-            *xy_layout(L.rotate(0, L.MOTOR_PAD_RADIUS, deg)), "F", -deg)
+            *xy_layout(motor["pos"]), motor["side"], motor["rotation"])
+        swd = L.PARTS[f"J_SWD_{channel}"]
         result[f"J{channel_index + 1}"] = (
-            *xy_layout(L.rotate(-4.3, 3.3, deg)), "B", -deg)
+            *xy_layout(swd["pos"]), swd["side"], 0)
 
     for ref, key in (("U1", "U_BUCK"), ("L1", "L_BUCK"),
                      ("U2", "U_ISUM"), ("J1", "J_HARNESS")):
         result[ref] = (*xy_layout(L.PARTS[key]["pos"]), L.PARTS[key]["side"], 0)
     result["JBAT"] = (0.0, 0.0, "F", 0)
+    return result
+
+
+def footprint_courtyard_width(fp):
+    box = fp.GetCourtyard(pcbnew.F_CrtYd).BBox()
+    width = pcbnew.ToMM(box.GetWidth())
+    if width <= 0:
+        width = pcbnew.ToMM(fp.GetBoundingBox().GetWidth())
+    return width
+
+
+def pack_support_row(result, loaded, refs, y, span=26.5, gap=0.25,
+                     center_x=0.0):
+    """Centre a true-footprint row in the quiet B-side control corridor."""
+    widths = [footprint_courtyard_width(loaded[ref]) for ref in refs]
+    total = sum(widths) + gap * (len(refs) - 1)
+    if total > span:
+        raise RuntimeError(f"support row {refs} needs {total:.2f} mm > {span:.2f}")
+    cursor = center_x - total / 2
+    for ref, width in zip(refs, widths):
+        x = cursor + width / 2
+        result[ref] = (*xy_layout((x, y)), "B", 0)
+        cursor += width + gap
+
+
+def placed_channel_support(loaded):
+    """Place all 31 support parts for each inverter, using real courtyards."""
+    result = {}
+    for index, channel in enumerate(L.CHANNELS, 1):
+        cy = L.CHANNEL_Y[channel]
+        rows = (
+            [f"FB{index}", f"C{index}01", f"C{index}02", f"C{index}03",
+             f"R{index}01", f"R{index}02", f"R{index}A1", f"R{index}A2",
+             f"C{index}A1", f"R{index}B1"],
+            [f"R{index}B2", f"C{index}B1", f"R{index}C1", f"R{index}C2",
+             f"C{index}C1", f"R{index}V1", f"R{index}V2", f"C{index}V1",
+             f"R{index}T1", f"C{index}T1"],
+            [f"C{index}D1", f"C{index}D2", f"C{index}D4", f"C{index}D5",
+             f"C{index}D6", f"R{index}D1", f"R{index}D2", f"R{index}D3",
+             f"R{index}D4", f"DT{index}"],
+        )
+        if channel == "M2":
+            offsets = (-4.6, 4.8, -6.3)
+        elif channel == "M3":
+            offsets = (-4.6, 4.8, 6.3)
+        elif channel == "M4":
+            offsets = (-4.6, -6.2, 6.3)
+        else:
+            offsets = (-4.6, 4.8, 6.3)
+        for row_index, (refs, offset) in enumerate(zip(rows, offsets)):
+            center_x = (L.MOTOR_SIDE[channel] * 1.6 if row_index == 0
+                        else 1.8 if row_index == 1 else 0.0)
+            pack_support_row(result, loaded, refs, cy + offset,
+                             center_x=center_x)
+
+        # The 1210 bus capacitor gets its own side pocket opposite the motor
+        # pads. This keeps it close to the bridge without blocking phase wires.
+        cap_x = -L.MOTOR_SIDE[channel] * 12.3
+        result[f"C{index}D3"] = (*xy_layout((cap_x, cy - 3.7)), "B", 0)
+    return result
+
+
+def placed_shared_support(loaded):
+    """Place the regulator and total-current support in reserved B-side bays."""
+    result = {
+        # F.Cu centre service window around, but not touching, JBAT. The heat
+        # spreader therefore needs a matching electrically isolated relief.
+        "D1": (*xy_layout((-11.8, 0.0)), "F", 0),
+        "C2": (*xy_layout((-8.0, -1.5)), "F", 0),
+        "C3": (*xy_layout((-8.0, 1.5)), "F", 0),
+        "R1": (*xy_layout((-5.5, -1.5)), "F", 0),
+        "R2": (*xy_layout((-5.5, 0.0)), "F", 0),
+        "R3": (*xy_layout((-5.5, 1.5)), "F", 0),
+        "C1": (*xy_layout((5.5, 0.0)), "F", 0),
+        "C4": (*xy_layout((9.0, -1.5)), "F", 0),
+        "C5": (*xy_layout((9.0, 1.5)), "F", 0),
+    }
+    pack_support_row(result, loaded,
+                     ["RT1", "RS1", "RS2", "RS3", "RS4"],
+                     32.5, span=12.5, gap=0.35, center_x=3.0)
+    pack_support_row(result, loaded, ["RS5", "RS6", "CS1", "CS2"],
+                     34.3, span=11.0, gap=0.35, center_x=3.0)
     return result
 
 
@@ -227,9 +310,17 @@ def main():
     if board is None:
         raise RuntimeError(f"failed to load {SOURCE_BOARD}")
 
-    # Preserve only the four exact NPTH mounting-hole footprints.
+    # Preserve the outline and exact NPTH holes, not the construction
+    # rectangles/text from the abstract floorplan preview.
+    for layer in (pcbnew.F_SilkS, pcbnew.B_SilkS,
+                  pcbnew.F_CrtYd, pcbnew.B_CrtYd,
+                  pcbnew.Dwgs_User, pcbnew.Cmts_User):
+        board.RemoveAllItemsOnLayer(layer)
     for fp in list(board.GetFootprints()):
-        if not fp.GetReference().startswith("H"):
+        if fp.GetReference().startswith("H"):
+            fp.Reference().SetVisible(False)
+            fp.Value().SetVisible(False)
+        else:
             board.Remove(fp)
 
     net_objects = {}
@@ -239,6 +330,8 @@ def main():
         net_objects[name] = net
 
     major = placed_major_components()
+    major.update(placed_channel_support(loaded_footprints))
+    major.update(placed_shared_support(loaded_footprints))
     staged = []
     stage_index = 0
     missing_pads = []
@@ -249,6 +342,8 @@ def main():
             raise TypeError(f"loader returned {type(fp)!r} for {ref} {spec['footprint']}: {fp!r}")
         fp.SetReference(ref)
         fp.SetValue(spec["value"])
+        fp.Reference().SetVisible(False)
+        fp.Value().SetVisible(False)
 
         if ref in major:
             x, y, side, rotation = major[ref]
@@ -278,12 +373,15 @@ def main():
 
     if missing_pads:
         raise RuntimeError("footprints missing schematic pads:\n  " + "\n  ".join(missing_pads))
+    if staged:
+        raise RuntimeError("all ESC footprints must be placed in-board; staged: "
+                           + ", ".join(staged))
 
     pcbnew.SaveBoard(str(OUT), board)
     print(f"wrote {OUT}")
     print(f"components: {len(components)}; true-net pads: {len(pin_nets)}")
-    print(f"major in-board placements: {len(major)}; staged passives/support: {len(staged)}")
-    print("NOT FOR FAB: staged components and all routing remain open")
+    print(f"in-board placements: {len(major)}; staged components: {len(staged)}")
+    print("NOT FOR FAB: all copper routing and validation remain open")
 
 
 if __name__ == "__main__":

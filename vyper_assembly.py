@@ -17,18 +17,29 @@ import vyper_spec as S
 ROOT = Path(__file__).resolve().parent
 
 
-def rounded_board(width, height, thickness, corner_r=5.0, hole_d=4.0):
-    board = cq.Workplane("XY").rect(width, height).extrude(thickness)
+def rounded_board(width, height, thickness, corner_r, hole_d,
+                  hole_pitch_x, hole_pitch_y):
+    board = cq.Workplane("XY").rect(width, height).extrude(thickness / 2.0, both=True)
     board = board.edges("|Z").fillet(corner_r)
-    half = 30.5 / 2.0
-    for x in (-half, half):
-        for y in (-half, half):
+    for x in (-hole_pitch_x / 2.0, hole_pitch_x / 2.0):
+        for y in (-hole_pitch_y / 2.0, hole_pitch_y / 2.0):
             cutter = (
                 cq.Workplane("XY").center(x, y)
-                .circle(hole_d / 2.0).extrude(thickness)
+                .circle(hole_d / 2.0).extrude(thickness, both=True)
             )
             board = board.cut(cutter)
     return board
+
+
+def vertical_board(width, height, thickness, corner_r, hole_d,
+                   hole_pitch_x, hole_pitch_z, center_y, center_z):
+    """PCB plane in aircraft XZ; component sides face radially outward."""
+    return (
+        rounded_board(width, height, thickness, corner_r, hole_d,
+                      hole_pitch_x, hole_pitch_z)
+        .rotate((0, 0, 0), (1, 0, 0), 90)
+        .translate((0, center_y, center_z))
+    )
 
 
 def motor_envelope():
@@ -81,25 +92,80 @@ battery = (
 )
 assembly.add(battery, name="battery_DOGCOM_1380_6S", color=cq.Color(0.16, 0.35, 0.16))
 
-# Separate 4-in-1 ESC and FC boards on the shelf. Component blocks are maximum
-# placement envelopes so shell/stack interactions are visible in the STEP.
-esc_z = M.SHELF_Z
-fc_z = esc_z + 7.0
-esc = rounded_board(36.0, 36.0, 1.6).translate((0, 0, esc_z))
-fc = rounded_board(36.0, 36.0, 1.6).translate((0, 0, fc_z))
+# The removable cassette lands on the hub and carries two longitudinal boards
+# back-to-back.  This follows the rocket fuselage instead of forcing a square
+# racing stack across it.
+assembly.add(M.electronics_cassette, name="electronics_cassette_PETG",
+             color=cq.Color(0.22, 0.24, 0.28))
+esc = vertical_board(
+    S.ESC_BOARD_WIDTH_MM, S.ESC_BOARD_HEIGHT_MM, S.ESC_BOARD_THICKNESS_MM,
+    S.ESC_BOARD_CORNER_RADIUS_MM, S.ESC_MOUNT_HOLE_D_MM,
+    S.ESC_MOUNT_PITCH_X_MM, S.ESC_MOUNT_PITCH_Z_MM,
+    S.ESC_BOARD_CENTER_Y_MM, S.ELECTRONICS_CENTER_Z_MM,
+)
+fc = vertical_board(
+    S.FC_BOARD_WIDTH_MM, S.FC_BOARD_HEIGHT_MM, S.FC_BOARD_THICKNESS_MM,
+    S.FC_BOARD_CORNER_RADIUS_MM, S.FC_MOUNT_HOLE_D_MM,
+    S.FC_MOUNT_PITCH_X_MM, S.FC_MOUNT_PITCH_Z_MM,
+    S.FC_BOARD_CENTER_Y_MM, S.ELECTRONICS_CENTER_Z_MM,
+)
 assembly.add(esc, name="VYPER_ESC_EVT_board", color=cq.Color(0.08, 0.25, 0.12))
 assembly.add(fc, name="VYPER_F405_board", color=cq.Color(0.10, 0.35, 0.18))
-assembly.add(cq.Workplane("XY").box(28, 24, 4.5).translate((0, 0, esc_z + 3.85)),
+assembly.add(
+    cq.Workplane("XY").box(
+        S.ESC_BOARD_WIDTH_MM - 4.0, S.ESC_COMPONENT_HEIGHT_MM,
+        S.ESC_BOARD_HEIGHT_MM - 6.0,
+    ).translate((
+        0,
+        S.ESC_BOARD_CENTER_Y_MM - S.ESC_BOARD_THICKNESS_MM / 2.0
+        - S.ESC_COMPONENT_HEIGHT_MM / 2.0,
+        S.ELECTRONICS_CENTER_Z_MM,
+    )),
              name="ESC_component_envelope", color=cq.Color(0.10, 0.10, 0.10))
-assembly.add(cq.Workplane("XY").box(24, 24, 4.0).translate((0, 0, fc_z + 3.6)),
+assembly.add(
+    cq.Workplane("XY").box(
+        S.FC_BOARD_WIDTH_MM - 3.0, S.FC_COMPONENT_HEIGHT_MM,
+        S.FC_BOARD_HEIGHT_MM - 6.0,
+    ).translate((
+        0,
+        S.FC_BOARD_CENTER_Y_MM + S.FC_BOARD_THICKNESS_MM / 2.0
+        + S.FC_COMPONENT_HEIGHT_MM / 2.0,
+        S.ELECTRONICS_CENTER_Z_MM,
+    )),
              name="FC_component_envelope", color=cq.Color(0.12, 0.12, 0.12))
 
-# Camera/VTX/RX envelopes forward of the stack and below the ogive shoulder.
-assembly.add(cq.Workplane("XY").box(19, 19, 21).translate((0, 0, 187.0)),
+# Two electrically isolated aluminum heat spreaders on the ESC's outward face.
+# Their centre gap keeps the battery pads and buck-regulator support accessible.
+# This is an integration envelope, not a claim that the 55 A burst rating has
+# passed thermal qualification.
+spreader_y = (
+    S.ESC_BOARD_CENTER_Y_MM - S.ESC_BOARD_THICKNESS_MM / 2.0
+    - S.ESC_COMPONENT_HEIGHT_MM - S.ESC_HEAT_SPREADER_THICKNESS_MM / 2.0
+)
+spreader_offset_z = (
+    S.ESC_HEAT_SPREADER_CENTER_GAP_MM / 2.0
+    + S.ESC_HEAT_SPREADER_SEGMENT_HEIGHT_MM / 2.0
+)
+spreader_segments = []
+for offset_z in (-spreader_offset_z, spreader_offset_z):
+    spreader_segments.append(
+        cq.Workplane("XY").box(
+            S.ESC_HEAT_SPREADER_WIDTH_MM,
+            S.ESC_HEAT_SPREADER_THICKNESS_MM,
+            S.ESC_HEAT_SPREADER_SEGMENT_HEIGHT_MM,
+        ).translate((0, spreader_y, S.ELECTRONICS_CENTER_Z_MM + offset_z)).val()
+    )
+assembly.add(
+    cq.Compound.makeCompound(spreader_segments),
+    name="ESC_aluminum_heat_spreader", color=cq.Color(0.55, 0.57, 0.60),
+)
+
+# Camera/VTX/RX envelopes continue forward of the cassette inside the ogive.
+assembly.add(cq.Workplane("XY").box(19, 19, 21).translate((0, 0, 229.0)),
              name="camera_19mm", color=cq.Color(0.08, 0.08, 0.08))
-assembly.add(cq.Workplane("XY").box(26, 26, 6).translate((0, 0, 177.0)),
+assembly.add(cq.Workplane("XY").box(26, 26, 6).translate((0, 0, 207.0)),
              name="VTX_26mm", color=cq.Color(0.30, 0.18, 0.06))
-assembly.add(cq.Workplane("XY").box(15, 11, 4).translate((0, 0, 172.0)),
+assembly.add(cq.Workplane("XY").box(15, 11, 4).translate((0, 0, 201.0)),
              name="ELRS_RX", color=cq.Color(0.12, 0.28, 0.12))
 
 # Motors, props, and exact M3x8 screws. All propulsion axes remain parallel to

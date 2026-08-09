@@ -92,10 +92,13 @@ def custom_connector(ref):
     fp = pcbnew.FOOTPRINT(None)
     fp.SetFPIDAsString(f"VYPER:{ref}_SOLDER_PADS")
     if ref in ("J3", "J4", "J5", "J6"):
-        # Pin order follows each PAD_GROUPS list in layout coordinates. KiCad
-        # uses +Y down, so local Y must run in the opposite direction.
-        for number, y in enumerate((3.75, 1.25, -1.25, -3.75), 1):
-            add_smd_pad(fp, number, 0, y, 1.6, 1.6)
+        group_name = {"J3": "J3_rx_uart1", "J4": "J4_gps_uart3",
+                      "J5": "J5_aux_uart4", "J6": "J6_vtx_uart6"}[ref]
+        group = L.PAD_GROUPS[group_name]
+        centre_y = sum(p[1] for p in group) / len(group)
+        # Pin order follows the layout list. KiCad local +Y points down.
+        for number, (_x, y, _label) in enumerate(group, 1):
+            add_smd_pad(fp, number, 0, -(y - centre_y), 1.6, 1.6)
     elif ref == "J7":
         for number, (x, y) in enumerate(
                 ((-0.635, -0.635), (0.635, -0.635),
@@ -125,7 +128,7 @@ def placed_components():
     result = {}
     for key, spec in L.PARTS.items():
         ref = key.split("_", 1)[0]
-        result[ref] = (*layout_xy(spec["pos"]), spec["side"], 0)
+        result[ref] = (*layout_xy(spec["pos"]), spec["side"], spec.get("rot", 0))
     for ref, group in (("J3", "J3_rx_uart1"), ("J4", "J4_gps_uart3"),
                        ("J5", "J5_aux_uart4"), ("J6", "J6_vtx_uart6")):
         pads = L.PAD_GROUPS[group]
@@ -148,8 +151,18 @@ def main():
     if board is None:
         raise RuntimeError(f"failed to load {SOURCE_BOARD}")
     board.SetCopperLayerCount(4)
+    # Keep only the mechanical outline from the generated placement study.
+    # Its global courtyard/silkscreen rectangles are construction aids, not
+    # production artwork; the real library footprints provide their own.
+    for layer in (pcbnew.F_SilkS, pcbnew.B_SilkS,
+                  pcbnew.F_CrtYd, pcbnew.B_CrtYd,
+                  pcbnew.Dwgs_User, pcbnew.Cmts_User):
+        board.RemoveAllItemsOnLayer(layer)
     for fp in list(board.GetFootprints()):
-        if not fp.GetReference().startswith("H"):
+        if fp.GetReference().startswith("H"):
+            fp.Reference().SetVisible(False)
+            fp.Value().SetVisible(False)
+        else:
             board.Remove(fp)
 
     net_objects = {}
@@ -164,6 +177,8 @@ def main():
         spec, fp = components[ref], loaded[ref]
         fp.SetReference(ref)
         fp.SetValue(spec["value"])
+        fp.Reference().SetVisible(False)
+        fp.Value().SetVisible(False)
         if ref in major:
             x, y, side, rotation = major[ref]
         else:

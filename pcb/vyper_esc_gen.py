@@ -1,4 +1,4 @@
-"""Emit the VYPER-55A EVT mechanical floorplan as a KiCad 9 board.
+"""Emit the longitudinal VYPER-55A EVT floorplan as a KiCad 9 board.
 
 This file intentionally contains no electrical nets or copper.  It exists to
 make the tested 40-part floorplan reviewable in KiCad while the schematic is
@@ -162,15 +162,13 @@ def build():
         out.append(footprint(name, ref, x, y, spec["side"], w, h))
 
     for channel, pads in L.MOTOR_PADS.items():
-        pad_size = (L.MOTOR_PAD_SIZE[1], L.MOTOR_PAD_SIZE[0]) \
-            if channel in ("M2", "M4") else L.MOTOR_PAD_SIZE
         for phase, (x, y) in zip("ABC", pads):
             out.append(plated_pad(f"{channel}_{phase}", f"{channel}{phase}",
-                                  x, y, *pad_size))
+                                  x, y, *L.MOTOR_PAD_SIZE))
     for label, (x, y) in L.BATTERY_PADS.items():
         out.append(plated_pad(label, label, x, y, *L.BATTERY_PAD_SIZE))
 
-    out.append('\t(gr_text "VYPER-55A EVT / NOT FOR FAB" (at 0 0 0) '
+    out.append('\t(gr_text "VYPER-55A VERTICAL EVT / NOT FOR FAB" (at 0 0 0) '
                f'(layer "Dwgs.User") {uid()} '
                '(effects (font (size 1.0 1.0) (thickness 0.15))))\n')
     out.append(")\n")

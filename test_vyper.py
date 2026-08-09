@@ -20,10 +20,12 @@ def check(name, ok, detail):
 shell = M.result.val()
 shell_body = M.shell_body.val()
 shell_nose = M.shell_nose.val()
-arm, hub, tail_cap = M.arm.val(), M.hub.val(), M.tail_cap.val()
+arm, hub = M.arm.val(), M.hub.val()
+cassette, tail_cap = M.electronics_cassette.val(), M.tail_cap.val()
 
 print("=== geometry / fit ===")
 for n, o in (("shell", shell), ("arm", arm), ("hub", hub),
+             ("electronics cassette", cassette),
              ("tail cap", tail_cap)):
     check(f"{n} is one closed solid", len(o.Solids()) == 1 and o.Volume() > 0,
           f"{len(o.Solids())} solid(s), {o.Volume():.0f} mm^3")
@@ -42,9 +44,43 @@ check("battery fits longitudinally below arm hub", battery_z1 <= hub_z0 - 1.0,
       f"battery Z={battery_z0:.0f}..{battery_z1:.0f} mm; "
       f"hub starts Z={hub_z0:.0f} mm")
 
-# Stack must fit on the shelf.
-check("36 mm stack fits shelf", (M.R_MAX - M.WALL) * 2 >= 36.0 + 2,
-      f"shelf clear dia {(M.R_MAX - M.WALL) * 2:.1f} mm vs 36 mm board")
+def inner_radius_at(z):
+    if z <= M.Z_NOSE_BASE:
+        return M.R_MAX - M.WALL
+    x = M.TOTAL_LEN - z
+    return M.von_karman_radius(
+        x, M.TOTAL_LEN - M.Z_NOSE_BASE, M.R_MAX,
+    ) - M.WALL
+
+
+# Longitudinal boards must clear the shrinking ogive at their forward edges.
+esc_top = S.ELECTRONICS_CENTER_Z_MM + S.ESC_BOARD_HEIGHT_MM / 2.0
+esc_outboard = (abs(S.ESC_BOARD_CENTER_Y_MM)
+                + S.ESC_BOARD_THICKNESS_MM / 2.0
+                + S.ESC_COMPONENT_HEIGHT_MM
+                + S.ESC_HEAT_SPREADER_THICKNESS_MM)
+esc_reach = math.hypot(S.ESC_BOARD_WIDTH_MM / 2.0, esc_outboard)
+esc_have = inner_radius_at(esc_top)
+check("vertical ESC clears ogive", esc_have >= esc_reach + 2.0,
+      f"reach R{esc_reach:.2f} at Z{esc_top:.0f} vs cavity R{esc_have:.2f} "
+      f"({esc_have - esc_reach:.2f} mm radial allowance)")
+
+fc_top = S.ELECTRONICS_CENTER_Z_MM + S.FC_BOARD_HEIGHT_MM / 2.0
+fc_outboard = (abs(S.FC_BOARD_CENTER_Y_MM)
+               + S.FC_BOARD_THICKNESS_MM / 2.0
+               + S.FC_COMPONENT_HEIGHT_MM)
+fc_reach = math.hypot(S.FC_BOARD_WIDTH_MM / 2.0, fc_outboard)
+fc_have = inner_radius_at(fc_top)
+check("vertical FC clears ogive", fc_have >= fc_reach + 2.0,
+      f"reach R{fc_reach:.2f} at Z{fc_top:.0f} vs cavity R{fc_have:.2f} "
+      f"({fc_have - fc_reach:.2f} mm radial allowance)")
+
+hub_top = M.ARM_Z + M.ARM_WIDTH / 2.0
+esc_bottom = S.ELECTRONICS_CENTER_Z_MM - S.ESC_BOARD_HEIGHT_MM / 2.0
+check("electronics start above arm hub", esc_bottom >= hub_top + 1.0,
+      f"ESC starts Z{esc_bottom:.0f}; hub ends Z{hub_top:.0f}")
+check("cassette seats on hub", abs(S.CASSETTE_BOTTOM_Z_MM - hub_top) < 1e-6,
+      f"cassette datum Z{S.CASSETTE_BOTTOM_Z_MM:.0f} = hub top Z{hub_top:.0f}")
 
 # Arm must actually pass its slot.
 check("arm passes its slot", M.ARM_FIT >= 0.3,
@@ -85,7 +121,8 @@ check("prop discs clear fuselage", body_prop_gap >= 10.0,
 print("\n=== printing ===")
 BED = (225.0, 225.0, 265.0)
 for n, o in (("shell body", shell_body), ("shell nose", shell_nose),
-             ("arm", arm), ("hub", hub), ("tail cap", tail_cap)):
+             ("arm", arm), ("hub", hub), ("electronics cassette", cassette),
+             ("tail cap", tail_cap)):
     b = o.BoundingBox()
     flat = b.xlen < BED[0] - 10 and b.ylen < BED[1] - 10 and b.zlen < BED[2] - 10
     check(f"{n} fits Neptune 4", flat,
@@ -120,8 +157,10 @@ check("nose self-supporting", nose_slope < 45.0,
       f"{nose_slope:.1f} deg from vertical at the ogive base")
 
 print("\n=== tolerances ===")
-for name, nominal, hole in (("M3 motor", 3.0, 3.2), ("M3 hub", 3.0, M.HUB_BOLT_D),
-                            ("M3 stack", 3.0, M.STACK_HOLE_D)):
+for name, nominal, hole in (("M3 motor", 3.0, 3.2),
+                            ("M3 hub", 3.0, M.HUB_BOLT_D),
+                            ("M3 cassette", 3.0, S.CASSETTE_HUB_SCREW_D_MM),
+                            ("M2 ESC", 2.0, S.ESC_MOUNT_HOLE_D_MM)):
     check(f"{name} clearance", 0.15 <= hole - nominal <= 0.45,
           f"{hole} mm hole on {nominal} mm bolt = {hole - nominal:.2f} mm")
 check("arm slot fit", 0.3 <= M.ARM_FIT <= 0.6,
@@ -187,6 +226,7 @@ check("fuselage fineness in the low-drag band", 4.0 <= fineness <= 7.0,
 print("\n=== mass ===")
 SHELL_FILL, ARM_FILL = 0.90, 0.62
 geometric_printed = (shell.Volume() * SHELL_FILL + hub.Volume() * 0.5
+                     + cassette.Volume()
                      + M.tail_cap.val().Volume() * SHELL_FILL
                      + 4 * arm.Volume() * ARM_FILL) * 1.27e-3
 printed = S.sliced_airframe_mass_g()

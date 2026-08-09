@@ -10,14 +10,14 @@ not a copy and it is not a speed-record claim.
 
 | Screening result | Current value |
 |---|---:|
-| Estimated all-up mass | 717 g |
-| Static thrust-to-weight estimate | 8.8:1 |
+| Estimated all-up mass | 705 g |
+| Static thrust-to-weight estimate | 8.9:1 |
 | Analytical CdA build-up | 40.0 cm² |
 | Target speed | 200 km/h, unproven |
 | Ideal 5-inch prop pitch speed | 241 km/h |
 | Required pitch efficiency at target | 83% |
 | Fuselage envelope | Ø57 × 360 mm including tail |
-| OrcaSlicer PETG mass | 259.1 g |
+| OrcaSlicer PETG mass | 246.9 g |
 
 The speed result is an analytical feasibility screen, not CFD and not flight
 data. Only two-direction radar or validated high-rate GNSS testing can establish
@@ -26,7 +26,7 @@ the aircraft's real speed.
 ## Repository contents
 
 - `vyper_shell.py`: parameterized shell, split nose, four printed arms,
-  internal hub and positively retained boat-tail.
+  internal hub, removable vertical electronics cassette and retained boat-tail.
 - `vyper_assembly.py`: fit-check assembly with the selected battery, motors,
   props, board envelopes, camera/VTX/RX and exact M3×8 STEP fasteners.
 - `stl/` and `cad/`: regenerated printable STL and STEP files.
@@ -70,12 +70,12 @@ Two paths are intentionally separated:
 1. The under-$200 prototype budget uses a purchased 6S F405/55–60 A stack.
    That is the only sensible path for initial restrained and low-speed tests.
 2. The custom FC and custom four-channel ESC are development boards. The FC is
-   presently a validated 43×43 mm R12 floorplan plus a 59-net / 74-component
+   presently a validated 22×64 mm R3 vertical floorplan plus a 59-net / 74-component
    authored design and true-footprint four-layer review board. All 57 passives
    are in-outline, and all 242 nodes reach pads without placement/copper DRC
    errors, but 183 connections remain unrouted. The reviewed graphical
-   schematic is also open. The ESC has a validated 48-major-part,
-   43×43 mm R12 floorplan, a 159-net / 195-component authored electrical
+   schematic is also open. The ESC has a validated 30×72 mm R3 vertical
+   floorplan with 52 modeled major/support courtyards, a 159-net / 195-component authored electrical
    design, an AM32 target, and a six-layer true-footprint review board. All 715 authored
    netlist nodes reach physical pads, but KiCad correctly reports 499 unrouted
    connections. Neither custom board is orderable or flight-qualified yet.
@@ -84,14 +84,20 @@ The custom ESC's 55 A label is a **2-second design target**, not a tested
 continuous rating. See [`pcb/FC_ARCHITECTURE.md`](pcb/FC_ARCHITECTURE.md) and
 [`pcb/ESC_ARCHITECTURE.md`](pcb/ESC_ARCHITECTURE.md).
 
-![ESC floorplan](docs/img/vyper_esc_floorplan.png)
+| ESC MOSFET / cooling face | ESC control / support face |
+|---|---|
+| ![ESC top](pcb/vyper_esc_top.png) | ![ESC bottom](pcb/vyper_esc_bottom.png) |
+
+| FC power / sensor face | FC interface face |
+|---|---|
+| ![FC top](pcb/vyper_f4_top.png) | ![FC bottom](pcb/vyper_f4_bottom.png) |
 
 ## Known blockers before a physical build
 
 - Add and fit-check a camera optical window/fairing in the shell.
 - Complete reviewed graphical schematics and both boards' routing, ERC/DRC and
   manufacturing outputs.
-- Print and weigh coupons; G-code now estimates 259.1 g and 19 h 03 min, but
+- Print and weigh coupons; G-code now estimates 246.9 g and 18 h 37 min, but
   real spool density, flow calibration and failed-print allowance remain.
 - Print tolerance coupons and proof-load an arm before installing a motor.
 - Validate cooling and switch-node transients inside the closed fuselage.

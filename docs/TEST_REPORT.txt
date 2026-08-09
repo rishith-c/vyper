@@ -7,8 +7,8 @@ Geometry
 - shell, arm, hub and tail cap: one closed solid each
 - DOGCOM 81x39x33 mm battery radial allowance: 0.96 mm
 - battery Z14..95 mm; hub starts Z97 mm
-- purchased 36 mm stack and both 43×43 mm R12 custom boards fit the 53 mm
-  cavity; custom-board corner reach is 25.44 mm versus 26.5 mm cavity radius
+- 30×72 mm ESC and 22×64 mm FC fit longitudinally on the removable vertical
+  cassette; shell radial allowances are 5.79 mm and 10.34 mm respectively
 - tail: 3x M2x10 positive retainers into 4 mm inserts
 
 Propulsion / clearance
@@ -22,6 +22,7 @@ Neptune 4
 - nose 57x57x155 mm
 - arm 124x31x70 mm
 - hub 52x52x26 mm
+- electronics cassette 32x7x77 mm
 - tail 57x57x72 mm
 
 Analytical aerodynamics
@@ -33,11 +34,11 @@ Analytical aerodynamics
 - result: analytically feasible, flight validation required
 
 Mass
-- OrcaSlicer PETG estimate: 259.13 g
-- geometry/fill-factor screen: 244 g (5.8 percent lower)
+- OrcaSlicer PETG estimate: 246.90 g
+- geometry/fill-factor screen: 224 g (9.3 percent lower)
 - payload allowance: 458 g
-- estimated AUW: 717 g
-- static thrust-to-weight estimate: 8.8:1
+- estimated AUW: 705 g
+- static thrust-to-weight estimate: 8.9:1
 
 Additional suites
 - python3 pcb/test_vyper_f4.py: PASS, 15 mechanical floorplan checks
@@ -48,7 +49,7 @@ Additional suites
   57 passives are in-outline and pass functional proximity gates
 - python3 pcb/test_vyper_f4_drc.py: PASS, no shorts, clearance, courtyard,
   edge or footprint errors; 183 unconnected items remain
-- python3 pcb/test_vyper_esc.py: PASS, 48-major-part floorplan plus
+- python3 pcb/test_vyper_esc.py: PASS, 52-part mechanical floorplan plus
   regulator/shunt/voltage/loss checks
 - python3 pcb/test_vyper_esc_netlist.py: PASS, 159 named nets; exact AM32,
   six-PWM, BEMF, shunt, gate, phase, telemetry and harness connectivity
@@ -61,7 +62,7 @@ Additional suites
   in-outline without placement/copper errors, but all 183 electrical
   connections remain unrouted and presentation/library warnings remain
 - ESC mechanical KiCad PCB DRC: parses; no electrical nets by design
-- ESC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; no shorts, clearance,
-  courtyard, edge or footprint errors among placed parts; 499 unconnected
-  items remain because 142 support parts are staged and copper is absent
-- G-code validation: PASS for 5 unique parts; see GCODE_REPORT.md
+- ESC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; all 195 footprints are
+  in-outline with no shorts, clearance, courtyard, edge or footprint errors;
+  499 unconnected items remain because copper routing is absent
+- G-code validation: PASS for 6 unique parts; see GCODE_REPORT.md

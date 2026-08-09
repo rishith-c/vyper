@@ -5,6 +5,9 @@ not orderable**. A four-layer true-footprint review board now transfers all 74
 references and 242 netlist nodes to physical pads. All 57 passives are placed
 in-outline with functional proximity gates and no placement/copper DRC errors;
 183 connections remain unrouted.
+The current mechanical form is a 22×64 mm R3 longitudinal board on a 16×56 mm
+M2 soft-mount pattern. It mounts vertically behind the ESC in the removable
+electronics cassette; it is not a standard square flight-stack board.
 The automatically drawn KiCad preview is excluded from release because its
 flat-sheet placer can overlap labels. `vyper_f4.net` remains the reviewed
 connectivity artifact; a zero-error human-readable schematic is a release gate.

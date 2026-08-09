@@ -48,21 +48,34 @@ def inside_rounded_outline(r):
 
 
 print("=== board and airframe ===")
-corner_reach = math.sqrt(2) * (L.BOARD_W / 2 - L.CORNER_R) + L.CORNER_R
-check("rounded board fits fuselage", corner_reach <= L.FUSE_CAVITY_R - 0.4,
-      f"corner reach {corner_reach:.2f} mm vs cavity R{L.FUSE_CAVITY_R:.1f}")
-check("mount pattern matches FC and shelf", L.HOLE_PITCH == 30.5,
-      f"{L.HOLE_PITCH} x {L.HOLE_PITCH} mm")
-check("six-layer power stack declared", L.LAYERS == 6 and L.OUTER_COPPER_OZ >= 2,
-      f"{L.LAYERS} layers, {L.OUTER_COPPER_OZ} oz outer copper")
+check("vertical ESC outline", L.BOARD_W == 30.0 and L.BOARD_H == 72.0,
+      f"{L.BOARD_W:.0f} x {L.BOARD_H:.0f} mm")
+check("cassette mount pattern", (L.MOUNT_PITCH_X, L.MOUNT_PITCH_Y, L.HOLE_D)
+      == (24.0, 64.0, 2.4),
+      f"{L.MOUNT_PITCH_X:.0f} x {L.MOUNT_PITCH_Y:.0f} mm, M2 clearance")
+check("six-layer heavy-copper stack declared",
+      L.LAYERS == 6 and L.OUTER_COPPER_OZ >= 3 and L.INNER_COPPER_OZ >= 2,
+      f"{L.LAYERS} layers, {L.OUTER_COPPER_OZ}/{L.INNER_COPPER_OZ} oz")
+check("isolated heat spreader envelope",
+      L.HEAT_SPREADER_W <= L.BOARD_W - 2.0
+      and (L.HEAT_SPREADER_SEGMENT_COUNT * L.HEAT_SPREADER_SEGMENT_H
+           + L.HEAT_SPREADER_CENTER_GAP) <= L.BOARD_H - 4.0
+      and L.THERMAL_PAD_MIN_BREAKDOWN_V >= 1000,
+      f"{L.HEAT_SPREADER_SEGMENT_COUNT} x "
+      f"{L.HEAT_SPREADER_W:.0f}x{L.HEAT_SPREADER_SEGMENT_H:.1f}x"
+      f"{L.HEAT_SPREADER_T:.1f} mm, {L.HEAT_SPREADER_CENTER_GAP:.0f} mm gap, "
+      "dielectric >= "
+      f"{L.THERMAL_PAD_MIN_BREAKDOWN_V} V")
 
 edge_clearance = 0.5
 bad = 0
 for channel, pads in L.MOTOR_PADS.items():
-    radial_size = L.MOTOR_PAD_SIZE[1]
     for x, y in pads:
-        radial_edge = max(abs(x), abs(y)) + radial_size / 2
-        if radial_edge > L.BOARD_W / 2 - edge_clearance:
+        pad = rect((x, y), L.MOTOR_PAD_SIZE)
+        if (pad[0] < -L.BOARD_W / 2 + edge_clearance
+                or pad[2] > L.BOARD_W / 2 - edge_clearance
+                or pad[1] < -L.BOARD_H / 2 + edge_clearance
+                or pad[3] > L.BOARD_H / 2 - edge_clearance):
             bad += 1
 check("motor pads clear board edge", bad == 0,
       f"12 pads retain >= {edge_clearance:.1f} mm copper clearance")
@@ -95,28 +108,42 @@ for hx, hy in L.HOLES:
                                L.HARDWARE_KEEPOUT_D / 2):
             print(f"[FAIL] mount keepout at ({hx:+.2f},{hy:+.2f}) hits {name}")
             bad += 1
-check("M3 hardware keepouts clear", bad == 0,
-      f"4 x diameter {L.HARDWARE_KEEPOUT_D:.1f} mm, both faces")
+check("M2 hardware keepouts clear", bad == 0,
+      f"4 x M2 keepout diameter {L.HARDWARE_KEEPOUT_D:.1f} mm, both faces")
 
 bad = 0
 for channel in L.CHANNELS:
     drv = L.PARTS[f"U_DRV_{channel}"]["pos"]
     farthest = 0.0
     for phase in "ABC":
-        q = L.PARTS[f"Q_{channel}_{phase}_HS"]["pos"]
-        farthest = max(farthest, math.dist(drv, q))
-    if farthest > 10.0:
+        for role in ("HS", "LS"):
+            q = L.PARTS[f"Q_{channel}_{phase}_{role}"]["pos"]
+            farthest = max(farthest, math.dist(drv, q))
+    if farthest > 8.5:
         bad += 1
         print(f"[FAIL] {channel} driver-to-FET centre run {farthest:.1f} mm")
 check("gate-driver loops compact", bad == 0,
-      "all driver-to-high-side FET centre distances <= 10 mm")
+      "all driver-to-FET centre distances <= 8.5 mm")
 
 for channel in L.CHANNELS:
     for phase in "ABC":
         hi = L.PARTS[f"Q_{channel}_{phase}_HS"]["pos"]
         lo = L.PARTS[f"Q_{channel}_{phase}_LS"]["pos"]
-        check(f"{channel}{phase} half bridge vertically registered", hi == lo,
-              f"top/bottom centres {hi}")
+        check(f"{channel}{phase} half bridge aligned on cooling face",
+              hi[0] == lo[0] and hi[1] < lo[1]
+              and L.PARTS[f"Q_{channel}_{phase}_HS"]["side"] == "F"
+              and L.PARTS[f"Q_{channel}_{phase}_LS"]["side"] == "F",
+              f"HS {hi}, LS {lo}")
+
+for lower, upper in zip(L.CHANNELS, L.CHANNELS[1:]):
+    lower_edge = max(rect(spec["pos"], spec["courtyard"])[3]
+                     for name, spec in L.PARTS.items()
+                     if name.startswith(f"Q_{lower}_"))
+    upper_edge = min(rect(spec["pos"], spec["courtyard"])[1]
+                     for name, spec in L.PARTS.items()
+                     if name.startswith(f"Q_{upper}_"))
+    check(f"{lower}/{upper} inverter-cell separation", upper_edge >= lower_edge + 0.15,
+          f"{upper_edge - lower_edge:.2f} mm courtyard gap")
 
 print("\n=== electrical design margins (requirements) ===")
 check("MOSFET voltage headroom", L.MOSFET_VDS_V >= 2 * L.PACK_FULL_V,

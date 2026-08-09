@@ -1,133 +1,122 @@
-"""Mechanical floorplan for the VYPER-55A four-channel ESC EVT board.
+"""Mechanical floorplan for the longitudinal VYPER-55A ESC EVT board.
 
-This module is the single source of truth for board/airframe interaction and
-power-stage placement.  It is not an electrical rating and it is not an
-authorization to order hardware.  The schematic, copper, thermal model and
-EVT gates in ESC_ARCHITECTURE.md must all be complete first.
+The ESC is purpose-built for the removable vertical electronics cassette. It
+is not a stretched square stack: four inverter cells are arranged along the
+aircraft Z axis on a 30 x 72 mm board. Every MOSFET is on the outward face so
+two electrically isolated aluminium spreaders can intercept the heat. Gate
+drivers, MCUs and sensing parts live on the inward face.
 
-The difficult packaging decision is explicit: each inverter's three high-side
-MOSFETs are on F.Cu and the matching three low-side devices are directly below
-on B.Cu. That gives each half bridge a short vertical current loop. True
-footprint DRC rejected the original 36 mm study; the validated floorplan is
-43 mm and clears both the package courtyards and M3 keepouts.
+This is a packaging and first-order electrical screen, not a current rating or
+an authorization to fabricate. Copper, transient, thermal and dyno gates in
+ESC_ARCHITECTURE.md remain mandatory.
 """
 
-import math
-
-BOARD_W = 43.0
-BOARD_H = 43.0
-CORNER_R = 12.0
-FUSE_CAVITY_R = 26.5
-HOLE_PITCH = 30.5
-HOLE_D = 3.2
-HARDWARE_KEEPOUT_D = 6.5
+BOARD_W = 30.0
+BOARD_H = 72.0
+CORNER_R = 3.0
+BOARD_THICKNESS = 1.6
+MOUNT_PITCH_X = 24.0
+MOUNT_PITCH_Y = 64.0
+HOLE_D = 2.4                 # M2 clearance
+HARDWARE_KEEPOUT_D = 5.0
 LAYERS = 6
-OUTER_COPPER_OZ = 2
-INNER_COPPER_OZ = 1
+OUTER_COPPER_OZ = 3
+INNER_COPPER_OZ = 2
 
-HOLES = [(sx * HOLE_PITCH / 2, sy * HOLE_PITCH / 2)
+HOLES = [(sx * MOUNT_PITCH_X / 2, sy * MOUNT_PITCH_Y / 2)
          for sx in (-1, 1) for sy in (-1, 1)]
 
 # Manufacturer package plus assembly courtyard, millimetres.
-FET_CTYD = (7.16, 5.66)     # KiCad TDSON-8-1 assembly courtyard
-DRV_CTYD = (6.6, 6.6)       # TI DRV8323H, WQFN-40 6x6 body
-MCU_CTYD = (4.6, 4.6)       # AT32F421K8U7-4, QFN32 4x4 body
-SENSE_CTYD = (3.2, 2.0)     # 6-pin 0402 resistor network / RC filter bank
-NTC_CTYD = (1.4, 0.9)       # 0402 NTC at the hottest bridge
-SHUNT_CTYD = (6.9, 3.6)     # Vishay WSLF2512 Kelvin-routed current shunt
-BUCK_CTYD = (3.5, 2.2)      # LMR16006X SOT-23-6 plus assembly allowance
-INDUCTOR_CTYD = (5.8, 5.8)  # shielded 22 uH, Isat >= 1.6 A
-OPAMP_CTYD = (3.5, 2.3)     # TLV9061 SOT-23-5 current-sum amplifier
-HARNESS_CTYD = (5.8, 4.0)   # 2x4 1.27 mm solder-pad FC harness
+FET_CTYD = (7.16, 5.66)
+DRV_CTYD = (6.6, 6.6)
+MCU_CTYD = (4.6, 4.6)
+SENSE_CTYD = (3.2, 2.0)
+NTC_CTYD = (1.4, 0.9)
+SHUNT_CTYD = (6.9, 3.6)
+BUCK_CTYD = (3.5, 2.2)
+INDUCTOR_CTYD = (5.8, 5.8)
+OPAMP_CTYD = (3.5, 2.3)
+HARNESS_CTYD = (5.8, 4.0)
+SWD_CTYD = (2.8, 2.8)
 
 CHANNELS = ("M1", "M2", "M3", "M4")
-MOTOR_PAD_STATIONS = (-7.0, 0.0, 7.0)
-MOTOR_PAD_RADIUS = 19.9
+CHANNEL_Y = {"M1": -23.5, "M2": -8.8, "M3": 8.8, "M4": 23.5}
+PHASE_X = (-7.4, 0.0, 7.4)
+FET_ROW_OFFSET_Y = 3.0
 
-
-def rotate(x, y, deg):
-    a = math.radians(deg)
-    return (x * math.cos(a) - y * math.sin(a),
-            x * math.sin(a) + y * math.cos(a))
-
-
-def rotate_wh(wh, deg):
-    """Swap an axis-aligned courtyard for a 90/270-degree channel."""
-    quarter_turns = int(round(deg / 90.0)) % 2
-    return (wh[1], wh[0]) if quarter_turns else wh
-
-
-# A channel is defined in the +Y (north) orientation and rotated clockwise.
-# Motor mapping follows a normal X quad order only at firmware-target time;
-# the board file keeps physical channels unambiguous and does not guess motor
-# direction.
-ROTATION = {"M1": 0.0, "M2": -90.0, "M3": 180.0, "M4": 90.0}
+# Alternating long-edge exits prevent phase leads from crossing the board.
+MOTOR_SIDE = {"M1": -1, "M2": 1, "M3": -1, "M4": 1}
+MOTOR_PAD_STATIONS = (-2.8, 0.0, 2.8)
+MOTOR_PAD_CENTER_X = 13.3
+MOTOR_PAD_SIZE = (2.0, 2.2)
 
 PARTS = {}
 MOTOR_PADS = {}
+MOTOR_CONNECTORS = {}
 for channel in CHANNELS:
-    deg = ROTATION[channel]
-    # One row on each face.  Each x station is one phase half bridge, so the
-    # switch node can change layers through a compact via field between FETs.
-    # 7.4 mm station pitch clears the 7.16 mm manufacturer-derived TDSON
-    # courtyards and, more importantly, its asymmetric 4.55 mm drain lands.
-    for phase, x in zip("ABC", (-7.4, 0.0, 7.4)):
-        for side, role in (("F", "HS"), ("B", "LS")):
-            pos = rotate(x, 16.0, deg)
-            PARTS[f"Q_{channel}_{phase}_{role}"] = dict(
-                pos=pos, side=side, courtyard=rotate_wh(FET_CTYD, deg),
-                pkg="BSC012N06NS SuperSO8 60V")
+    cy = CHANNEL_Y[channel]
 
-    # Driver is on F, MCU and BEMF divider/filter network on B.  Keeping the
-    # driver radially inboard of its FET row caps every gate run below 10 mm.
+    # High- and low-side rows are both on F.Cu. This makes the complete power
+    # stage accessible to one isolated spreader and keeps each switch-node loop
+    # on one copper face. The driver connects through a compact via fanout.
+    for phase, x in zip("ABC", PHASE_X):
+        PARTS[f"Q_{channel}_{phase}_HS"] = dict(
+            pos=(x, cy - FET_ROW_OFFSET_Y), side="F", courtyard=FET_CTYD,
+            pkg="BSC012N06NS SuperSO8 60V", heat_spreader=True)
+        PARTS[f"Q_{channel}_{phase}_LS"] = dict(
+            pos=(x, cy + FET_ROW_OFFSET_Y), side="F", courtyard=FET_CTYD,
+            pkg="BSC012N06NS SuperSO8 60V", heat_spreader=True)
+
+    # The gate driver is directly behind the six FETs. Control and current
+    # sensing stay inward, away from the external aluminium spreader.
     PARTS[f"U_DRV_{channel}"] = dict(
-        pos=rotate(0.0, 9.7, deg), side="F", courtyard=DRV_CTYD,
+        pos=(0.0, cy), side="B", courtyard=DRV_CTYD,
         pkg="DRV8323H WQFN40 6x6", noisy=True)
     PARTS[f"U_MCU_{channel}"] = dict(
-        pos=rotate(0.0, 9.7, deg), side="B", courtyard=MCU_CTYD,
+        pos=(-6.0, cy), side="B", courtyard=MCU_CTYD,
         pkg="AT32F421K8U7-4 QFN32 4x4")
     PARTS[f"RN_BEMF_{channel}"] = dict(
-        pos=rotate(4.7, 4.8, deg), side="B",
-        courtyard=rotate_wh(SENSE_CTYD, deg),
+        pos=(6.0, cy - 3.9), side="B", courtyard=SENSE_CTYD,
         pkg="3x phase divider plus RC clamps")
     PARTS[f"TH_{channel}"] = dict(
-        pos=rotate(-4.7, 9.1, deg), side="B",
-        courtyard=rotate_wh(NTC_CTYD, deg),
+        pos=(6.0, cy + 3.6), side="B", courtyard=NTC_CTYD,
         pkg="0402 NTC")
     PARTS[f"RSH_{channel}"] = dict(
-        pos=rotate(8.0, 8.0, deg), side="B",
-        courtyard=rotate_wh(SHUNT_CTYD, deg),
+        pos=(7.8, cy), side="B", courtyard=SHUNT_CTYD,
         pkg="WSLF2512R0005FEA 0.5m 10W")
 
-    # Keep the radial edge of every plated motor pad 0.6 mm inside Edge.Cuts.
-    # KiCad's default copper-to-edge rule is 0.5 mm, leaving 0.1 mm process
-    # margin while preserving direct perimeter access for phase wires.
-    MOTOR_PADS[channel] = [rotate(x, MOTOR_PAD_RADIUS, deg)
-                           for x in MOTOR_PAD_STATIONS]
+    side = MOTOR_SIDE[channel]
+    cx = side * MOTOR_PAD_CENTER_X
+    MOTOR_CONNECTORS[channel] = dict(pos=(cx, cy), side="F", rotation=0.0)
+    MOTOR_PADS[channel] = [(cx, cy + offset) for offset in MOTOR_PAD_STATIONS]
 
-# Vertical 12-AWG pigtails pass through the central shelf/loom opening.  The
-# pads are intentionally central, away from every mounting hole and board edge.
+# The centre feed halves the worst-case VBAT/GND distribution distance versus
+# a connector at one end. The cassette provides pigtail strain relief; the
+# two heat-spreader segments leave this centre service window uncovered.
 BATTERY_PADS = {"VBAT+": (-1.5, 0.0), "GND": (1.5, 0.0)}
 BATTERY_PAD_SIZE = (2.2, 5.0)
-MOTOR_PAD_SIZE = (2.2, 2.0)
 
-# The front-face quadrant gaps are the only locations that clear the four
-# radial gate drivers, mounting keepouts and central battery pigtails.  These
-# are electrically shared support parts, not unplaced schematic afterthoughts.
+# Shared low-power support lives on B.Cu.
 PARTS["U_BUCK"] = dict(
-    pos=(-7.0, -7.0), side="F", courtyard=BUCK_CTYD,
+    pos=(-5.5, 0.0), side="B", courtyard=BUCK_CTYD,
     pkg="LMR16006XDDCR 60V 0.6A")
 PARTS["L_BUCK"] = dict(
-    pos=(-7.0, 7.0), side="F", courtyard=INDUCTOR_CTYD,
+    pos=(5.8, 0.0), side="B", courtyard=INDUCTOR_CTYD,
     pkg="22uH shielded Isat>=1.6A")
 PARTS["U_ISUM"] = dict(
-    pos=(7.0, -7.0), side="F", courtyard=OPAMP_CTYD,
+    pos=(-5.0, 33.0), side="B", courtyard=OPAMP_CTYD,
     pkg="TLV9061IDBVR total-current summer")
 PARTS["J_HARNESS"] = dict(
-    pos=(7.0, 7.0), side="F", courtyard=HARNESS_CTYD,
+    pos=(5.0, -33.0), side="B", courtyard=HARNESS_CTYD,
     pkg="2x4 P1.27 FC harness solder pads")
 
-# Ratings and hard parts.  These are checked as requirements, not claims.
+for channel in CHANNELS:
+    cy = CHANNEL_Y[channel]
+    PARTS[f"J_SWD_{channel}"] = dict(
+        pos=(-10.2, cy + 3.8), side="B", courtyard=SWD_CTYD,
+        pkg="2x2 P1.27 SWD test pads")
+
+# Ratings and hard parts. These are checked as requirements, not claims.
 CELL_COUNT_MAX = 6
 PACK_FULL_V = 25.2
 MOSFET_VDS_V = 60.0
@@ -147,12 +136,21 @@ MCU_COUNT = 4
 MCU_MAX_105C_A = 0.0207
 BUCK_OUTPUT_A = 0.6
 
-# Direct-source component pricing snapshot.  Assembly, PCB fabrication and
-# shipping are excluded; a one-off prototype does not meet the aircraft's
-# sub-$200 target.  This is here to stop BOM arithmetic from hiding that fact.
+# Each spreader segment is a packaging envelope. A dielectric interface with a
+# verified breakdown rating is mandatory; aluminium must never touch live
+# copper. The 6 mm centre gap exposes the battery/regulator service bay.
+HEAT_SPREADER_W = 28.0
+HEAT_SPREADER_SEGMENT_H = 27.5
+HEAT_SPREADER_SEGMENT_COUNT = 2
+HEAT_SPREADER_CENTER_GAP = 6.0
+HEAT_SPREADER_T = 1.0
+THERMAL_PAD_T = 0.5
+THERMAL_PAD_MIN_BREAKDOWN_V = 1000
+
+# Direct-source component pricing snapshot. PCB, assembly and shipping excluded.
 ACTIVE_PART_COST_USD = {
-    "24x BSC012N06NS": 24 * 1.8227,  # LCSC 10+ price seen 2026-08-08
-    "4x DRV8323HRTAR": 4 * 1.4136,   # LCSC 1+ price seen 2026-08-08
+    "24x BSC012N06NS": 24 * 1.8227,
+    "4x DRV8323HRTAR": 4 * 1.4136,
     "4x AT32F421K8U7-4 allowance": 4 * 1.50,
     "LMR16006X plus inductor allowance": 2.75,
     "TLV9061 plus 4x WSLF shunts allowance": 7.00,

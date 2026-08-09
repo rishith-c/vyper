@@ -1,7 +1,7 @@
 VYPER INTEGRATION STATUS — 2026-08-08
 
 PASS
-- 47-solid fit-check assembly exports to cad/vyper_assembly.step
+- 50-solid fit-check assembly exports to cad/vyper_assembly.step
 - selected battery, FC/ESC envelopes, camera/VTX/RX envelopes, motors, props,
   four printed arms, hub, shell, nose, tail and 16 exact M3x8 STEP screws
 - battery, stack, prop-disc and body clearances are represented in CAD
@@ -18,8 +18,8 @@ PASS
 - custom ESC AM32 target agrees with all four AT32F421 PCB pin maps
 - custom ESC true-footprint review board contains 195 electrical references;
   all 715 authored netlist nodes reach pads on the six-layer stack
-- custom ESC placed-major-part DRC has no shorts, clearance failures,
-  courtyard overlaps, edge errors or footprint errors
+- all 195 custom ESC footprints are inside the board outline; placed-part DRC
+  has no shorts, clearance failures, courtyard overlaps, edge or footprint errors
 
 OPEN / NOT VERIFIED
 - camera optical aperture and aerodynamic lens fairing
@@ -29,7 +29,7 @@ OPEN / NOT VERIFIED
 - CFD, wind-tunnel correlation and flight stability
 - reviewed graphical FC schematic, final passive placement/routing and
   fabrication files
-- custom ESC graphical schematic, final in-outline passive placement, 499
-  remaining routed connections, thermal/current qualification and fab outputs
+- custom ESC graphical schematic, 499 remaining routed connections,
+  thermal/current qualification and fabrication outputs
 
 No item in the PASS list implies flightworthiness.

@@ -59,6 +59,7 @@ boolean is exact and always works.
 import math
 
 import cadquery as cq
+import vyper_spec as S
 
 # =============================================================================
 # PARAMETERS -- everything is driven from here
@@ -94,12 +95,11 @@ ARM_FIT = 0.4            # total slip fit added to BOTH slot dimensions
 ARM_Z = 110.0            # hub starts at Z=97, immediately above the battery
 ARM_REACH = 60.0         # how far the cutter runs past R_MAX
 
-# ---- Internal flight-stack shelf -------------------------------------------
-SHELF_Z = 155.0          # top face; leaves a routed loom bay above the hub
-SHELF_T = 3.0            # shelf thickness
-STACK_PITCH = 30.5       # standard 30.5 x 30.5 mounting pattern
-STACK_HOLE_D = 3.2       # M3 clearance in printed PETG (see note below)
-SHELF_VENT_D = 18.0      # central pass-through for the ESC / motor looms
+# ---- Longitudinal electronics ----------------------------------------------
+# The custom ESC and FC no longer inherit a horizontal 30.5 mm racing stack.
+# A removable vertical cassette attaches to the arm hub and uses the body's
+# available Z length.  Its dimensions live in vyper_spec.py beside the board
+# contracts used by both CAD and ECAD.
 
 # ---- Cavity extent ----------------------------------------------------------
 CAVITY_BOTTOM = -1.0     # below Z=0, so the base is OPEN for assembly
@@ -276,88 +276,7 @@ def build_shell():
     cavity = revolve_profile(inner_profile(outer_pts))
     shell = body.cut(cavity)
 
-    # ---- 3. Internal flight-stack shelf --------------------------------------
-    # Radius deliberately exceeds the local inner radius so the disc merges
-    # INTO the wall rather than sitting tangent to it -- a tangent disc unions
-    # as a separate floating solid.
-    shelf_r = R_MAX - WALL + 0.5
-    shelf = (
-        cq.Workplane("XY")
-        .workplane(offset=SHELF_Z - SHELF_T)
-        .circle(shelf_r)
-        .extrude(SHELF_T)
-    )
-    shell = shell.union(shelf)
-
-    # ---- 3a. Self-supporting ramp under the shelf ----------------------------
-    # The shelf is an annular ledge reaching 15.5 mm inward from the wall with
-    # nothing beneath it: a 90 deg overhang of about 1520 mm^2. That is the
-    # single largest overhang on the airframe, and unlike an external one it
-    # cannot be solved with support material -- this face is 132 mm up a 53 mm
-    # bore, so any support printed under it stays there forever.
-    #
-    # The fix is a cone under the shelf running back down to the wall at 45
-    # deg. Each layer then steps inward by exactly its own height, which is the
-    # self-support limit, so it prints unsupported and the ledge lands on solid
-    # material. It also fillets the shelf-to-wall joint, which is where a
-    # cantilevered ledge would otherwise crack first.
-    #
-    # Cost is 15.5 mm off the top of the battery bay, leaving about 116 mm of
-    # clear cavity for a 75 mm pack. If that ever gets tight, widening
-    # SHELF_VENT_D shortens the ramp one-for-one.
-    # Built as a conical SHELL, not a solid cone. Only the surface has to be
-    # there -- the shelf needs something to land on, not a plug. A solid cone
-    # costs about 20 g, which on a roughly 690 g airframe is 3 % of all-up weight
-    # bought for nothing.
-    ramp_h = shelf_r - SHELF_VENT_D / 2.0
-    ramp_z0 = SHELF_Z - SHELF_T - ramp_h
-    ramp_wall = WALL * math.sqrt(2.0)      # 45 deg cone: vertical offset for
-    #                                        a WALL-thick normal section
-    ramp = (
-        cq.Workplane("XY").workplane(offset=ramp_z0)
-        .circle(shelf_r).extrude(ramp_h)
-    ).cut(
-        cq.Workplane("XY").workplane(offset=ramp_z0)
-        .circle(shelf_r)
-        .workplane(offset=ramp_h)
-        .circle(SHELF_VENT_D / 2.0)
-        .loft()
-    ).cut(
-        cq.Workplane("XY").workplane(offset=ramp_z0)
-        .circle(shelf_r + ramp_wall)
-        .workplane(offset=ramp_h)
-        .circle(SHELF_VENT_D / 2.0 + ramp_wall)
-        .loft()
-    )
-    shell = shell.union(ramp)
-
-    # 30.5 x 30.5 stack pattern + a central loom pass-through.
-    #
-    # Cut with explicit cylinders rather than .faces(">Z").hole(): on a body
-    # of revolution the ">Z" selector resolves to the nose tip (or to nothing
-    # at all after a boolean), not to the shelf you just added. Positioning
-    # the cutters absolutely is unambiguous and cannot mis-select.
-    half = STACK_PITCH / 2.0
-    for sx in (-half, half):
-        for sy in (-half, half):
-            bolt = (
-                cq.Workplane("XY")
-                .workplane(offset=SHELF_Z - SHELF_T - 2.0)
-                .center(sx, sy)
-                .circle(STACK_HOLE_D / 2.0)
-                .extrude(SHELF_T + 4.0)
-            )
-            shell = shell.cut(bolt)
-
-    vent = (
-        cq.Workplane("XY")
-        .workplane(offset=SHELF_Z - SHELF_T - 2.0)
-        .circle(SHELF_VENT_D / 2.0)
-        .extrude(SHELF_T + 4.0)
-    )
-    shell = shell.cut(vent)
-
-    # ---- 4. Arm slots --------------------------------------------------------
+    # ---- 3. Arm slots --------------------------------------------------------
     # Each cutter starts on the axis and runs radially outward, so the slot is
     # open to the cavity: the printed blade feeds in from inside and pushes out.
     slot_w = ARM_WIDTH + ARM_FIT      # vertical
@@ -626,9 +545,127 @@ def build_hub():
             cq.Workplane("XY")
             .box(hub_r - HUB_CORE_R, HUB_BOLT_D, HUB_BOLT_D)
             .translate((ARM_ROOT_R + 8.0, 0, ARM_Z))
-            .rotate((0, 0, 0), (0, 0, 1), angle)
+                .rotate((0, 0, 0), (0, 0, 1), angle)
         )
+
+    # Two M3 heat-set insert pockets in the intact central core retain the
+    # removable electronics cassette.  They open from the hub top at Z=123;
+    # the arm slots stop at R10, so neither pocket intersects an arm root.
+    cassette_half_pitch = S.CASSETTE_HUB_SCREW_PITCH_MM / 2.0
+    hub_top = ARM_Z + ARM_WIDTH / 2.0
+    for x in (-cassette_half_pitch, cassette_half_pitch):
+        pocket = (
+            cq.Workplane("XY")
+            .workplane(offset=hub_top - S.CASSETTE_HUB_INSERT_DEPTH_MM)
+            .center(x, 0.0)
+            .circle(S.CASSETTE_HUB_INSERT_D_MM / 2.0)
+            .extrude(S.CASSETTE_HUB_INSERT_DEPTH_MM + 0.2)
+        )
+        hub = hub.cut(pocket)
     return hub
+
+
+def build_electronics_cassette():
+    """Removable ladder frame carrying both vertical custom PCBs.
+
+    Aircraft coordinates are used directly: frame width is X, its thin spine
+    is Y, and the board length is Z.  ESC standoffs project toward -Y and FC
+    standoffs toward +Y, leaving the components facing the shell and the quiet
+    board backs facing the central printed frame.
+    """
+    width = S.CASSETTE_WIDTH_MM
+    height = S.CASSETTE_TOP_Z_MM - S.CASSETTE_BOTTOM_Z_MM
+    rail = S.CASSETTE_RAIL_WIDTH_MM
+    spine_t = S.CASSETTE_SPINE_THICKNESS_MM
+    z_mid = (S.CASSETTE_BOTTOM_Z_MM + S.CASSETTE_TOP_Z_MM) / 2.0
+
+    # Two full-height side rails plus short crossbars at every board fastener
+    # row.  This is an open ladder, not a draggy/heat-trapping solid plate.
+    cassette = None
+    for x in (-(width - rail) / 2.0, (width - rail) / 2.0):
+        bar = cq.Workplane("XY").box(rail, spine_t, height).translate((x, 0, z_mid))
+        cassette = bar if cassette is None else cassette.union(bar)
+
+    esc_half_z = S.ESC_MOUNT_PITCH_Z_MM / 2.0
+    fc_half_z = S.FC_MOUNT_PITCH_Z_MM / 2.0
+    crossbar_z = {
+        S.CASSETTE_BOTTOM_Z_MM + rail / 2.0,
+        S.ELECTRONICS_CENTER_Z_MM - esc_half_z,
+        S.ELECTRONICS_CENTER_Z_MM - fc_half_z,
+        S.ELECTRONICS_CENTER_Z_MM,
+        S.ELECTRONICS_CENTER_Z_MM + fc_half_z,
+        S.ELECTRONICS_CENTER_Z_MM + esc_half_z,
+        S.CASSETTE_TOP_Z_MM - rail / 2.0,
+    }
+    for z in sorted(crossbar_z):
+        cassette = cassette.union(
+            cq.Workplane("XY").box(width, spine_t, rail).translate((0, 0, z))
+        )
+
+    # Horizontal foot seats on the hub top.  Two M3 clearance holes align to
+    # the heat-set pockets authored in build_hub().
+    foot = (
+        cq.Workplane("XY")
+        .box(20.0, 6.0, rail)
+        .translate((0, 0, S.CASSETTE_BOTTOM_Z_MM + rail / 2.0))
+    )
+    cassette = cassette.union(foot)
+    screw_half_pitch = S.CASSETTE_HUB_SCREW_PITCH_MM / 2.0
+    for x in (-screw_half_pitch, screw_half_pitch):
+        cassette = cassette.cut(
+            cq.Workplane("XY")
+            .workplane(offset=S.CASSETTE_BOTTOM_Z_MM - 0.5)
+            .center(x, 0.0)
+            .circle(S.CASSETTE_HUB_SCREW_D_MM / 2.0)
+            .extrude(rail + 1.0)
+        )
+
+    def add_standoff(part, x, z, side):
+        # XZ workplane positive extrusion points toward -Y.  The plane offset
+        # is measured along -Y, hence +spine_t/2 for the ESC side and the
+        # mirrored negative extrusion for the FC side.
+        if side == "ESC":
+            boss = (
+                cq.Workplane("XZ").workplane(offset=spine_t / 2.0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_STANDOFF_D_MM / 2.0)
+                .extrude(S.CASSETTE_BOARD_GAP_MM)
+            )
+            y0 = -spine_t / 2.0 - S.CASSETTE_BOARD_GAP_MM - 0.1
+            bore_len = S.CASSETTE_BOARD_INSERT_DEPTH_MM + 0.2
+            bore = (
+                cq.Workplane("XZ").workplane(offset=-y0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_INSERT_D_MM / 2.0)
+                .extrude(-bore_len)
+            )
+        else:
+            boss = (
+                cq.Workplane("XZ").workplane(offset=-spine_t / 2.0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_STANDOFF_D_MM / 2.0)
+                .extrude(-S.CASSETTE_BOARD_GAP_MM)
+            )
+            y0 = spine_t / 2.0 + S.CASSETTE_BOARD_GAP_MM + 0.1
+            bore_len = S.CASSETTE_BOARD_INSERT_DEPTH_MM + 0.2
+            bore = (
+                cq.Workplane("XZ").workplane(offset=-y0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_INSERT_D_MM / 2.0)
+                .extrude(bore_len)
+            )
+        return part.union(boss).cut(bore)
+
+    for x in (-S.ESC_MOUNT_PITCH_X_MM / 2.0, S.ESC_MOUNT_PITCH_X_MM / 2.0):
+        for z in (S.ELECTRONICS_CENTER_Z_MM - esc_half_z,
+                  S.ELECTRONICS_CENTER_Z_MM + esc_half_z):
+            cassette = add_standoff(cassette, x, z, "ESC")
+    for x in (-S.FC_MOUNT_PITCH_X_MM / 2.0, S.FC_MOUNT_PITCH_X_MM / 2.0):
+        for z in (S.ELECTRONICS_CENTER_Z_MM - fc_half_z,
+                  S.ELECTRONICS_CENTER_Z_MM + fc_half_z):
+            cassette = add_standoff(cassette, x, z, "FC")
+
+    return cassette
 
 
 def build_tail_cap():
@@ -725,6 +762,7 @@ for angle in TAIL_RETAINER_ANGLES:
     result = result.cut(retainer_hole)
 arm = build_arm()
 hub = build_hub()
+electronics_cassette = build_electronics_cassette()
 tail_cap = build_tail_cap()
 
 # Print-ready variants. These are what actually goes to the slicer; `result`
@@ -766,12 +804,14 @@ if __name__ == "__main__":
         "cad/vyper_arm.step": arm,
         "cad/vyper_arm_print.step": arm_print,
         "cad/vyper_hub.step": hub,
+        "cad/vyper_electronics_cassette.step": electronics_cassette,
         "cad/vyper_tail_cap.step": tail_cap,
         "stl/vyper_shell_body.stl": shell_body,
         "stl/vyper_shell_nose.stl": shell_nose,
         "stl/vyper_arm.stl": arm,
         "stl/vyper_arm_print.stl": arm_print,
         "stl/vyper_hub.stl": hub,
+        "stl/vyper_electronics_cassette.stl": electronics_cassette,
         "stl/vyper_tail_cap.stl": tail_cap,
     }
     for path, obj in exports.items():

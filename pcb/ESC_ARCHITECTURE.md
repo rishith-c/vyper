@@ -37,26 +37,30 @@ and closed-body thermal validation.
 
 ## Board and current path
 
-- 43×43 mm, R12 corners, 30.5×30.5 M3, six layers. The 25.44 mm
-  corner reach leaves 1.06 mm radial allowance in the 53 mm shell cavity.
-  A 36 mm packing study was rejected after true SuperSO8 footprints exposed
-  unavoidable power-stage/pad conflicts.
-- 2 oz outer copper; 1 oz inner copper minimum.
-- F.Cu: three high-side FETs per channel. B.Cu: the three matching low-side
-  FETs registered directly below. Dense source/switch-node via fields make a
-  compact vertical half-bridge loop.
+- 30×72 mm, R3 corners, 24×64 mm M2 pattern, six layers. The board mounts
+  longitudinally and vertically in the removable cassette.
+- 3 oz outer copper; 2 oz inner copper design request. Fabricator capability,
+  finished thickness and current-density review remain release gates.
+- F.Cu outward face: all 24 MOSFETs in four stacked inverter cells. Each
+  high/low pair shares an X station and uses a same-face switch loop. Gate
+  drivers and controllers sit directly behind the cells on B.Cu.
 - Inner planes: `VBAT`, `PGND`, `3V3`, and a quiet logic-ground reference.
   Logic and power grounds meet once at the driver-recommended point; they are
   not connected by a long skinny trace.
-- Each phase output is a plated edge pad. The central 12-AWG pigtail pads align
-  with the fuselage's 18 mm loom opening.
+- Each phase output is a plated long-edge pad; channels alternate left/right
+  to avoid crossed phase leads. Central 12-AWG pigtail pads halve the worst
+  distribution distance along the board.
+- Two 28×27.5×1 mm aluminium spreaders sit outside the MOSFET face over a
+  0.5 mm dielectric thermal interface rated at least 1 kV. A 6 mm centre gap
+  leaves the battery and buck-regulator service bay accessible. The plates are never allowed
+  to contact component leads or copper directly.
 - An external **470–1000 µF, 50 V, low-ESR** capacitor is soldered directly to
   the battery pigtail with the shortest possible leads. A remote capacitor at
   the XT60 does not control the board's commutation loop.
 
 The floorplan is encoded in `vyper_esc_layout.py`; `test_vyper_esc.py` checks
-the fuselage radius, rounded corners, holes, all 48 major courtyards, vertical
-half-bridge registration, gate-loop distance and voltage margins.
+the longitudinal outline, holes, 52 modeled major/support courtyards,
+same-cooling-face half bridges, gate-loop distance and voltage margins.
 
 `vyper_esc_schematic.py` authors the full 159-net electrical design and emits
 `vyper_55a_esc.net`. `test_vyper_esc_netlist.py` verifies the exact AM32 pin
