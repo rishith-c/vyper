@@ -227,9 +227,12 @@ VERTICAL_PASSIVE_PLACEMENT = {
     # Gyro and MCU bay, F.Cu.
     "C10": ((8.0, 2.0), "F", 0),
     "C11": ((3.0, 4.5), "F", 0),
-    "FB1": ((-5.8, -2.0), "F", 0),
-    "C12": ((-1.5, -3.0), "B", 0),
-    "C13": ((-1.5, -5.0), "B", 0),
+    # VDDA filter and both bypass capacitors form one compact F.Cu island at
+    # pin 13. The bead is vertical so its noisy V3V3 side points outward while
+    # the filtered side fans directly into the two capacitors and MCU pad.
+    "FB1": ((-5.8, -11.75), "F", 90),
+    "C12": ((-7.4, -10.7), "F", 180),
+    "C13": ((-7.4, -12.0), "F", 180),
     "C14": ((0.0, -7.0), "B", 0),
     "C15": ((6.8, -3.8), "B", 0),
     "C16": ((9.0, -16.0), "B", 0),

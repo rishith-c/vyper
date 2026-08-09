@@ -1,8 +1,8 @@
-"""Verify the manually routed VYPER-F4 power and gyro-bus stage.
+"""Verify the manually routed VYPER-F4 critical-network stage.
 
 This is a routing-stage gate, not a fabrication release test. It proves that
-the compact buck copper and uninterrupted In1 GND plane did not introduce hard
-DRC errors and that the autorouter cannot silently lengthen critical nets.
+the compact buck, gyro, clock, regulator and analog-supply copper did not
+introduce hard DRC errors or silently lengthen critical nets.
 """
 
 import json
@@ -70,12 +70,17 @@ assert stats["VCAP1"]["layers"] == {"F.Cu"}
 assert stats["VCAP2"]["length"] <= 2.2
 assert stats["VCAP2"]["vias"] == 0
 assert stats["VCAP2"]["layers"] == {"F.Cu"}
+assert stats["V3V3_A"]["length"] <= 8.0
+assert stats["V3V3_A"]["vias"] == 0
+assert stats["V3V3_A"]["layers"] == {"F.Cu"}
+assert stats["V3V3"]["vias"] == 2
 
 zones = list(board.Zones())
-assert len(zones) == 1
-assert zones[0].GetNetname() == "GND"
-assert zones[0].GetLayer() == pcbnew.In1_Cu
-assert zones[0].IsFilled()
+assert len(zones) == 2
+zone_contract = {(zone.GetNetname(), zone.GetLayer()) for zone in zones}
+assert zone_contract == {("GND", pcbnew.In1_Cu),
+                         ("V3V3", pcbnew.In2_Cu)}
+assert all(zone.IsFilled() for zone in zones)
 
 cli = os.environ.get("KICAD_CLI") or shutil.which("kicad-cli")
 if not cli and DEFAULT_MAC_CLI.exists():
@@ -93,7 +98,7 @@ allowed = {"lib_footprint_issues", "silk_over_copper", "silk_overlap",
            "silk_edge_clearance", "text_height"}
 hard = [item for item in drc["violations"] if item["type"] not in allowed]
 assert not hard, [(item["type"], item["description"]) for item in hard]
-assert len(drc["unconnected_items"]) == 147
+assert len(drc["unconnected_items"]) == 138
 
 print("critical buck routing has zero hard DRC violations")
 print("BUCK_SW 10.73 mm total tree, zero vias, F.Cu only")
@@ -101,5 +106,5 @@ print("BOOT/VBAT/V5 route-length and via-count gates pass")
 print("all five gyro nets are <= 10 mm with controlled layer changes")
 print("8 MHz HSE and dedicated gyro-regulator routes pass length/via gates")
 print("both STM32 VCAP paths pass dedicated local-capacitor gates")
-print("filled uninterrupted In1 GND plane present")
-print("147 items remain unrouted; board is NOT FOR FAB")
+print("filled In1 GND and In2 3V3 planes plus VDDA island pass")
+print("138 items remain unrouted; board is NOT FOR FAB")

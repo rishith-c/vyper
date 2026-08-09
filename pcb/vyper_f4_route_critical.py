@@ -93,8 +93,25 @@ def add_ground_plane():
     board.Add(zone)
 
 
+def add_logic_plane():
+    """Create the In2 3V3 distribution plane around routed signal keepouts."""
+    zone = pcbnew.ZONE(board)
+    zone.SetLayer(pcbnew.In2_Cu)
+    zone.SetNetCode(net("V3V3").GetNetCode())
+    zone.SetLocalClearance(mm(0.20))
+    zone.SetMinThickness(mm(0.20))
+    outline = zone.Outline()
+    outline.NewOutline()
+    for x, y in ((-12.0, -31.5), (12.0, -31.5), (14.5, -29.0),
+                 (14.5, 29.0), (12.0, 31.5), (-12.0, 31.5),
+                 (-14.5, 29.0), (-14.5, -29.0)):
+        outline.Append(mm(x), mm(y))
+    board.Add(zone)
+
+
 # ------------------------------------------------------------------ GND plane
 add_ground_plane()
+add_logic_plane()
 
 # ------------------------------------------------------------ compact SW node
 u3_sw = xy(pad("U3", 8, "BUCK_SW"))
@@ -294,10 +311,52 @@ add_track("GND", pcbnew.F_Cu, 0.35,
           (c20_ground, c20_ground_via))
 add_via("GND", c20_ground_via, size=0.65, drill=0.30)
 
+# ------------------------------------------------------- MCU logic/analog rail
+# The main AP2112 output enters the In2 3V3 plane beside its output capacitor.
+# Its ground return goes directly to In1 rather than sharing the input path.
+u4_v3 = xy(pad("U4", 5, "V3V3"))
+c9_v3 = xy(pad("C9", 1, "V3V3"))
+v3_source_via = (10.40, -17.05)
+add_track("V3V3", pcbnew.B_Cu, 0.50,
+          (u4_v3, v3_source_via, c9_v3))
+add_via("V3V3", v3_source_via, size=0.75, drill=0.35)
+u4_ground = xy(pad("U4", 2, "GND"))
+u4_ground_via = (10.00, -20.00)
+add_track("GND", pcbnew.B_Cu, 0.45,
+          (u4_ground, (5.50, -18.00), (5.50, -20.00), u4_ground_via))
+add_via("GND", u4_ground_via, size=0.65, drill=0.30)
+c9_ground = xy(pad("C9", 2, "GND"))
+c9_ground_via = (12.60, -18.00)
+add_track("GND", pcbnew.B_Cu, 0.45, (c9_ground, c9_ground_via))
+add_via("GND", c9_ground_via, size=0.65, drill=0.30)
+
+# VDDA is a deliberately small F.Cu island. The ferrite input reaches the 3V3
+# plane through one via; no digital return current is allowed through V3V3_A.
+fb_v3 = xy(pad("FB1", 1, "V3V3"))
+fb_v3a = xy(pad("FB1", 2, "V3V3_A"))
+vdda_mcu = xy(pad("U1", 13, "V3V3_A"))
+c12_vdda = xy(pad("C12", 1, "V3V3_A"))
+c13_vdda = xy(pad("C13", 1, "V3V3_A"))
+vdda_node = (-6.65, 11.24)
+add_track("V3V3_A", pcbnew.F_Cu, 0.30,
+          (vdda_mcu, (-5.00, 11.75), fb_v3a))
+add_track("V3V3_A", pcbnew.F_Cu, 0.30,
+          (fb_v3a, vdda_node, c12_vdda))
+add_track("V3V3_A", pcbnew.F_Cu, 0.30,
+          (vdda_node, (-6.65, 12.00), c13_vdda))
+fb_v3_via = (-5.80, 13.05)
+add_track("V3V3", pcbnew.F_Cu, 0.35, (fb_v3, fb_v3_via))
+add_via("V3V3", fb_v3_via, size=0.65, drill=0.30)
+for ref, via_pos in (("C12", (-8.55, 10.70)),
+                     ("C13", (-8.55, 12.00))):
+    analog_ground = xy(pad(ref, 2, "GND"))
+    add_track("GND", pcbnew.F_Cu, 0.35, (analog_ground, via_pos))
+    add_via("GND", via_pos, size=0.65, drill=0.30)
+
 # Fill after all vias exist so thermal/clearance geometry is deterministic.
 pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 pcbnew.SaveBoard(str(OUTPUT), board)
 
 print(f"wrote {OUTPUT}")
 print(f"tracks/vias: {len(board.GetTracks())}; zones: {len(board.Zones())}")
-print("critical power, gyro bus, HSE and MCU VCAP copper; remaining routing is open")
+print("critical power, gyro, HSE, VCAP and VDDA copper; remaining routing is open")
