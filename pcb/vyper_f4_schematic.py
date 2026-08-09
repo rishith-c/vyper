@@ -258,7 +258,11 @@ j1 = Part("Connector_Generic", "Conn_01x04", ref="J1",
           footprint="Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal")
 usb_dm_raw, usb_dp_raw = Net("USB_DM_RAW"), Net("USB_DP_RAW")
 usb_dm, usb_dp = Net("USB_DM"), Net("USB_DP")
-for pin, net in zip(range(1, 5), (gnd, usb5, usb_dm_raw, usb_dp_raw)):
+# Harness order is GND, VBUS, D+, D-. The data order is deliberate: after the
+# pair's natural 90-degree turn on the vertical FC, D- lands on pin 4 and D+
+# lands on pin 3 without a crossover. The external USB-C pigtail must follow
+# this documented, non-standard JST-SH pinout.
+for pin, net in zip(range(1, 5), (gnd, usb5, usb_dp_raw, usb_dm_raw)):
     j1[pin] += net
 # Exact two-line flow-through USB ESD array. Pairing both channels in one
 # package reduces parasitic mismatch versus two vaguely specified discrete
@@ -274,8 +278,10 @@ d7 = Part("Device", "D_TVS", ref="D7", value="PESD5V low-C",
           footprint="Diode_SMD:D_SOD-323")
 d7[1] += gnd
 d7[2] += usb5
-resistor("22R", usb_dm_raw, usb_dm)
-resistor("22R", usb_dp_raw, usb_dp)
+# Exact 0402 source terminators satisfy the board's 0.20 mm copper-clearance
+# rule while remaining small enough for a direct PA11/PA12 escape.
+resistor("ERJ2RKF22R0X 22R 1%", usb_dm_raw, usb_dm, ref="R14")
+resistor("ERJ2RKF22R0X 22R 1%", usb_dp_raw, usb_dp, ref="R15")
 u1["PA11"] += usb_dm
 u1["PA12"] += usb_dp
 capacitor("1uF 10V", usb5, gnd, footprint=C0603)
@@ -286,10 +292,10 @@ for pin_name, net in (("PB1", m1), ("PB0", m2), ("PA3", m3), ("PA2", m4),
     u1[pin_name] += net
 
 vbat_adc, curr_adc = Net("ADC_VBAT"), Net("ADC_CURRENT")
-resistor("100k 0.1%", vbat, vbat_adc)
-resistor("10k 0.1%", vbat_adc, gnd)
+resistor("100k 0.1%", vbat, vbat_adc, ref="R16")
+resistor("10k 0.1%", vbat_adc, gnd, ref="R17")
 capacitor("10nF C0G", vbat_adc, gnd)
-resistor("1k", esc_current, curr_adc)
+resistor("1k", esc_current, curr_adc, ref="R18")
 capacitor("10nF C0G", curr_adc, gnd)
 u1["PC5"] += vbat_adc
 u1["PC3"] += curr_adc

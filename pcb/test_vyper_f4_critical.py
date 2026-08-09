@@ -81,6 +81,25 @@ assert stats["NRST"]["length"] <= 18.5
 assert stats["NRST"]["vias"] == 2
 assert stats["NRST"]["layers"] == {"F.Cu", "In2.Cu", "B.Cu"}
 
+# USB FS source stubs stay on the component side. Both protected conductors
+# use identical via counts and layer sets, and their complete MCU-to-harness
+# copper lengths remain matched after the intentional D+ tail serpentine.
+assert stats["USB_DM"]["length"] <= 3.0
+assert stats["USB_DP"]["length"] <= 2.6
+for net_name in ("USB_DM", "USB_DP"):
+    assert stats[net_name]["vias"] == 0
+    assert stats[net_name]["layers"] == {"F.Cu"}
+for net_name in ("USB_DM_RAW", "USB_DP_RAW"):
+    assert stats[net_name]["length"] <= 36.5
+    assert stats[net_name]["vias"] == 2
+    assert stats[net_name]["layers"] == {"F.Cu", "In2.Cu", "B.Cu"}
+usb_dm_total = stats["USB_DM"]["length"] + stats["USB_DM_RAW"]["length"]
+usb_dp_total = stats["USB_DP"]["length"] + stats["USB_DP_RAW"]["length"]
+assert abs(usb_dm_total - usb_dp_total) <= 0.50
+assert stats["USB_5V"]["length"] <= 35.0
+assert stats["USB_5V"]["vias"] == 1
+assert stats["USB_5V"]["layers"] == {"F.Cu", "B.Cu"}
+
 zones = list(board.Zones())
 assert len(zones) == 2
 zone_contract = {(zone.GetNetname(), zone.GetLayer()) for zone in zones}
@@ -104,7 +123,7 @@ allowed = {"lib_footprint_issues", "silk_over_copper", "silk_overlap",
            "silk_edge_clearance", "text_height"}
 hard = [item for item in drc["violations"] if item["type"] not in allowed]
 assert not hard, [(item["type"], item["description"]) for item in hard]
-assert len(drc["unconnected_items"]) == 119
+assert len(drc["unconnected_items"]) == 105
 
 print("critical buck routing has zero hard DRC violations")
 print("BUCK_SW 10.73 mm total tree, zero vias, F.Cu only")
@@ -115,4 +134,5 @@ print("both STM32 VCAP paths pass dedicated local-capacitor gates")
 print("filled In1 GND and In2 3V3 planes plus VDDA island pass")
 print("four local STM32 VDD bypass loops and bulk capacitor pass DRC")
 print("BOOT0 and NRST startup networks pass route/via gates")
-print("119 items remain unrouted; board is NOT FOR FAB")
+print("USB FS pair uses equal via/layer topology with <= 0.50 mm total skew")
+print("105 items remain unrouted; board is NOT FOR FAB")

@@ -1,10 +1,11 @@
 # VYPER-F4 Rev A electrical architecture
 
 Status: **authored netlist passes SKiDL ERC with zero errors and zero warnings;
-not orderable**. A four-layer true-footprint review board now transfers all 77
-references and 250 netlist nodes to physical pads. All 58 passives are placed
-in-outline with functional proximity gates and no placement/copper DRC errors;
-192 connections remain unrouted.
+not orderable**. A four-layer true-footprint review board transfers all 76
+references and 252 netlist nodes to physical pads. All 56 passives are placed
+in-outline with functional proximity gates and no placement/copper DRC errors.
+The reviewed critical-route candidate has zero hard DRC violations and 105
+unconnected items; it remains **NOT FOR FAB**.
 The current mechanical form is a 30×64 mm R3 longitudinal board on a 16×56 mm
 M2 soft-mount pattern. It mounts vertically behind the ESC in the removable
 electronics cassette; it is not a standard square flight-stack board.
@@ -33,18 +34,18 @@ earlier 28 V TPS54331, which had inadequate transient margin on 6S.
 
 | Function | STM32F405 pin | Peripheral |
 |---|---:|---|
-| Gyro SPI | PA5/PA6/PA7, PA4 CS, PC4 INT | ICM-42688-P |
-| Blackbox SPI | PB13/PB14/PB15, PB12 CS | W25Q128JVS |
-| Barometer I2C | PB6/PB7 | BMP280 at 0x76 |
+| Gyro SPI | PB3/PB4/PB5, PB7 CS, PB6 INT | ICM-42688-P |
+| Blackbox SPI | PB13/PB14/PB15, PB12 CS | W25Q128JVPIM |
+| Barometer I2C | PB8/PB9 | BMP280 at 0x76 |
 | Motors 1–4 | PB1, PB0, PA3, PA2 | timer/DShot outputs |
 | ESC telemetry | PD2 | UART5 RX |
 | Receiver | PA9/PA10 | UART1 |
 | GPS | PB10/PB11 | UART3 |
-| External compass | PB6/PB7 | I2C1, remote QMC5883/LIS2MDL breakout |
+| External compass | PB8/PB9 | I2C1, remote QMC5883/LIS2MDL breakout |
 | VTX control | PC6/PC7 | UART6 |
 | RGB status | PA8 | SN74AHCT1G125 level shifter + SK6812MINI-E |
 | VBAT/current ADC | PC5/PC3 | 100k:10k divider / filtered ESC current |
-| USB | PA11/PA12 | USB FS, 4-pin JST-SH service harness, 22 Ω and low-C TVS |
+| USB | PA11/PA12 | USB FS, USBLC6-2SC6, ERJ2RKF22R0X 22 Ω source resistors |
 | SWD | PA13/PA14 | 4-pin debug header |
 
 The three UART groups and external I2C group use plated 2.4×2.0 mm pads, 1.0 mm finished holes,
@@ -54,6 +55,14 @@ header pins or hand-soldered 26--28 AWG wire and retain copper on every layer.
 The matching Betaflight resource contract is
 `firmware/vyper_f405/config.h`. The 8-pin ESC harness contract is GND, VBAT,
 CURRENT, TELEMETRY, M1, M2, M3, M4.
+
+The four-pin USB service harness is deliberately `1=GND, 2=VBUS, 3=D+,
+4=D-`. This is a custom JST-SH-to-USB-C pigtail pinout, not a generic cable.
+Swapping pins 3/4 at the harness eliminated a PCB crossover while keeping the
+USBLC6-2SC6 flow-through data order. The routed D-/D+ paths each use two vias
+and the same F.Cu/In2.Cu/B.Cu layer set; measured MCU-to-harness copper skew is
+0.314 mm. Final 90 Ω differential impedance still requires the selected
+PCBWay four-layer stackup and field-solver confirmation.
 
 ## Reproduce and verify
 
@@ -68,6 +77,10 @@ python3 pcb/test_vyper_f4_netlist.py
 /Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
   pcb/test_vyper_f4_board.py
 python3 pcb/test_vyper_f4_drc.py
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  pcb/vyper_f4_route_critical.py
+/Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+  pcb/test_vyper_f4_critical.py
 ```
 
 The generator's authored circuit reports zero SKiDL ERC warnings/errors and
@@ -87,8 +100,9 @@ value, 60 V buck selection and netlist-to-pad transfer.
 
 - Redraw/review the human-readable KiCad schematic with zero ERC errors and no
   merged-net warnings.
-- Repack the TPS54360 switching loop, then route all 192 remaining connections
-  on four layers and pass fab-profile DRC
-  with zero warnings/errors.
+- Route the remaining 105 open items, preserve the uninterrupted In1 ground
+  plane, and pass fab-profile DRC with zero hard violations.
+- Select PCBWay's actual four-layer stackup, solve/confirm USB geometry for
+  90 Ω differential impedance, and rerun the pair-skew gate.
 - Independent schematic/layout review, assembly outputs, bench bring-up,
   vibration/thermal tests, and Betaflight target build/USB/DFU validation.

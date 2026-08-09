@@ -465,6 +465,101 @@ r8_v3_via = (1.50, 7.00)
 add_track("V3V3", pcbnew.B_Cu, 0.30, (r8_v3, r8_v3_via))
 add_via("V3V3", r8_v3_via, size=0.65, drill=0.30)
 
+# ---------------------------------------------------------- USB 2.0 full speed
+# Exact 0402 22-ohm terminators sit beside PA11/PA12. Both MCU-side stubs stay
+# on F.Cu; the raw pair uses a symmetric right-edge detour around the 3V3 bulk
+# vias before fanning around U9's center ground pin. Trace geometry is a routing
+# constraint only: final 90-ohm impedance still requires PCBWay stackup data.
+usb_dm_mcu = xy(pad("U1", 44, "USB_DM"))
+usb_dp_mcu = xy(pad("U1", 45, "USB_DP"))
+usb_dm_term = xy(pad("R14", 2, "USB_DM"))
+usb_dp_term = xy(pad("R15", 2, "USB_DP"))
+add_track("USB_DM", pcbnew.F_Cu, 0.18,
+          (usb_dm_mcu, (8.50, 7.75), (9.00, 8.25),
+           (9.00, 9.00), usb_dm_term))
+add_track("USB_DP", pcbnew.F_Cu, 0.18,
+          (usb_dp_mcu, (8.60, 7.25), (8.90, 6.95),
+           (9.20, 7.25), usb_dp_term))
+
+usb_dm_raw_term = xy(pad("R14", 1, "USB_DM_RAW"))
+usb_dp_raw_term = xy(pad("R15", 1, "USB_DP_RAW"))
+usb_dm_esd_in = xy(pad("U9", 3, "USB_DM_RAW"))
+usb_dp_esd_in = xy(pad("U9", 1, "USB_DP_RAW"))
+add_track("USB_DM_RAW", pcbnew.F_Cu, 0.18,
+          (usb_dm_raw_term, (10.80, 9.29), (10.80, 12.20),
+           (11.60, 13.00), (11.60, 15.50), (10.80, 16.30),
+           (10.80, 17.20), (8.00, 20.00), (4.00, 20.60),
+           usb_dm_esd_in))
+add_track("USB_DP_RAW", pcbnew.F_Cu, 0.18,
+          (usb_dp_raw_term, (11.40, 8.69), (11.40, 12.20),
+           (12.20, 13.00), (12.20, 16.10), (11.40, 16.90),
+           (11.40, 17.20), (8.00, 20.60), (4.00, 22.40),
+           usb_dp_esd_in))
+
+# U9 output pair changes layers together and runs over In2 with In1 as its
+# uninterrupted reference plane. The custom JST harness maps pin 3=D+ and
+# pin 4=D-, matching the pair's natural turn and eliminating a crossover.
+usb_dm_esd_out = xy(pad("U9", 4, "USB_DM_RAW"))
+usb_dp_esd_out = xy(pad("U9", 6, "USB_DP_RAW"))
+usb_dm_out_via = add_via("USB_DM_RAW", (-3.20, 19.50),
+                         size=0.65, drill=0.30)
+usb_dp_out_via = add_via("USB_DP_RAW", (-0.44, 23.50),
+                         size=0.65, drill=0.30)
+usb_dm_j1_via = add_via("USB_DM_RAW", (1.50, 30.00),
+                        size=0.65, drill=0.30)
+usb_dp_j1_via = add_via("USB_DP_RAW", (0.50, 30.00),
+                        size=0.65, drill=0.30)
+add_track("USB_DM_RAW", pcbnew.F_Cu, 0.18,
+          (usb_dm_esd_out, (-1.50, 20.30), usb_dm_out_via))
+add_track("USB_DP_RAW", pcbnew.F_Cu, 0.18,
+          (usb_dp_esd_out, (-1.50, 22.70), (-0.80, 23.50),
+           usb_dp_out_via))
+add_track("USB_DM_RAW", pcbnew.In2_Cu, 0.18,
+          (usb_dm_out_via, (1.50, 24.20), usb_dm_j1_via))
+add_track("USB_DP_RAW", pcbnew.In2_Cu, 0.18,
+          (usb_dp_out_via, (0.50, 27.20), (-0.70, 27.80),
+           (1.00, 28.40), (-0.70, 29.00), usb_dp_j1_via))
+add_track("USB_DM_RAW", pcbnew.B_Cu, 0.18,
+          (usb_dm_j1_via, xy(pad("J1", 4, "USB_DM_RAW"))))
+add_track("USB_DP_RAW", pcbnew.B_Cu, 0.18,
+          (usb_dp_j1_via, xy(pad("J1", 3, "USB_DP_RAW"))))
+
+# U9's center ground escapes between the deliberately fanned input traces.
+u9_ground = xy(pad("U9", 2, "GND"))
+u9_ground_via = (3.50, 21.50)
+add_track("GND", pcbnew.F_Cu, 0.30, (u9_ground, u9_ground_via))
+add_via("GND", u9_ground_via, size=0.65, drill=0.30)
+
+# VBUS exits between the fanned output pair, changes to B.Cu, and feeds the
+# receptacle harness, TVS, bypass capacitor, and Schottky power-OR input. Each
+# protection return has a dedicated short via into the In1 ground plane.
+usb_vbus_esd = xy(pad("U9", 5, "USB_5V"))
+usb_vbus_via = add_via("USB_5V", (-2.50, 21.50),
+                       size=0.70, drill=0.30)
+add_track("USB_5V", pcbnew.F_Cu, 0.25, (usb_vbus_esd, usb_vbus_via))
+add_track("USB_5V", pcbnew.B_Cu, 0.40,
+          (usb_vbus_via, (-3.50, 22.50), (-3.50, 24.50),
+           (-4.50, 25.50), (-4.50, 28.00), (-3.50, 29.00),
+           (-0.50, 29.00),
+           xy(pad("J1", 2, "USB_5V"))))
+add_track("USB_5V", pcbnew.B_Cu, 0.40,
+          (usb_vbus_via, (-4.50, 21.50), (-5.50, 22.50),
+           xy(pad("D3", 2, "USB_5V"))))
+add_track("USB_5V", pcbnew.B_Cu, 0.50,
+          ((-3.50, 24.50), (3.00, 24.50),
+           xy(pad("D7", 2, "USB_5V"))))
+add_track("USB_5V", pcbnew.B_Cu, 0.50,
+          (xy(pad("D7", 2, "USB_5V")), (7.00, 25.20),
+           (10.50, 25.20), xy(pad("C28", 1, "USB_5V"))))
+
+for ref, pin_number, via_pos in (
+        ("J1", 1, (-2.30, 30.50)),
+        ("D7", 1, (8.80, 24.00)),
+        ("C28", 2, (10.50, 22.30))):
+    ground_pad = xy(pad(ref, pin_number, "GND"))
+    add_track("GND", pcbnew.B_Cu, 0.40, (ground_pad, via_pos))
+    add_via("GND", via_pos, size=0.70, drill=0.30)
+
 # Fill after all vias exist so thermal/clearance geometry is deterministic.
 pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 pcbnew.SaveBoard(str(OUTPUT), board)

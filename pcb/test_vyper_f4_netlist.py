@@ -77,9 +77,9 @@ expected_exact = {
     "ESC_TELEM": {("J2", "4"), ("U1", "54")},
     "USB_5V": {("D3", "2"), ("D7", "2"), ("J1", "2"), ("C28", "1"),
                 ("U9", "5")},
-    "USB_DM_RAW": {("J1", "3"), ("R14", "1"),
+    "USB_DM_RAW": {("J1", "4"), ("R14", "1"),
                    ("U9", "3"), ("U9", "4")},
-    "USB_DP_RAW": {("J1", "4"), ("R15", "1"),
+    "USB_DP_RAW": {("J1", "3"), ("R15", "1"),
                    ("U9", "1"), ("U9", "6")},
     "SWDIO": {("J7", "2"), ("U1", "46")},
     "SWCLK": {("J7", "3"), ("U1", "49")},
@@ -133,6 +133,9 @@ check("exact compact blackbox flash package",
       "W25Q128JVPIM" in text and
       "WDFN-8-1EP_6x5mm_P1.27mm_EP3.4x4mm" in text,
       "mass-production Winbond 128 Mbit WSON-8 part")
+check("exact USB source terminators",
+      text.count("ERJ2RKF22R0X 22R 1%") >= 2,
+      "Panasonic 22 ohm 1% 0402 parts on D- and D+")
 
 resource_contract = {
     "SPI1_SCK_PIN": "PB3", "SPI1_SDI_PIN": "PB4",

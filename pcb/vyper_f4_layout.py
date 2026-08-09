@@ -94,7 +94,7 @@ PARTS = {
     "U9_usb_esd_USBLC6": dict(pos=(0.0, -21.5), side="F", rot=180,
                                courtyard=(3.5, 4.2),
                                pkg="USBLC6-2SC6 SOT-23-6"),
-    "D4_rgb_status": dict(pos=(-2.0, -26.0), side="F", courtyard=(4.0, 4.0),
+    "D4_rgb_status": dict(pos=(0.0, -27.0), side="F", courtyard=(4.0, 4.0),
                            pkg="SK6812MINI-E 3.5x3.5"),
 }
 
@@ -244,7 +244,9 @@ VERTICAL_PASSIVE_PLACEMENT = {
     # Rotate VCAP1's capacitor so pad 1 directly faces the matching MCU pin;
     # its ground pad then points outward to a dedicated plane via.
     "C19": ((5.25, -17.85), "F", 270),
-    "C20": ((10.4, -6.25), "F", 0),
+    # Rotate VCAP2's capacitor to keep its power pad within 2.2 mm of pin 47
+    # while opening the PA11/PA12 source-termination corridor.
+    "C20": ((9.85, -5.475), "F", 90),
     "C23": ((-2.0, -8.5), "B", 0),
     "R8": ((0.0, -8.5), "B", 0),
     "R9": ((-3.5, -6.0), "B", 0),
@@ -270,10 +272,10 @@ VERTICAL_PASSIVE_PLACEMENT = {
     # outward to dedicated plane vias instead of lying in the hot path.
     "C28": ((10.5, -24.0), "B", 90),
     "D7": ((7.0, -24.0), "B", 180),
-    # Vertical source terminators give D-/D+ a symmetric, non-crossing launch
-    # from the MCU into the long service-end pair.
-    "R14": ((9.3, -8.3), "F", 90),
-    "R15": ((10.6, -8.3), "F", 90),
+    # Exact 0402 source terminators sit just outside the LQFP courtyard. Pad 2
+    # faces PA11/PA12 and pad 1 launches the raw pair upward.
+    "R14": ((10.00, -9.00), "F", 180),
+    "R15": ((10.00, -7.80), "F", 180),
     "C29": ((9.0, -4.2), "B", 0),
     "R16": ((9.0, -2.0), "B", 0),
     "R17": ((11.0, -2.0), "B", 0),
