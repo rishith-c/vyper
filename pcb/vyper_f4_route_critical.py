@@ -425,6 +425,46 @@ mcu_vbat = xy(pad("U1", 1, "V3V3"))
 add_track("V3V3", pcbnew.F_Cu, 0.30,
           (mcu_vbat, (-3.00, 5.75), (-3.00, 4.20), vdd64_via))
 
+# BOOT0 is held low by R9. The MCU escape goes inward before changing to B.Cu
+# so it cannot intersect the gyro fanout below the package. R9 reuses C14's
+# nearby ground return.
+boot_mcu = xy(pad("U1", 60, "BOOT0"))
+boot_via = (0.25, 5.40)
+boot_resistor = xy(pad("R9", 1, "BOOT0"))
+add_track("BOOT0", pcbnew.F_Cu, 0.20, (boot_mcu, boot_via))
+add_via("BOOT0", boot_via, size=0.65, drill=0.30)
+add_track("BOOT0", pcbnew.B_Cu, 0.20,
+          (boot_via, (0.25, 7.00), (-4.01, 7.00), boot_resistor))
+r9_ground = xy(pad("R9", 2, "GND"))
+add_track("GND", pcbnew.B_Cu, 0.30, (r9_ground, c14_ground))
+
+# NRST crosses the congested crystal-side channel on In2. The two B.Cu local
+# branches reach the reset capacitor and 10k pull-up without crossing the
+# capacitor's intervening ground pad.
+nrst_mcu = xy(pad("U1", 7, "NRST"))
+nrst_source = (2.00, 8.75)
+nrst_local = (2.50, 10.00)
+add_track("NRST", pcbnew.F_Cu, 0.20,
+          (nrst_mcu, nrst_source))
+add_via("NRST", nrst_source, size=0.65, drill=0.30)
+add_via("NRST", nrst_local, size=0.65, drill=0.30)
+add_track("NRST", pcbnew.In2_Cu, 0.20, (nrst_source, nrst_local))
+c23_nrst = xy(pad("C23", 1, "NRST"))
+r8_nrst = xy(pad("R8", 1, "NRST"))
+add_track("NRST", pcbnew.B_Cu, 0.20,
+          (nrst_local, (-0.51, 10.00), (-0.51, 9.20),
+           (-2.48, 9.20), c23_nrst))
+add_track("NRST", pcbnew.B_Cu, 0.20,
+          ((-0.51, 9.20), r8_nrst))
+c23_ground = xy(pad("C23", 2, "GND"))
+c23_ground_via = (-1.52, 8.00)
+add_track("GND", pcbnew.B_Cu, 0.30, (c23_ground, c23_ground_via))
+add_via("GND", c23_ground_via, size=0.65, drill=0.30)
+r8_v3 = xy(pad("R8", 2, "V3V3"))
+r8_v3_via = (1.50, 7.00)
+add_track("V3V3", pcbnew.B_Cu, 0.30, (r8_v3, r8_v3_via))
+add_via("V3V3", r8_v3_via, size=0.65, drill=0.30)
+
 # Fill after all vias exist so thermal/clearance geometry is deterministic.
 pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 pcbnew.SaveBoard(str(OUTPUT), board)
