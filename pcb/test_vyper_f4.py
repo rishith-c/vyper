@@ -42,7 +42,7 @@ def rect_circle_overlap(r, cx, cy, cr):
 
 # ---------------------------------------------------------------- pattern
 print("=== mounting pattern ===")
-check("vertical FC outline", (L.BOARD_W, L.BOARD_H) == (26.0, 64.0),
+check("vertical FC outline", (L.BOARD_W, L.BOARD_H) == (30.0, 64.0),
       f"{L.BOARD_W:.0f} x {L.BOARD_H:.0f} mm")
 check("cassette soft-mount pattern",
       (L.HOLE_PITCH_X, L.HOLE_PITCH_Y) == (16.0, 56.0),
@@ -57,7 +57,7 @@ check("grommet bore", L.HOLE_D == 3.2,
 # ---------------------------------------------------------- board vs cassette
 print("\n=== board vs vertical cassette ===")
 check("FC is narrower than ESC", L.BOARD_W < 36.0 and L.BOARD_H < 72.0,
-      "26 x 64 FC nests behind the 36 x 72 ESC")
+      "30 x 64 FC nests behind the 36 x 72 ESC")
 
 # ---------------------------------------------------------------- gyro rules
 print("\n=== gyro placement (Betaflight mfr guidelines) ===")

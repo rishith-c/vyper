@@ -10,8 +10,8 @@ PASS
 - tail cap now has positive three-screw retention
 - custom FC authored netlist passes zero-warning/zero-error SKiDL ERC and 59-net
   independent connectivity/resource checks
-- custom FC true-footprint review board transfers 74 references / 242 nodes;
-  all 57 passives are in-outline with proximity gates, and placed-part DRC has
+- custom FC true-footprint review board transfers 77 references / 250 nodes;
+  all 58 passives are in-outline with proximity gates, and placed-part DRC has
   no electrical, clearance, courtyard or edge errors
 - custom ESC authored netlist passes zero-warning/zero-error SKiDL ERC and
   159-net independent connectivity checks

@@ -1,11 +1,11 @@
 # VYPER-F4 Rev A electrical architecture
 
 Status: **authored netlist passes SKiDL ERC with zero errors and zero warnings;
-not orderable**. A four-layer true-footprint review board now transfers all 74
-references and 242 netlist nodes to physical pads. All 57 passives are placed
+not orderable**. A four-layer true-footprint review board now transfers all 77
+references and 250 netlist nodes to physical pads. All 58 passives are placed
 in-outline with functional proximity gates and no placement/copper DRC errors;
-183 connections remain unrouted.
-The current mechanical form is a 26×64 mm R3 longitudinal board on a 16×56 mm
+192 connections remain unrouted.
+The current mechanical form is a 30×64 mm R3 longitudinal board on a 16×56 mm
 M2 soft-mount pattern. It mounts vertically behind the ESC in the removable
 electronics cassette; it is not a standard square flight-stack board.
 The automatically drawn KiCad preview is excluded from release because its
@@ -40,14 +40,15 @@ earlier 28 V TPS54331, which had inadequate transient margin on 6S.
 | ESC telemetry | PD2 | UART5 RX |
 | Receiver | PA9/PA10 | UART1 |
 | GPS | PB10/PB11 | UART3 |
-| Auxiliary | PA0/PA1 | UART4 |
+| External compass | PB6/PB7 | I2C1, remote QMC5883/LIS2MDL breakout |
 | VTX control | PC6/PC7 | UART6 |
+| RGB status | PA8 | SN74AHCT1G125 level shifter + SK6812MINI-E |
 | VBAT/current ADC | PC5/PC3 | 100k:10k divider / filtered ESC current |
 | USB | PA11/PA12 | USB FS, 4-pin JST-SH service harness, 22 Ω and low-C TVS |
 | SWD | PA13/PA14 | 4-pin debug header |
 
-The four external UART groups use plated 2.4×2.0 mm pads, 1.0 mm finished holes,
-and standard 2.54 mm pitch in GND/5V/TX/RX order. They accept ordinary 0.64 mm
+The three UART groups and external I2C group use plated 2.4×2.0 mm pads, 1.0 mm finished holes,
+and standard 2.54 mm pitch. They accept ordinary 0.64 mm
 header pins or hand-soldered 26--28 AWG wire and retain copper on every layer.
 
 The matching Betaflight resource contract is
@@ -70,7 +71,7 @@ python3 pcb/test_vyper_f4_drc.py
 ```
 
 The generator's authored circuit reports zero SKiDL ERC warnings/errors and
-the tests independently check 59 named nets, unique pin ownership, the complete
+the tests independently check 58 named nets, unique pin ownership, the complete
 gyro bus, motor/ESC/UART/USB/SWD mapping, ADC and power members, exact gyro
 value, 60 V buck selection and netlist-to-pad transfer.
 
@@ -86,7 +87,8 @@ value, 60 V buck selection and netlist-to-pad transfer.
 
 - Redraw/review the human-readable KiCad schematic with zero ERC errors and no
   merged-net warnings.
-- Route all 183 remaining connections on four layers and pass fab-profile DRC
+- Repack the TPS54360 switching loop, then route all 192 remaining connections
+  on four layers and pass fab-profile DRC
   with zero warnings/errors.
 - Independent schematic/layout review, assembly outputs, bench bring-up,
   vibration/thermal tests, and Betaflight target build/USB/DFU validation.

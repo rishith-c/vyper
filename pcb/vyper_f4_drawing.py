@@ -1,4 +1,4 @@
-"""Render the dimensioned 26 x 64 mm VYPER-F4 vertical FC floorplan."""
+"""Render the dimensioned VYPER-F4 vertical FC floorplan."""
 
 import sys
 from pathlib import Path
@@ -62,10 +62,10 @@ def vdim(x, y1, y2, label):
 
 
 hdim(-35.0, -w2, w2, f"{L.BOARD_W:.0f} mm")
-vdim(-14.0, -h2, h2, f"{L.BOARD_H:.0f} mm")
+vdim(-18.0, -h2, h2, f"{L.BOARD_H:.0f} mm")
 hdim(34.5, -L.HOLE_PITCH_X / 2, L.HOLE_PITCH_X / 2,
      f"{L.HOLE_PITCH_X:.0f} mm")
-vdim(13.5, -L.HOLE_PITCH_Y / 2, L.HOLE_PITCH_Y / 2,
+vdim(18.0, -L.HOLE_PITCH_Y / 2, L.HOLE_PITCH_Y / 2,
      f"{L.HOLE_PITCH_Y:.0f} mm")
 
 gx, gy = L.PARTS["U2_gyro_ICM42688P"]["pos"]
@@ -74,11 +74,13 @@ ax.annotate("gyro", xy=(gx, gy), xytext=(-13.5, 8.5), fontsize=7,
 ax.text(0, 38.0, "VYPER-F4 VERTICAL FLIGHT CONTROLLER",
         fontsize=11, fontweight="bold", ha="center")
 ax.text(0, 36.4,
-        f"26×64 R3 | 16×56 soft mount | 4× Ø{L.HOLE_D:.1f} | all mm",
+        f"{L.BOARD_W:.0f}×{L.BOARD_H:.0f} R3 | "
+        f"{L.HOLE_PITCH_X:.0f}×{L.HOLE_PITCH_Y:.0f} soft mount | "
+        f"4× Ø{L.HOLE_D:.1f} | all mm",
         fontsize=7.5, ha="center")
 ax.text(0, -38.0, "solid = F.Cu major parts   dashed = B.Cu major parts",
         fontsize=7, ha="center", color="#333")
-ax.set_xlim(-17, 17)
+ax.set_xlim(-21, 21)
 ax.set_ylim(-40, 40)
 ax.set_aspect("equal")
 ax.axis("off")

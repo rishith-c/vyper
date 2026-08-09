@@ -64,7 +64,7 @@ for ref, count in (("J3", 4), ("J4", 4), ("J5", 4), ("J6", 4),
         str(i) for i in range(1, count + 1)}
 
 for ref, group in (("J3", "J3_rx_uart1"), ("J4", "J4_gps_uart3"),
-                   ("J5", "J5_aux_uart4"), ("J6", "J6_vtx_uart6")):
+                   ("J5", "J5_external_i2c"), ("J6", "J6_vtx_uart6")):
     pads = {p.GetNumber(): p for p in footprints[ref].Pads()}
     for number, (x, y, _label) in enumerate(L.PAD_GROUPS[group], 1):
         pad = pads[str(number)]
@@ -81,7 +81,7 @@ for ref, group in (("J3", "J3_rx_uart1"), ("J4", "J4_gps_uart3"),
         assert abs(pcbnew.ToMM(drill.x) - L.IO_PAD_DRILL) < 1e-6
         assert abs(pcbnew.ToMM(drill.y) - L.IO_PAD_DRILL) < 1e-6
 
-assert len(L.PASSIVES) == 57
+assert len(L.PASSIVES) == 58
 for ref, spec in L.PASSIVES.items():
     actual = footprints[ref].GetPosition()
     assert abs(pcbnew.ToMM(actual.x) - spec["pos"][0]) < 1e-6
@@ -122,11 +122,11 @@ assert max(distance(L.PASSIVES[r]["pos"], part_pos("U1_mcu_STM32F405RGT6"))
 assert board.GetCopperLayerCount() == 4
 assert len(board.GetTracks()) == 0
 assert len(board.Zones()) == 0
-assert len(expected_refs) == 74
-assert len(expected_nodes) == 242
-assert len(board.GetNetInfo().NetsByName()) == 60
+assert len(expected_refs) == 77
+assert len(expected_nodes) == 250
+assert len(board.GetNetInfo().NetsByName()) == 59
 
-print("all 74 FC references and 242 netlist nodes reach real PCB pads")
-print("all 57 passives are in-outline and preserve functional proximity gates")
+print("all 77 FC references and 250 netlist nodes reach real PCB pads")
+print("all 58 passives are in-outline and preserve functional proximity gates")
 print("all 16 external I/O pads accept 2.54 mm headers or stripped wire")
 print("four layers; zero tracks/zones by design -- unrouted review board, NOT FOR FAB")

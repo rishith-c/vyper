@@ -2,7 +2,7 @@
   (version "D")
   (design
     (source "vyper_f4_schematic.py")
-    (date "08/08/2026 03:50 PM")
+    (date "08/08/2026 06:30 PM")
     (tool "SKiDL (2.3.0)")
     (sheet
       (number 1)
@@ -55,7 +55,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "eTxa7dtnzk")
+          (name "SKiDL Tag") "fPH4cqutDA")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -65,7 +65,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b8bcb28b-2aa6-5ed5-8ee6-0b726065286b"))
+      (tstamps "66596cff-3b03-50f0-80af-a7146e3a76c3"))
     (comp
       (ref "C10")
       (value "1uF 10V X7R")
@@ -79,7 +79,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "6DWj0e_fSI")
+          (name "SKiDL Tag") "XUytdMbuSS")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -89,7 +89,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "84a98cd2-84be-5a42-bb4a-b544c930db8d"))
+      (tstamps "a1f1cf3b-c304-527b-832c-ff4102a3d0a9"))
     (comp
       (ref "C11")
       (value "1uF 10V X7R")
@@ -103,7 +103,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "j9_U1UWnfo")
+          (name "SKiDL Tag") "TRcRyOn8xJ")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -113,7 +113,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "12d0b2e8-8c5b-5fa3-8977-e63148edd408"))
+      (tstamps "d313cb5d-403a-585e-9808-8d04aae40a84"))
     (comp
       (ref "C12")
       (value "100nF X7R")
@@ -127,7 +127,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "lkg4co_eOl")
+          (name "SKiDL Tag") "jtMCMODxF_")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -137,7 +137,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "7442c4c2-ce3d-543e-808a-e8d4c6fca30f"))
+      (tstamps "782158f7-196b-5ea4-ba38-738820c9b4a2"))
     (comp
       (ref "C13")
       (value "1uF X7R")
@@ -151,7 +151,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "hYVoYLh_ew")
+          (name "SKiDL Tag") "YmJqLz5LWn")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -161,7 +161,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1532c5ea-ae40-547e-bc0a-3e5c9e3edb27"))
+      (tstamps "d249b6b3-1228-5f3e-a2d7-530a312d3d07"))
     (comp
       (ref "C14")
       (value "100nF X7R")
@@ -175,7 +175,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "b1dJTrxVud")
+          (name "SKiDL Tag") "1eB1gCES57")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -185,7 +185,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "972afda7-7591-58eb-927d-c8deed5250da"))
+      (tstamps "99c52f14-d626-57b9-b094-9e713a0fc4a4"))
     (comp
       (ref "C15")
       (value "100nF X7R")
@@ -199,7 +199,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "kyXA0xvZKW")
+          (name "SKiDL Tag") "2CtGl_I3QX")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -209,7 +209,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "72c7782b-53aa-5903-b37d-0adfb8e31772"))
+      (tstamps "fdb8e2b2-2c3c-5cc0-ad3c-d26c6e54c2f8"))
     (comp
       (ref "C16")
       (value "100nF X7R")
@@ -223,7 +223,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "YbNwQopgwK")
+          (name "SKiDL Tag") "Uvin5crN_9")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -233,7 +233,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e78f6ca2-bcf1-5c36-9456-acf2b7803944"))
+      (tstamps "f41c1f31-1af6-556b-b292-9249d64151d0"))
     (comp
       (ref "C17")
       (value "100nF X7R")
@@ -247,7 +247,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "ANEY_jTfMu")
+          (name "SKiDL Tag") "1RsGdA_hia")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -257,7 +257,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "bebc9429-ed75-50a0-81e6-efc0c42fb3d4"))
+      (tstamps "3ff71e7e-40f1-5e96-a9d4-80856ee01d2a"))
     (comp
       (ref "C18")
       (value "4.7uF X7R")
@@ -271,7 +271,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "Y_FgVPrYyi")
+          (name "SKiDL Tag") "cY22rxzhtG")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -281,7 +281,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "f1308ec5-9a35-50a8-9e7a-3fd6af08c37c"))
+      (tstamps "b185f728-00bf-5549-a6ad-823ccc6c10e9"))
     (comp
       (ref "C19")
       (value "2.2uF low-ESR")
@@ -295,7 +295,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "sqs_badE4u")
+          (name "SKiDL Tag") "bYTQKJOelf")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -305,7 +305,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "8b03eaa1-a83f-5047-bb53-430e77d66346"))
+      (tstamps "b5114c91-ce10-5e52-87dd-267054521f68"))
     (comp
       (ref "C2")
       (value "39pF C0G")
@@ -319,7 +319,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "LxOWgFCOpE")
+          (name "SKiDL Tag") "YTpxHixw_D")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -329,7 +329,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "9cf10918-1a50-55e8-9a1d-a29d5a7e9ad6"))
+      (tstamps "96090f71-333f-55ef-910d-7dd321ea2761"))
     (comp
       (ref "C20")
       (value "2.2uF low-ESR")
@@ -343,7 +343,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "_UiGcDztLb")
+          (name "SKiDL Tag") "qT5Cv_hRC1")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -353,7 +353,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "226d2b46-736a-517c-b767-6f97b5f25bd6"))
+      (tstamps "8a9f91fa-7a3d-5843-91d5-d610182ad769"))
     (comp
       (ref "C21")
       (value "18pF C0G")
@@ -367,7 +367,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "H7nNqRBQ6z")
+          (name "SKiDL Tag") "CQB8P9gJ__")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -377,7 +377,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3dac7fb8-6157-599a-a581-20fa1aebd625"))
+      (tstamps "4be44a5c-ad56-5437-8ad1-6f4441bc41b1"))
     (comp
       (ref "C22")
       (value "18pF C0G")
@@ -391,7 +391,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "X6imonaQqw")
+          (name "SKiDL Tag") "anJgG1t7LT")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -401,7 +401,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1feecf16-b5c0-52d0-b78b-3374bd318bec"))
+      (tstamps "126252d0-6ca6-5fd1-9930-1faa2b5807f9"))
     (comp
       (ref "C23")
       (value "100nF")
@@ -415,7 +415,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "w_WtMxJKsh")
+          (name "SKiDL Tag") "nZSFUMA17H")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -425,7 +425,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3ace4429-8e78-5c7d-aa74-8929ae364c3e"))
+      (tstamps "6dd24ffd-e6e4-55d6-a905-0e972812f670"))
     (comp
       (ref "C24")
       (value "100nF X7R")
@@ -439,7 +439,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "nQuKZpDLcM")
+          (name "SKiDL Tag") "tjXOfkdL_h")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -449,7 +449,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "bc9f23f7-4636-540c-98b2-f7ff154d8d0d"))
+      (tstamps "487ef898-6a7e-550e-bac9-9520a51e94f5"))
     (comp
       (ref "C25")
       (value "2.2uF X7R")
@@ -463,7 +463,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "5ENY1JjlH0")
+          (name "SKiDL Tag") "WQLJtxDNoI")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -473,7 +473,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e7355877-6824-53f1-bc99-d129a6073fa4"))
+      (tstamps "ab8f2077-4f0c-5f28-acb6-abacc3a909a4"))
     (comp
       (ref "C26")
       (value "100nF")
@@ -487,7 +487,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "t1jETYvsxm")
+          (name "SKiDL Tag") "hZqDUFgCXT")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -497,7 +497,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4b8971d3-4ee6-5d6f-b746-18189b08ac7f"))
+      (tstamps "a5e949bc-1121-56de-9df2-4b8f6f11cdda"))
     (comp
       (ref "C27")
       (value "100nF")
@@ -511,7 +511,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "5bj0uK93Gd")
+          (name "SKiDL Tag") "spZqLe9z4U")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -521,7 +521,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1b59cb51-f3a0-5c39-a425-30c631fca5cb"))
+      (tstamps "31b8f61a-46d1-5eba-b016-9859c772f29b"))
     (comp
       (ref "C28")
       (value "1uF 10V")
@@ -535,7 +535,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "o2PWsEmlSh")
+          (name "SKiDL Tag") "awMVijLQME")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -545,7 +545,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "871d3084-07ea-5112-a7b3-d116c4a8ee86"))
+      (tstamps "fb4dd3d5-e1da-5391-8539-bf4bf3775bcd"))
     (comp
       (ref "C29")
       (value "10nF C0G")
@@ -559,7 +559,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "aEmV2bMtMo")
+          (name "SKiDL Tag") "1V9DOkCNys")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -569,7 +569,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "16c99125-bbd4-5178-978b-e104ef3ba7ff"))
+      (tstamps "dadd3c2f-cb56-50f5-8931-92b7880e683d"))
     (comp
       (ref "C3")
       (value "100nF 16V X7R")
@@ -583,7 +583,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "T1UwrSKesw")
+          (name "SKiDL Tag") "G3WxNMxlFe")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -593,7 +593,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "f4401e6b-3bf6-557b-92c0-8b33fdd963fc"))
+      (tstamps "09effeb4-1904-587f-890a-4ab3d395b1f0"))
     (comp
       (ref "C30")
       (value "10nF C0G")
@@ -607,7 +607,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "zmQUR6hq0I")
+          (name "SKiDL Tag") "AzULyTNI5L")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -617,7 +617,31 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "bfdc6429-027e-53fa-b5d6-90fa80f68569"))
+      (tstamps "d049a016-1c9e-555f-9460-47ff303ded57"))
+    (comp
+      (ref "C31")
+      (value "100nF X7R")
+      (description "Unpolarized capacitor")
+      (footprint "Capacitor_SMD:C_0402_1005Metric")
+      (fields
+        (field
+          (name "Description") "Unpolarized capacitor")
+        (field
+          (name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "F2VJpATjhq")
+        (field
+          (name "SKiDL Line") "vyper_f4_schematic.py:44"))
+      (libsource
+        (lib "Device")
+        (part "C"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "4133c909-e803-5250-a941-fccb7ec4fe13"))
     (comp
       (ref "C4")
       (value "2.2uF 100V X7R")
@@ -631,7 +655,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "4E27OZZtoK")
+          (name "SKiDL Tag") "QQNAKFMq8T")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -641,7 +665,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "34dc6cb7-f26e-55c2-b80b-19d21c84b8ad"))
+      (tstamps "b13ac610-74ae-5a80-8bbe-45e7e9286af3"))
     (comp
       (ref "C5")
       (value "47uF 10V X7R")
@@ -655,7 +679,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "Sp1vWhMJ8o")
+          (name "SKiDL Tag") "kLK44ADLtD")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -665,7 +689,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "5ffe314a-f8a4-5e45-a712-9e18167723ff"))
+      (tstamps "c036199f-ea9e-5ab3-ba40-6e3d4b6f7d2f"))
     (comp
       (ref "C6")
       (value "2.2uF 100V X7R")
@@ -679,7 +703,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "m9kgiuyexM")
+          (name "SKiDL Tag") "jab4DNtrJN")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -689,7 +713,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a46cc7f4-e308-5de8-8303-a4f6dec724dc"))
+      (tstamps "b1b7862f-2030-5ad1-b007-bc22cc3609a0"))
     (comp
       (ref "C7")
       (value "47uF 10V X7R")
@@ -703,7 +727,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "gvCWNkNppK")
+          (name "SKiDL Tag") "8EETeseH2I")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -713,7 +737,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "d7e91558-a3e5-5d76-8ba8-01a41dd8771d"))
+      (tstamps "b630b041-8595-5262-ba83-01a7220f76cc"))
     (comp
       (ref "C8")
       (value "1uF 10V X7R")
@@ -727,7 +751,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "LMQCvmfuA2")
+          (name "SKiDL Tag") "mbNiCNb1WR")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -737,7 +761,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a98bc3b0-be5e-5d1f-b6fa-de2e1eb8778f"))
+      (tstamps "a7ca87c4-a640-537e-84c2-4eb095806e05"))
     (comp
       (ref "C9")
       (value "1uF 10V X7R")
@@ -751,7 +775,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "gsoIX9SOsl")
+          (name "SKiDL Tag") "YjtdAiv1PD")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:44"))
       (libsource
@@ -761,7 +785,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "8ea1690f-7d9d-5fe6-bdbf-86b51699e43f"))
+      (tstamps "5a9921f3-7d48-5ff0-8fe6-765c7da41748"))
     (comp
       (ref "D1")
       (value "B560C 60V 5A")
@@ -775,7 +799,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "gokDqpPkEn")
+          (name "SKiDL Tag") "rmaUvOUj3o")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:51"))
       (libsource
@@ -785,7 +809,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e2977119-072e-5c9d-bc16-f681d81b4e06"))
+      (tstamps "f3accc4f-6fed-5d2f-ac2b-53783da6884f"))
     (comp
       (ref "D2")
       (value "SS14")
@@ -799,7 +823,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "ZkDXsZbi0m")
+          (name "SKiDL Tag") "mTOSlRN8KX")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:51"))
       (libsource
@@ -809,7 +833,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "bdb4b702-5b8c-5e28-8163-3e6c4af00767"))
+      (tstamps "fba7e0c0-57e2-5e4f-b57c-c6abb4b7fa44"))
     (comp
       (ref "D3")
       (value "SS14")
@@ -823,7 +847,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "SaxULvLgBd")
+          (name "SKiDL Tag") "Y_Sj9ZtKFA")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:51"))
       (libsource
@@ -833,31 +857,31 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "f19e816f-093c-5a4f-96b4-f991b75153ae"))
+      (tstamps "f50f1fab-e9de-58fe-8f65-108d64c37f7f"))
     (comp
       (ref "D4")
-      (value "GREEN")
-      (description "Light emitting diode")
-      (footprint "LED_SMD:LED_0603_1608Metric")
+      (value "SK6812MINI-E")
+      (description "RGB LED with integrated controller")
+      (footprint "LED_SMD:LED_SK6812MINI_PLCC4_3.5x3.5mm_P1.75mm")
       (fields
         (field
-          (name "Description") "Light emitting diode")
+          (name "Description") "RGB LED with integrated controller")
         (field
-          (name "Footprint") "LED_SMD:LED_0603_1608Metric")
+          (name "Footprint") "LED_SMD:LED_SK6812MINI_PLCC4_3.5x3.5mm_P1.75mm")
         (field
-          (name "Datasheet") "~")
+          (name "Datasheet") "https://cdn-shop.adafruit.com/product-files/2686/SK6812MINI_REV.01-1-2.pdf")
         (field
-          (name "SKiDL Tag") "R03WakBA5U")
+          (name "SKiDL Tag") "Rc81Xs3eM6")
         (field
-          (name "SKiDL Line") "vyper_f4_schematic.py:307"))
+          (name "SKiDL Line") "vyper_f4_schematic.py:329"))
       (libsource
-        (lib "Device")
-        (part "LED"))
+        (lib "LED")
+        (part "SK6812MINI"))
       (sheetpath
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "226f4119-6a8e-58cd-ad3b-e55b2041978c"))
+      (tstamps "6783718b-9f99-5e9c-bf3c-57344d33ad5f"))
     (comp
       (ref "D5")
       (value "PESD5V low-C")
@@ -871,7 +895,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "LIfRxUs9M1")
+          (name "SKiDL Tag") "SYuobo7rDX")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:256"))
       (libsource
@@ -881,7 +905,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4ba14d2f-6b3c-5383-9b74-9b40c4a0e739"))
+      (tstamps "1c1f555c-b8ed-58cc-a82f-ba08f9fbff3e"))
     (comp
       (ref "D6")
       (value "PESD5V low-C")
@@ -895,7 +919,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "gdrT9YLTEd")
+          (name "SKiDL Tag") "bTezAZtjXF")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:256"))
       (libsource
@@ -905,7 +929,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "87ce29f2-fbb1-52f5-b477-80579e64244b"))
+      (tstamps "fb6e997d-d25b-5360-8593-f8faed9cc48e"))
     (comp
       (ref "D7")
       (value "PESD5V low-C")
@@ -919,7 +943,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "QbyZdR7T7d")
+          (name "SKiDL Tag") "e1MwhElluE")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:256"))
       (libsource
@@ -929,7 +953,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "7c7ef229-246a-556c-9eb1-d9b9efc2d1eb"))
+      (tstamps "9a3b1be8-7b6a-58e2-b3f9-d61021195182"))
     (comp
       (ref "FB1")
       (value "600R@100MHz")
@@ -943,7 +967,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "iDU2sjs5mT")
+          (name "SKiDL Tag") "hVZt4EQVWQ")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:151"))
       (libsource
@@ -953,7 +977,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "652d19df-688d-5c34-945a-7aed3e997cf0"))
+      (tstamps "56004555-3dfd-5ae4-80ed-d2c42eea9cb4"))
     (comp
       (ref "J1")
       (value "USB_SERVICE_SH1.0_4P")
@@ -967,7 +991,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "Y2BORlN3zg")
+          (name "SKiDL Tag") "bwoLiqUZgu")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:245"))
       (libsource
@@ -977,7 +1001,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "deb1f292-ed38-5301-917a-4d2a87ed7989"))
+      (tstamps "6fe9bf8e-024b-5989-a453-35dc3243a2cc"))
     (comp
       (ref "J2")
       (value "ESC_SH1.0_8P")
@@ -991,7 +1015,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "UF0N2Ffab4")
+          (name "SKiDL Tag") "g6vOJjkm3Z")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:73"))
       (libsource
@@ -1001,7 +1025,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "0e98c00e-3329-55d1-b06a-e5f3cd2b97df"))
+      (tstamps "42efea8c-ccd9-52ef-bc00-3c445cb01c3c"))
     (comp
       (ref "J3")
       (value "RX_UART1")
@@ -1015,9 +1039,9 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "lfCboP4_2B")
+          (name "SKiDL Tag") "s799LWXK_H")
         (field
-          (name "SKiDL Line") "vyper_f4_schematic.py:288"))
+          (name "SKiDL Line") "vyper_f4_schematic.py:287"))
       (libsource
         (lib "Connector_Generic")
         (part "Conn_01x04"))
@@ -1025,7 +1049,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "70e376e9-71e6-5376-b26c-3a04663fc5f8"))
+      (tstamps "820a5024-f1ab-533c-afaf-c03fa42c1e65"))
     (comp
       (ref "J4")
       (value "GPS_UART3")
@@ -1039,9 +1063,9 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "vXDsmqBAcU")
+          (name "SKiDL Tag") "wClWt9NhVc")
         (field
-          (name "SKiDL Line") "vyper_f4_schematic.py:288"))
+          (name "SKiDL Line") "vyper_f4_schematic.py:287"))
       (libsource
         (lib "Connector_Generic")
         (part "Conn_01x04"))
@@ -1049,10 +1073,10 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "d1fd5c81-4646-5443-b369-dd6d92fa9e5b"))
+      (tstamps "8d2670de-7c2a-5282-a13c-09decb27b77c"))
     (comp
       (ref "J5")
-      (value "AUX_UART4")
+      (value "EXTERNAL_I2C")
       (description "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)")
       (footprint "Connector_PinHeader_1.27mm:PinHeader_1x04_P1.27mm_Vertical")
       (fields
@@ -1063,9 +1087,9 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "BBQgpJj2Li")
+          (name "SKiDL Tag") "BVgw_a4qQQ")
         (field
-          (name "SKiDL Line") "vyper_f4_schematic.py:288"))
+          (name "SKiDL Line") "vyper_f4_schematic.py:297"))
       (libsource
         (lib "Connector_Generic")
         (part "Conn_01x04"))
@@ -1073,7 +1097,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "ffc40c09-c9a1-59f4-8945-69629052f062"))
+      (tstamps "78eed3fc-ef11-5408-ad7b-00ad47ed37df"))
     (comp
       (ref "J6")
       (value "VTX_UART6")
@@ -1087,9 +1111,9 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "ydX9d5UKfT")
+          (name "SKiDL Tag") "o8lR6Dlm3j")
         (field
-          (name "SKiDL Line") "vyper_f4_schematic.py:288"))
+          (name "SKiDL Line") "vyper_f4_schematic.py:287"))
       (libsource
         (lib "Connector_Generic")
         (part "Conn_01x04"))
@@ -1097,7 +1121,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "388ebb72-bd7e-5197-a249-236f521da14e"))
+      (tstamps "94dfc7c2-4cd2-51aa-bf76-b52fa57ca9a4"))
     (comp
       (ref "J7")
       (value "SWD")
@@ -1111,9 +1135,9 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "aZkmlRn1iM")
+          (name "SKiDL Tag") "oqsFMtc4nT")
         (field
-          (name "SKiDL Line") "vyper_f4_schematic.py:297"))
+          (name "SKiDL Line") "vyper_f4_schematic.py:304"))
       (libsource
         (lib "Connector_Generic")
         (part "Conn_01x04"))
@@ -1121,7 +1145,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "da8198c5-2c75-552d-a591-3377ac4221c7"))
+      (tstamps "85367b19-53dc-5b98-a9e9-5feb065cf5b2"))
     (comp
       (ref "J8")
       (value "BEEPER_PAD")
@@ -1135,9 +1159,9 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "ztTQRfvjKV")
+          (name "SKiDL Tag") "j8FvtAGx0j")
         (field
-          (name "SKiDL Line") "vyper_f4_schematic.py:311"))
+          (name "SKiDL Line") "vyper_f4_schematic.py:336"))
       (libsource
         (lib "Connector_Generic")
         (part "Conn_01x02"))
@@ -1145,7 +1169,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "fa18d3f2-9674-5b24-b33e-6b167c350bb7"))
+      (tstamps "b7f20787-103e-5949-befc-ad0c1d7d23ee"))
     (comp
       (ref "L1")
       (value "8.2uH Isat>=5.8A")
@@ -1159,7 +1183,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "pWq1ZCuD9u")
+          (name "SKiDL Tag") "_ixCCRQODE")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:113"))
       (libsource
@@ -1169,7 +1193,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "3c3a296c-18b5-5f7e-8e64-61ed37855dd0"))
+      (tstamps "ee5b7793-2b8f-5ab5-82e0-a59356a0905a"))
     (comp
       (ref "R1")
       (value "162k 1%")
@@ -1183,7 +1207,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "Y3wfnL2QjO")
+          (name "SKiDL Tag") "HA2drHNv0Y")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1193,7 +1217,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "454a5450-eb1a-5baa-a09c-07205072a92b"))
+      (tstamps "b77df376-9e65-5223-9352-703cf8f1e75d"))
     (comp
       (ref "R10")
       (value "10k")
@@ -1207,7 +1231,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "27ZIkBo8PM")
+          (name "SKiDL Tag") "mmzrqQh8Tz")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1217,7 +1241,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4062f17f-dd20-527d-acbf-cd5ff8c63cc6"))
+      (tstamps "93fad11f-979e-50eb-84c8-8a87acb273e2"))
     (comp
       (ref "R11")
       (value "10k")
@@ -1231,7 +1255,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "GmSA5tE6OT")
+          (name "SKiDL Tag") "T_HwbwTVDr")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1241,7 +1265,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "c27dbae9-d0c0-599a-9977-0dcaf8100d38"))
+      (tstamps "37991d16-be13-52f8-91ea-d4cde13a252f"))
     (comp
       (ref "R12")
       (value "4.7k")
@@ -1255,7 +1279,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "6aSCJy9ipN")
+          (name "SKiDL Tag") "og9yqUWl0B")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1265,7 +1289,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "ed0117ad-445e-5fd9-a039-410abc74149c"))
+      (tstamps "f632cd37-530b-5833-997a-82c491a669dc"))
     (comp
       (ref "R13")
       (value "4.7k")
@@ -1279,7 +1303,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "a23ztf37Bt")
+          (name "SKiDL Tag") "hn1kzdcTMh")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1289,7 +1313,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "9769596c-288d-5949-917f-961204fb7290"))
+      (tstamps "92288c7a-7439-5701-8dc4-23a26c5d7901"))
     (comp
       (ref "R14")
       (value "22R")
@@ -1303,7 +1327,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "6UzXs_FT9S")
+          (name "SKiDL Tag") "4LkKut5vVd")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1313,7 +1337,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "22f0d9ad-3ad2-5a19-8039-461cf27d5c47"))
+      (tstamps "7460ca1d-c6bf-59ed-8393-15fd3e00e69d"))
     (comp
       (ref "R15")
       (value "22R")
@@ -1327,7 +1351,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "QWjnwH1LMB")
+          (name "SKiDL Tag") "vga4n1lJDk")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1337,7 +1361,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1f4b7df3-1fe5-5067-a726-0e4466d75493"))
+      (tstamps "05b8e31b-463b-5958-a1f2-0fe446024338"))
     (comp
       (ref "R16")
       (value "100k 0.1%")
@@ -1351,7 +1375,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "Fw2cGzVrxi")
+          (name "SKiDL Tag") "JFVB2WQOSW")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1361,7 +1385,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "ca7af5ab-aa25-5a9e-861b-c931b108d9cb"))
+      (tstamps "d5932bae-0cbd-59b9-b6ee-3e15d38838ff"))
     (comp
       (ref "R17")
       (value "10k 0.1%")
@@ -1375,7 +1399,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "f33SE267pN")
+          (name "SKiDL Tag") "LPoHcT2zvy")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1385,7 +1409,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "781c0748-75a5-57dd-b2ef-4719bc149492"))
+      (tstamps "a94af54b-51de-50c1-aad0-1484b7c6802d"))
     (comp
       (ref "R18")
       (value "1k")
@@ -1399,7 +1423,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "Qii8Rd1dlT")
+          (name "SKiDL Tag") "6zTurKjR1u")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1409,10 +1433,10 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e916bd9d-e3c6-5751-9c87-fcdee68dada5"))
+      (tstamps "b6cfbc35-7069-5409-a00a-3f0a52a70bf9"))
     (comp
       (ref "R19")
-      (value "1k")
+      (value "33R")
       (description "Resistor")
       (footprint "Resistor_SMD:R_0402_1005Metric")
       (fields
@@ -1423,7 +1447,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "_rBg4lRxNC")
+          (name "SKiDL Tag") "vL2MzwqbdE")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1433,7 +1457,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "987e3133-62ce-5d6c-8c1f-bfa322c8e34a"))
+      (tstamps "91a4839d-9975-5b29-81da-c852de95d429"))
     (comp
       (ref "R2")
       (value "523k 1%")
@@ -1447,7 +1471,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "ZKSoZto8Us")
+          (name "SKiDL Tag") "c1XEKtHPM1")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1457,7 +1481,31 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b257e02f-a70c-53a6-83e9-83df65d30667"))
+      (tstamps "6b270aa9-c592-55e1-abfc-0e1427b0f792"))
+    (comp
+      (ref "R20")
+      (value "100k")
+      (description "Resistor")
+      (footprint "Resistor_SMD:R_0402_1005Metric")
+      (fields
+        (field
+          (name "Description") "Resistor")
+        (field
+          (name "Footprint") "Resistor_SMD:R_0402_1005Metric")
+        (field
+          (name "Datasheet") "~")
+        (field
+          (name "SKiDL Tag") "u0almWNfXY")
+        (field
+          (name "SKiDL Line") "vyper_f4_schematic.py:37"))
+      (libsource
+        (lib "Device")
+        (part "R"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "279c10c6-0d27-5ffc-ae29-f20653cda739"))
     (comp
       (ref "R3")
       (value "84.5k 1%")
@@ -1471,7 +1519,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "TuWywpkLNk")
+          (name "SKiDL Tag") "_W189tlzSI")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1481,7 +1529,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "e49f997e-a67d-53f2-8b85-3d97dee90e66"))
+      (tstamps "8f143318-1923-511a-a48b-329d155759d3"))
     (comp
       (ref "R4")
       (value "53.6k 1%")
@@ -1495,7 +1543,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "5iTcEKhQeJ")
+          (name "SKiDL Tag") "GfOxK4J0II")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1505,7 +1553,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "a401d0d6-4e21-5bf2-8a97-d26fde502cd3"))
+      (tstamps "79076f12-c0a0-525f-9392-40bfa09ba94f"))
     (comp
       (ref "R5")
       (value "10.2k 1%")
@@ -1519,7 +1567,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "PhywCuAReC")
+          (name "SKiDL Tag") "CkLehWk0G3")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1529,7 +1577,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "88d512d9-25d3-5ee3-b97e-96edbd70c36d"))
+      (tstamps "b038faf8-2687-5baf-a349-cadd65735c76"))
     (comp
       (ref "R6")
       (value "13.0k 1%")
@@ -1543,7 +1591,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "QEreNrwib7")
+          (name "SKiDL Tag") "5JOTR1poRA")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1553,7 +1601,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "866ec374-8b9f-511d-943b-861b6ad97bcd"))
+      (tstamps "9cc27c19-0fe6-5d42-90fe-5d1ffe380d17"))
     (comp
       (ref "R7")
       (value "1M")
@@ -1567,7 +1615,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "bx4vcJmvF0")
+          (name "SKiDL Tag") "1BMdix2ABi")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1577,7 +1625,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "1bdec57c-ee28-58e2-b3ec-28b992c76eab"))
+      (tstamps "06e4036f-e8a5-5967-a54c-f28579042a83"))
     (comp
       (ref "R8")
       (value "10k")
@@ -1591,7 +1639,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "UxAgmWE3AQ")
+          (name "SKiDL Tag") "_58QyhlliM")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1601,7 +1649,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "5be6dc50-d7dc-59b1-9c22-5be316a652a5"))
+      (tstamps "b6ab1527-ce8e-5f7d-abc7-f5dfa8767fc6"))
     (comp
       (ref "R9")
       (value "100k")
@@ -1615,7 +1663,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "tm4gIDfs7J")
+          (name "SKiDL Tag") "0V1C8l21SA")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:37"))
       (libsource
@@ -1625,7 +1673,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "7102d390-18f1-5bab-8fa9-cb9e865ebd57"))
+      (tstamps "1937b2f7-b1d3-59cc-a1f7-d6caf3e5b2a1"))
     (comp
       (ref "U1")
       (value "STM32F405RGTx")
@@ -1639,7 +1687,7 @@
         (field
           (name "Datasheet") "https://www.st.com/resource/en/datasheet/stm32f405rg.pdf")
         (field
-          (name "SKiDL Tag") "DDM7RMarbN")
+          (name "SKiDL Tag") "KSuyY7Ogo5")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:145"))
       (libsource
@@ -1649,7 +1697,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "b3c4f9e0-88af-5b76-a917-33020775b0fe"))
+      (tstamps "2144f123-be75-5fc4-9a63-b0bcf304f2bb"))
     (comp
       (ref "U2")
       (value "ICM-42688-P")
@@ -1663,7 +1711,7 @@
         (field
           (name "Datasheet") "https://invensense.tdk.com/wp-content/uploads/2020/04/ds-000347_icm-42688-p-datasheet.pdf")
         (field
-          (name "SKiDL Tag") "KxoZAIDuXj")
+          (name "SKiDL Tag") "xxq6VZkSmB")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:188"))
       (libsource
@@ -1673,7 +1721,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "676fdbae-5d15-5161-9043-e7a152043b73"))
+      (tstamps "f3bd4b04-a201-55c7-aec2-1878fc2ff6f9"))
     (comp
       (ref "U3")
       (value "TPS54360DDA")
@@ -1687,7 +1735,7 @@
         (field
           (name "Datasheet") "http://www.ti.com/lit/ds/symlink/tps54360.pdf")
         (field
-          (name "SKiDL Tag") "AdKUZGQRJq")
+          (name "SKiDL Tag") "rh4zv6YvrQ")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:87"))
       (libsource
@@ -1697,7 +1745,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "f36cdcea-d55f-584b-bf12-555a9e1ed309"))
+      (tstamps "5b864cbe-cbcf-5851-8467-67f9cb8649c0"))
     (comp
       (ref "U4")
       (value "AP2112K-3.3")
@@ -1711,7 +1759,7 @@
         (field
           (name "Datasheet") "https://www.diodes.com/assets/Datasheets/AP2112.pdf")
         (field
-          (name "SKiDL Tag") "8yxB6tZrDU")
+          (name "SKiDL Tag") "oHmQXBQqj2")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:131"))
       (libsource
@@ -1721,7 +1769,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "f8a4ee19-5c6c-55b9-91da-55f20ae79488"))
+      (tstamps "77086b2c-a5f6-5ec2-8825-70892ae75f41"))
     (comp
       (ref "U5")
       (value "AP2112K-3.3")
@@ -1735,7 +1783,7 @@
         (field
           (name "Datasheet") "https://www.diodes.com/assets/Datasheets/AP2112.pdf")
         (field
-          (name "SKiDL Tag") "QE4odydxqh")
+          (name "SKiDL Tag") "CeKRFnQ7AM")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:132"))
       (libsource
@@ -1745,7 +1793,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "511ce636-b65d-5bff-a57c-d2c911a3594e"))
+      (tstamps "e22ad8c6-fc0b-5ca2-8935-6ad2344af446"))
     (comp
       (ref "U6")
       (value "W25Q128JVS")
@@ -1759,7 +1807,7 @@
         (field
           (name "Datasheet") "https://www.winbond.com/resource-files/w25q128jv_dtr%20revc%2003272018%20plus.pdf")
         (field
-          (name "SKiDL Tag") "PJWCkR5QM4")
+          (name "SKiDL Tag") "BLtqgIqVsK")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:210"))
       (libsource
@@ -1769,7 +1817,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "f0d6f43a-5d3c-5237-8e38-b4b35ce01b92"))
+      (tstamps "79fcfb17-b5b9-58f9-a46c-7680f8f9bd20"))
     (comp
       (ref "U7")
       (value "BMP280")
@@ -1783,7 +1831,7 @@
         (field
           (name "Datasheet") "https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BMP280-DS001.pdf")
         (field
-          (name "SKiDL Tag") "47Qk1gjNmo")
+          (name "SKiDL Tag") "0xhnotiqjl")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:230"))
       (libsource
@@ -1793,7 +1841,31 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "4ef17474-769f-5055-9eae-93ecba05de32"))
+      (tstamps "fb08b42f-fd81-5a5e-b599-ee6bc35809d2"))
+    (comp
+      (ref "U8")
+      (value "SN74AHCT1G125DBVR")
+      (description "Single Buffer Gate Tri-State, Low-Voltage CMOS")
+      (footprint "Package_TO_SOT_SMD:SOT-23-5")
+      (fields
+        (field
+          (name "Description") "Single Buffer Gate Tri-State, Low-Voltage CMOS")
+        (field
+          (name "Footprint") "Package_TO_SOT_SMD:SOT-23-5")
+        (field
+          (name "Datasheet") "http://www.ti.com/lit/sg/scyt129e/scyt129e.pdf")
+        (field
+          (name "SKiDL Tag") "1k_90TkwT0")
+        (field
+          (name "SKiDL Line") "vyper_f4_schematic.py:321"))
+      (libsource
+        (lib "74xGxx")
+        (part "74AHCT1G125"))
+      (sheetpath
+        (names "/")
+        (tstamps "/"))
+      (component_classes)
+      (tstamps "44abc837-a2e2-51d7-8547-592d15a3ca40"))
     (comp
       (ref "Y1")
       (value "8MHz 10pF")
@@ -1807,7 +1879,7 @@
         (field
           (name "Datasheet") "~")
         (field
-          (name "SKiDL Tag") "wteHQiSUvo")
+          (name "SKiDL Tag") "D4DE5t6_bO")
         (field
           (name "SKiDL Line") "vyper_f4_schematic.py:169"))
       (libsource
@@ -1817,7 +1889,7 @@
         (names "/")
         (tstamps "/"))
       (component_classes)
-      (tstamps "5a396908-1d01-5fdc-b611-b6672cba2427")))
+      (tstamps "b57a4060-11a7-55c0-92c4-645cc58f43a9")))
   (nets
     (net
       (code 1)
@@ -1857,30 +1929,6 @@
         (pintype "BIDIRECTIONAL")))
     (net
       (code 3)
-      (name "AUX_UART4_RX")
-      (class "Default")
-      (node
-        (ref "J5")
-        (pin "4")
-        (pintype "PASSIVE"))
-      (node
-        (ref "U1")
-        (pin "15")
-        (pintype "BIDIRECTIONAL")))
-    (net
-      (code 4)
-      (name "AUX_UART4_TX")
-      (class "Default")
-      (node
-        (ref "J5")
-        (pin "3")
-        (pintype "PASSIVE"))
-      (node
-        (ref "U1")
-        (pin "14")
-        (pintype "BIDIRECTIONAL")))
-    (net
-      (code 5)
       (name "BEEPER")
       (class "Default")
       (node
@@ -1892,7 +1940,7 @@
         (pin "2")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 6)
+      (code 4)
       (name "BOOT0")
       (class "Default")
       (node
@@ -1904,7 +1952,7 @@
         (pin "60")
         (pintype "INPUT")))
     (net
-      (code 7)
+      (code 5)
       (name "BUCK_BOOT")
       (class "Default")
       (node
@@ -1916,7 +1964,7 @@
         (pin "1")
         (pintype "INPUT")))
     (net
-      (code 8)
+      (code 6)
       (name "BUCK_COMP_MID")
       (class "Default")
       (node
@@ -1932,7 +1980,7 @@
         (pin "6")
         (pintype "PASSIVE")))
     (net
-      (code 9)
+      (code 7)
       (name "BUCK_COMP_RC")
       (class "Default")
       (node
@@ -1944,7 +1992,7 @@
         (pin "2")
         (pintype "PASSIVE")))
     (net
-      (code 10)
+      (code 8)
       (name "BUCK_EN")
       (class "Default")
       (node
@@ -1960,7 +2008,7 @@
         (pin "3")
         (pintype "INPUT")))
     (net
-      (code 11)
+      (code 9)
       (name "BUCK_FB")
       (class "Default")
       (node
@@ -1976,7 +2024,7 @@
         (pin "5")
         (pintype "INPUT")))
     (net
-      (code 12)
+      (code 10)
       (name "BUCK_RT")
       (class "Default")
       (node
@@ -1988,7 +2036,7 @@
         (pin "4")
         (pintype "INPUT")))
     (net
-      (code 13)
+      (code 11)
       (name "BUCK_SW")
       (class "Default")
       (node
@@ -2008,7 +2056,7 @@
         (pin "8")
         (pintype "OUTPUT")))
     (net
-      (code 14)
+      (code 12)
       (name "ESC_CURRENT")
       (class "Default")
       (node
@@ -2020,7 +2068,7 @@
         (pin "1")
         (pintype "PASSIVE")))
     (net
-      (code 15)
+      (code 13)
       (name "ESC_TELEM")
       (class "Default")
       (node
@@ -2032,7 +2080,7 @@
         (pin "54")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 16)
+      (code 14)
       (name "FLASH_CS")
       (class "Default")
       (node
@@ -2044,7 +2092,7 @@
         (pin "1")
         (pintype "INPUT")))
     (net
-      (code 17)
+      (code 15)
       (name "FLASH_HOLD_N")
       (class "Default")
       (node
@@ -2056,7 +2104,7 @@
         (pin "7")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 18)
+      (code 16)
       (name "FLASH_WP_N")
       (class "Default")
       (node
@@ -2068,7 +2116,7 @@
         (pin "3")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 19)
+      (code 17)
       (name "GND")
       (class "Default")
       (node
@@ -2164,6 +2212,10 @@
         (pin "2")
         (pintype "PASSIVE"))
       (node
+        (ref "C31")
+        (pin "2")
+        (pintype "PASSIVE"))
+      (node
         (ref "C4")
         (pin "2")
         (pintype "PASSIVE"))
@@ -2191,6 +2243,10 @@
         (ref "D1")
         (pin "2")
         (pintype "PASSIVE"))
+      (node
+        (ref "D4")
+        (pin "2")
+        (pintype "POWER-IN"))
       (node
         (ref "D5")
         (pin "1")
@@ -2237,6 +2293,10 @@
         (pintype "PASSIVE"))
       (node
         (ref "R17")
+        (pin "2")
+        (pintype "PASSIVE"))
+      (node
+        (ref "R20")
         (pin "2")
         (pintype "PASSIVE"))
       (node
@@ -2306,9 +2366,17 @@
       (node
         (ref "U7")
         (pin "7")
+        (pintype "POWER-IN"))
+      (node
+        (ref "U8")
+        (pin "1")
+        (pintype "INPUT"))
+      (node
+        (ref "U8")
+        (pin "3")
         (pintype "POWER-IN")))
     (net
-      (code 20)
+      (code 18)
       (name "GPS_UART3_RX")
       (class "Default")
       (node
@@ -2320,7 +2388,7 @@
         (pin "30")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 21)
+      (code 19)
       (name "GPS_UART3_TX")
       (class "Default")
       (node
@@ -2332,7 +2400,7 @@
         (pin "29")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 22)
+      (code 20)
       (name "GYRO_CS")
       (class "Default")
       (node
@@ -2344,7 +2412,7 @@
         (pin "12")
         (pintype "INPUT")))
     (net
-      (code 23)
+      (code 21)
       (name "GYRO_INT1")
       (class "Default")
       (node
@@ -2356,7 +2424,7 @@
         (pin "4")
         (pintype "OUTPUT")))
     (net
-      (code 24)
+      (code 22)
       (name "HSE_IN")
       (class "Default")
       (node
@@ -2376,7 +2444,7 @@
         (pin "1")
         (pintype "PASSIVE")))
     (net
-      (code 25)
+      (code 23)
       (name "HSE_OUT")
       (class "Default")
       (node
@@ -2396,9 +2464,13 @@
         (pin "2")
         (pintype "PASSIVE")))
     (net
-      (code 26)
+      (code 24)
       (name "I2C1_SCL")
       (class "Default")
+      (node
+        (ref "J5")
+        (pin "4")
+        (pintype "PASSIVE"))
       (node
         (ref "R12")
         (pin "1")
@@ -2412,9 +2484,13 @@
         (pin "4")
         (pintype "INPUT")))
     (net
-      (code 27)
+      (code 25)
       (name "I2C1_SDA")
       (class "Default")
+      (node
+        (ref "J5")
+        (pin "3")
+        (pintype "PASSIVE"))
       (node
         (ref "R13")
         (pin "1")
@@ -2428,17 +2504,45 @@
         (pin "3")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 28)
-      (name "LED_STATUS")
+      (code 26)
+      (name "LED_RGB_DIN")
       (class "Default")
       (node
         (ref "D4")
+        (pin "3")
+        (pintype "INPUT"))
+      (node
+        (ref "R19")
+        (pin "2")
+        (pintype "PASSIVE")))
+    (net
+      (code 27)
+      (name "LED_RGB_LEVEL")
+      (class "Default")
+      (node
+        (ref "R19")
+        (pin "1")
+        (pintype "PASSIVE"))
+      (node
+        (ref "U8")
+        (pin "4")
+        (pintype "TRISTATE")))
+    (net
+      (code 28)
+      (name "LED_RGB_MCU")
+      (class "Default")
+      (node
+        (ref "R20")
         (pin "1")
         (pintype "PASSIVE"))
       (node
         (ref "U1")
         (pin "41")
-        (pintype "BIDIRECTIONAL")))
+        (pintype "BIDIRECTIONAL"))
+      (node
+        (ref "U8")
+        (pin "2")
+        (pintype "INPUT")))
     (net
       (code 29)
       (name "LOGIC_IN")
@@ -2525,18 +2629,6 @@
         (pintype "BIDIRECTIONAL")))
     (net
       (code 34)
-      (name "N$1")
-      (class "Default")
-      (node
-        (ref "D4")
-        (pin "2")
-        (pintype "PASSIVE"))
-      (node
-        (ref "R19")
-        (pin "2")
-        (pintype "PASSIVE")))
-    (net
-      (code 35)
       (name "NRST")
       (class "Default")
       (node
@@ -2552,7 +2644,7 @@
         (pin "7")
         (pintype "INPUT")))
     (net
-      (code 36)
+      (code 35)
       (name "RX_UART1_RX")
       (class "Default")
       (node
@@ -2564,7 +2656,7 @@
         (pin "43")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 37)
+      (code 36)
       (name "RX_UART1_TX")
       (class "Default")
       (node
@@ -2576,7 +2668,7 @@
         (pin "42")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 38)
+      (code 37)
       (name "SPI1_MISO")
       (class "Default")
       (node
@@ -2588,7 +2680,7 @@
         (pin "1")
         (pintype "INPUT")))
     (net
-      (code 39)
+      (code 38)
       (name "SPI1_MOSI")
       (class "Default")
       (node
@@ -2600,7 +2692,7 @@
         (pin "14")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 40)
+      (code 39)
       (name "SPI1_SCK")
       (class "Default")
       (node
@@ -2612,7 +2704,7 @@
         (pin "13")
         (pintype "INPUT")))
     (net
-      (code 41)
+      (code 40)
       (name "SPI2_MISO")
       (class "Default")
       (node
@@ -2624,7 +2716,7 @@
         (pin "2")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 42)
+      (code 41)
       (name "SPI2_MOSI")
       (class "Default")
       (node
@@ -2636,7 +2728,7 @@
         (pin "5")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 43)
+      (code 42)
       (name "SPI2_SCK")
       (class "Default")
       (node
@@ -2648,7 +2740,7 @@
         (pin "6")
         (pintype "INPUT")))
     (net
-      (code 44)
+      (code 43)
       (name "SWCLK")
       (class "Default")
       (node
@@ -2660,7 +2752,7 @@
         (pin "49")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 45)
+      (code 44)
       (name "SWDIO")
       (class "Default")
       (node
@@ -2672,7 +2764,7 @@
         (pin "46")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 46)
+      (code 45)
       (name "USB_5V")
       (class "Default")
       (node
@@ -2692,7 +2784,7 @@
         (pin "2")
         (pintype "PASSIVE")))
     (net
-      (code 47)
+      (code 46)
       (name "USB_DM")
       (class "Default")
       (node
@@ -2704,7 +2796,7 @@
         (pin "44")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 48)
+      (code 47)
       (name "USB_DM_RAW")
       (class "Default")
       (node
@@ -2720,7 +2812,7 @@
         (pin "1")
         (pintype "PASSIVE")))
     (net
-      (code 49)
+      (code 48)
       (name "USB_DP")
       (class "Default")
       (node
@@ -2732,7 +2824,7 @@
         (pin "45")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 50)
+      (code 49)
       (name "USB_DP_RAW")
       (class "Default")
       (node
@@ -2748,7 +2840,7 @@
         (pin "1")
         (pintype "PASSIVE")))
     (net
-      (code 51)
+      (code 50)
       (name "V3V3")
       (class "Default")
       (node
@@ -2808,10 +2900,6 @@
         (pin "2")
         (pintype "PASSIVE"))
       (node
-        (ref "R19")
-        (pin "1")
-        (pintype "PASSIVE"))
-      (node
         (ref "R8")
         (pin "2")
         (pintype "PASSIVE"))
@@ -2856,7 +2944,7 @@
         (pin "8")
         (pintype "POWER-IN")))
     (net
-      (code 52)
+      (code 51)
       (name "V3V3_A")
       (class "Default")
       (node
@@ -2876,7 +2964,7 @@
         (pin "13")
         (pintype "POWER-IN")))
     (net
-      (code 53)
+      (code 52)
       (name "V3V3_GYRO")
       (class "Default")
       (node
@@ -2904,9 +2992,13 @@
         (pin "5")
         (pintype "POWER-OUT")))
     (net
-      (code 54)
+      (code 53)
       (name "V5_BUCK")
       (class "Default")
+      (node
+        (ref "C31")
+        (pin "1")
+        (pintype "PASSIVE"))
       (node
         (ref "C5")
         (pin "1")
@@ -2919,6 +3011,10 @@
         (ref "D2")
         (pin "2")
         (pintype "PASSIVE"))
+      (node
+        (ref "D4")
+        (pin "4")
+        (pintype "POWER-IN"))
       (node
         (ref "J3")
         (pin "2")
@@ -2946,9 +3042,13 @@
       (node
         (ref "R4")
         (pin "1")
-        (pintype "PASSIVE")))
+        (pintype "PASSIVE"))
+      (node
+        (ref "U8")
+        (pin "5")
+        (pintype "POWER-IN")))
     (net
-      (code 55)
+      (code 54)
       (name "VBAT_6S")
       (class "Default")
       (node
@@ -2976,7 +3076,7 @@
         (pin "2")
         (pintype "POWER-IN")))
     (net
-      (code 56)
+      (code 55)
       (name "VCAP1")
       (class "Default")
       (node
@@ -2988,7 +3088,7 @@
         (pin "31")
         (pintype "POWER-OUT")))
     (net
-      (code 57)
+      (code 56)
       (name "VCAP2")
       (class "Default")
       (node
@@ -3000,7 +3100,7 @@
         (pin "47")
         (pintype "POWER-OUT")))
     (net
-      (code 58)
+      (code 57)
       (name "VTX_UART6_RX")
       (class "Default")
       (node
@@ -3012,7 +3112,7 @@
         (pin "38")
         (pintype "BIDIRECTIONAL")))
     (net
-      (code 59)
+      (code 58)
       (name "VTX_UART6_TX")
       (class "Default")
       (node

@@ -56,7 +56,7 @@ a reject.
    M3×8 screws and Ø7 washers only if the measured depth leaves at least 0.3 mm
    bottoming clearance. Use removable threadlocker in the aluminium threads.
 5. For the custom-development path, bolt the 36×72 mm ESC rigidly to the
-   cassette's outward face and soft-mount the 26×64 mm FC behind it. Fit the
+   cassette's outward face and soft-mount the 30×64 mm FC behind it. Fit the
    dielectric thermal pads and two isolated 34×27.5×1 mm aluminium ESC spreaders before
    inserting the cassette. The under-$200 purchased 30.5 mm stack needs a
    separate cassette adapter and is not yet mechanically validated in this revision.

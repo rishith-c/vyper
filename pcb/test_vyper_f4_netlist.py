@@ -79,18 +79,27 @@ expected_exact = {
     "SWDIO": {("J7", "2"), ("U1", "46")},
     "SWCLK": {("J7", "3"), ("U1", "49")},
     "BEEPER": {("J8", "2"), ("U1", "2")},
+    "LED_RGB_MCU": {("R20", "1"), ("U1", "41"), ("U8", "2")},
+    "LED_RGB_LEVEL": {("R19", "1"), ("U8", "4")},
+    "LED_RGB_DIN": {("D4", "3"), ("R19", "2")},
 }
 for name, expected in expected_exact.items():
     actual = nets.get(name, set())
     check(name, actual == expected, f"{sorted(actual)}")
 
 for ref, prefix in (("J3", "RX_UART1"), ("J4", "GPS_UART3"),
-                    ("J5", "AUX_UART4"), ("J6", "VTX_UART6")):
+                    ("J6", "VTX_UART6")):
     for pin, net_name in ((1, "GND"), (2, "V5_BUCK"),
                           (3, f"{prefix}_TX"), (4, f"{prefix}_RX")):
         check(f"{ref}.{pin} {net_name}",
               (ref, str(pin)) in nets.get(net_name, set()),
               "physical edge-pad contract")
+
+for pin, net_name in ((1, "GND"), (2, "V5_BUCK"),
+                      (3, "I2C1_SDA"), (4, "I2C1_SCL")):
+    check(f"J5.{pin} {net_name}",
+          ("J5", str(pin)) in nets.get(net_name, set()),
+          "external magnetometer/I2C edge-pad contract")
 
 required_members = {
     "VBAT_6S": {("J2", "2"), ("U3", "2"), ("R2", "1")},
@@ -112,6 +121,9 @@ check("60 V buck selected", "TPS54360DDA" in text,
       "TPS54360DDA present")
 check("exact gyro value selected", "ICM-42688-P" in text,
       "ICM-42688-P value overrides the pin-compatible library symbol")
+check("RGB uses a 5 V AHCT level shifter",
+      "SN74AHCT1G125DBVR" in text and "SK6812MINI-E" in text,
+      "PA8 is translated to a 5 V addressable status LED")
 
 if fails:
     raise SystemExit(f"{len(fails)} FAILED: {', '.join(fails)}")

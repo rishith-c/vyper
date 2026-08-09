@@ -113,7 +113,7 @@ def custom_connector(ref):
     fp.SetFPIDAsString(f"VYPER:{ref}_SOLDER_PADS")
     if ref in ("J3", "J4", "J5", "J6"):
         group_name = {"J3": "J3_rx_uart1", "J4": "J4_gps_uart3",
-                      "J5": "J5_aux_uart4", "J6": "J6_vtx_uart6"}[ref]
+                      "J5": "J5_external_i2c", "J6": "J6_vtx_uart6"}[ref]
         group = L.PAD_GROUPS[group_name]
         centre_y = sum(p[1] for p in group) / len(group)
         # Pin order follows the layout list. KiCad local +Y points down.
@@ -164,7 +164,7 @@ def placed_components():
         ref = key.split("_", 1)[0]
         result[ref] = (*layout_xy(spec["pos"]), spec["side"], spec.get("rot", 0))
     for ref, group in (("J3", "J3_rx_uart1"), ("J4", "J4_gps_uart3"),
-                       ("J5", "J5_aux_uart4"), ("J6", "J6_vtx_uart6")):
+                       ("J5", "J5_external_i2c"), ("J6", "J6_vtx_uart6")):
         pads = L.PAD_GROUPS[group]
         result[ref] = (pads[0][0], -sum(p[1] for p in pads) / len(pads), "F", 0)
     for ref, spec in L.PASSIVES.items():
@@ -174,30 +174,25 @@ def placed_components():
 
 def main():
     components, pin_nets, net_names = parse_netlist()
-    loader = pcbnew.PCB_IO_KICAD_SEXPR()
-    loaded = {
-        ref: (custom_connector(ref) if ref in {"J3", "J4", "J5", "J6", "J7", "J8"}
-              else load_library_footprint(loader, spec["footprint"]))
-        for ref, spec in components.items()
-    }
-
-    board = pcbnew.LoadBoard(str(SOURCE_BOARD))
-    if board is None:
+    source = pcbnew.LoadBoard(str(SOURCE_BOARD))
+    if source is None:
         raise RuntimeError(f"failed to load {SOURCE_BOARD}")
+    # Build a fresh board instead of removing placeholders from the mechanical
+    # study. KiCad 9's Python ownership model can invalidate later footprint
+    # loads after live-board removals. Only Edge.Cuts and mounting holes belong
+    # in the electrically authored board.
+    board = pcbnew.BOARD()
     board.SetCopperLayerCount(4)
-    # Keep only the mechanical outline from the generated placement study.
-    # Its global courtyard/silkscreen rectangles are construction aids, not
-    # production artwork; the real library footprints provide their own.
-    for layer in (pcbnew.F_SilkS, pcbnew.B_SilkS,
-                  pcbnew.F_CrtYd, pcbnew.B_CrtYd,
-                  pcbnew.Dwgs_User, pcbnew.Cmts_User):
-        board.RemoveAllItemsOnLayer(layer)
-    for fp in list(board.GetFootprints()):
-        if fp.GetReference().startswith("H"):
-            fp.Reference().SetVisible(False)
-            fp.Value().SetVisible(False)
-        else:
-            board.Remove(fp)
+    for drawing in source.GetDrawings():
+        if drawing.GetLayer() == pcbnew.Edge_Cuts:
+            board.Add(drawing.Duplicate())
+    for hole in source.GetFootprints():
+        if hole.GetReference().startswith("H"):
+            copy = hole.Duplicate()
+            copy.Reference().SetVisible(False)
+            copy.Value().SetVisible(False)
+            board.Add(copy)
+    loader = pcbnew.PCB_IO_KICAD_SEXPR()
 
     net_objects = {}
     for name in net_names:
@@ -208,7 +203,10 @@ def main():
     major = placed_components()
     staged, missing_pads, stage_index = [], [], 0
     for ref in sorted(components):
-        spec, fp = components[ref], loaded[ref]
+        spec = components[ref]
+        fp = (custom_connector(ref)
+              if ref in {"J3", "J4", "J5", "J6", "J7", "J8"}
+              else load_library_footprint(loader, spec["footprint"]))
         fp.SetReference(ref)
         fp.SetValue(spec["value"])
         fp.Reference().SetVisible(False)

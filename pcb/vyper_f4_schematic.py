@@ -281,7 +281,6 @@ u1["PC3"] += curr_adc
 # GND / 5V / TX / RX connector sequence.
 uart_defs = (("J3", "RX_UART1", "PA9", "PA10"),
              ("J4", "GPS_UART3", "PB10", "PB11"),
-             ("J5", "AUX_UART4", "PA0", "PA1"),
              ("J6", "VTX_UART6", "PC6", "PC7"))
 for ref, value, tx_pin, rx_pin in uart_defs:
     tx, rx = Net(f"{value}_TX"), Net(f"{value}_RX")
@@ -292,6 +291,14 @@ for ref, value, tx_pin, rx_pin in uart_defs:
     u1[tx_pin] += tx
     u1[rx_pin] += rx
 
+# Expose the same I2C bus used by the barometer for an external compass or
+# environmental sensor. An onboard magnetometer would sit inside the ESC and
+# motor-current field, so the mechanically correct implementation is remote.
+j5 = Part("Connector_Generic", "Conn_01x04", ref="J5", value="EXTERNAL_I2C",
+          footprint="Connector_PinHeader_1.27mm:PinHeader_1x04_P1.27mm_Vertical")
+for pin, net in zip(range(1, 5), (gnd, v5, i2c_sda, i2c_scl)):
+    j5[pin] += net
+
 # SWD and status outputs.
 swdio, swclk = Net("SWDIO"), Net("SWCLK")
 j7 = Part("Connector_Generic", "Conn_01x04", ref="J7", value="SWD",
@@ -300,14 +307,32 @@ for pin, net in zip(range(1, 5), (v3, swdio, swclk, gnd)):
     j7[pin] += net
 u1["PA13"] += swdio
 u1["PA14"] += swclk
-led = Net("LED_STATUS")
 beeper = Net("BEEPER")
-u1["PA8"] += led
 u1["PC13"] += beeper
-led_d = Part("Device", "LED", ref="D4", value="GREEN",
-             footprint="LED_SMD:LED_0603_1608Metric")
-resistor("1k", v3, led_d["A"])
-led_d["K"] += led
+
+# Addressable RGB status LED. SK6812MINI is a 5 V device; a 74AHCT1G125 gives
+# deterministic 3.3-to-5 V logic translation instead of relying on an
+# out-of-spec direct GPIO connection. The 100 k pulldown keeps DIN low while
+# PA8 is high impedance during reset.
+led_mcu, led_level, led_din = (Net("LED_RGB_MCU"), Net("LED_RGB_LEVEL"),
+                               Net("LED_RGB_DIN"))
+u1["PA8"] += led_mcu
+resistor("100k", led_mcu, gnd, ref="R20")
+u8 = Part("74xGxx", "74AHCT1G125", ref="U8", value="SN74AHCT1G125DBVR",
+          footprint="Package_TO_SOT_SMD:SOT-23-5")
+u8[1] += gnd                    # active-low output enable: always enabled
+u8[2] += led_mcu
+u8[3] += gnd
+u8[4] += led_level
+u8[5] += v5
+resistor("33R", led_level, led_din, ref="R19")
+rgb = Part("LED", "SK6812MINI", ref="D4", value="SK6812MINI-E",
+           footprint="LED_SMD:LED_SK6812MINI_PLCC4_3.5x3.5mm_P1.75mm")
+rgb["DIN"] += led_din
+rgb["VDD"] += v5
+rgb["VSS"] += gnd
+NC += rgb["DOUT"]
+capacitor("100nF X7R", v5, gnd, ref="C31")
 j8 = Part("Connector_Generic", "Conn_01x02", ref="J8", value="BEEPER_PAD",
           footprint="Connector_PinHeader_1.27mm:PinHeader_1x02_P1.27mm_Vertical")
 j8[1] += v5

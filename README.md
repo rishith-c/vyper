@@ -70,10 +70,12 @@ Two paths are intentionally separated:
 1. The under-$200 prototype budget uses a purchased 6S F405/55–60 A stack.
    That is the only sensible path for initial restrained and low-speed tests.
 2. The custom FC and custom four-channel ESC are development boards. The FC is
-   presently a validated 26×64 mm R3 vertical floorplan plus a 59-net / 74-component
-   authored design and true-footprint four-layer review board. All 57 passives
-   are in-outline, and all 242 nodes reach pads without placement/copper DRC
-   errors, but 183 connections remain unrouted. The reviewed graphical
+   presently a validated 30×64 mm R3 vertical floorplan plus a 58-net / 77-component
+   authored design and true-footprint four-layer review board. All 58 passives
+   are in-outline, and all 250 nodes reach pads without placement/copper DRC
+   errors, but 192 connections remain unrouted. It includes the ICM-42688-P,
+   BMP280, blackbox, voltage/current sensing, external compass/GPS interfaces,
+   and a level-shifted addressable RGB status LED. The reviewed graphical
    schematic is also open. The ESC has a validated 36×72 mm R3 vertical
    floorplan with 52 modeled major/support courtyards, a 159-net / 195-component authored electrical
    design, an AM32 target, and a six-layer true-footprint review board. All 715 authored

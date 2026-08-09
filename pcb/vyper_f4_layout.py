@@ -6,16 +6,16 @@ If a dimension is not in this file, it does not exist.
 
 WHY THESE NUMBERS
 -----------------
-The board is 26 x 64 mm with R3 corners for the longitudinal vertical cassette.
+The board is 30 x 64 mm with R3 corners for the longitudinal vertical cassette.
 Its 16 x 56 mm M2 pattern is independent of the ESC pattern so the FC can use
 soft grommets while the power board remains rigidly coupled to its spreader.
 Each 3.2 mm bore and 6 mm keepout is checked on both faces.
 
-GYRO ICM-42688-P at (0, +4) remains close to the board centre. The switcher is
-at the opposite longitudinal end, more than 20 mm away.
+GYRO ICM-42688-P at the board centre keeps rotational vibration coupling low.
+The switcher is at the opposite longitudinal end, more than 20 mm away.
 
-STM32F405RGT6 immediately below it: SPI1 remains below the 10 mm guideline,
-<10 mm guideline for gyro-to-MCU traces.
+STM32F405RGT6 immediately below it keeps the SPI1 courtyard gap below the
+10 mm routing guideline.
 
 POWER STAGE pinned to the +Y edge: the inductor sits 15.5 mm from the gyro
 centre (rule is >= 10), and its courtyard clears the grommet keepouts.
@@ -25,7 +25,7 @@ face. The ESC harness plugs straight up, while the removable USB pigtail faces
 the open tail; the shell needs no drag-producing side hatch.
 """
 
-BOARD_W = 26.0
+BOARD_W = 30.0
 BOARD_H = 64.0
 CORNER_R = 3.0
 HOLE_PITCH_X = 16.0
@@ -37,20 +37,24 @@ GROMMET_KEEPOUT_D = 6.0       # mechanical, both sides
 # Parts. courtyard = (w, h) centred on pos unless noted. side: F or B.
 # ---------------------------------------------------------------------------
 PARTS = {
-    "U2_gyro_ICM42688P": dict(pos=(0.0, 4.0), side="F", courtyard=(4.5, 5.0),
+    "U2_gyro_ICM42688P": dict(pos=(0.0, 0.0), side="F", courtyard=(4.5, 5.0),
                               pkg="LGA-14 2.5x3.0"),
-    "U1_mcu_STM32F405RGT6": dict(pos=(0.0, -9.4), side="F",
+    # Rotate the MCU so SPI1 exits toward the centrally mounted gyro. This
+    # removes the long wraparound routes produced by the initial floorplan.
+    "U1_mcu_STM32F405RGT6": dict(pos=(0.0, -9.4), side="F", rot=180,
                                  courtyard=(12.4, 12.4), pkg="LQFP-64 10x10"),
-    "Y1_xtal_8MHz": dict(pos=(7.4, -17.6), side="F", courtyard=(3.2, 3.5),
+    "Y1_xtal_8MHz": dict(pos=(9.0, -11.0), side="B", courtyard=(3.2, 3.5),
                          pkg="3225"),
     # The first revision intentionally omits analog OSD.  The released netlist
     # uses this quiet area for the mandatory dedicated ICM-42688-P regulator.
-    "U5_gyro_ldo_AP2112K": dict(pos=(6.8, 4.0), side="F",
+    "U5_gyro_ldo_AP2112K": dict(pos=(6.8, 0.0), side="F",
                                 courtyard=(3.4, 3.2), pkg="SOT-23-5"),
-    "U6_flash_W25Q128": dict(pos=(0.0, 10.5), side="B", courtyard=(6.5, 5.5),
+    # The flash now sits directly under the MCU instead of at the opposite end
+    # of the board; SPI2 can fan through locally.
+    "U6_flash_W25Q128": dict(pos=(0.0, -8.0), side="B", courtyard=(6.5, 5.5),
                              pkg="SOIC-8 blackbox"),
-    "U7_baro_BMP280": dict(pos=(-8.0, 3.0), side="B", courtyard=(2.5, 3.0),
-                           pkg="LGA-8"),
+    "U7_baro_BMP280": dict(pos=(-9.5, -1.0), side="B", courtyard=(2.5, 3.0),
+                            pkg="LGA-8"),
     "L1_buck_inductor": dict(pos=(-6.3, 21.0), side="F", courtyard=(4.6, 4.6),
                              pkg="4030 shielded", noisy=True),
     "U3_buck_TPS54360": dict(pos=(2.1, 21.0), side="F", courtyard=(6.2, 5.2),
@@ -69,6 +73,11 @@ PARTS = {
                              pkg="2x2 1.27 mm SWD test pads"),
     "J8_beeper_pads": dict(pos=(7.0, -17.5), side="B", courtyard=(4.0, 2.4),
                             pkg="1x2 1.27 mm beeper pads"),
+    "U8_rgb_level_shifter": dict(pos=(-8.0, -20.5), side="F",
+                                  courtyard=(3.4, 3.2),
+                                  pkg="SN74AHCT1G125 SOT-23-5"),
+    "D4_rgb_status": dict(pos=(0.0, -24.5), side="F", courtyard=(4.0, 4.0),
+                           pkg="SK6812MINI-E 3.5x3.5"),
 }
 
 # Dual-purpose 2.54 mm header / wire groups.  Each location is a 2.4 mm plated
@@ -78,7 +87,7 @@ PARTS = {
 IO_PAD_SIZE = (2.4, 2.0)
 IO_PAD_DRILL = 1.0
 IO_PAD_PITCH = 2.54
-IO_PAD_X = 11.3
+IO_PAD_X = 13.2
 IO_GROUP_Y = (-7.65, 6.90)
 
 
@@ -90,7 +99,7 @@ def io_group(x, center_y, labels):
 PAD_GROUPS = {
     "J3_rx_uart1": io_group(-IO_PAD_X, IO_GROUP_Y[0], ("G", "5V", "T1", "R1")),
     "J4_gps_uart3": io_group(-IO_PAD_X, IO_GROUP_Y[1], ("G", "5V", "T3", "R3")),
-    "J5_aux_uart4": io_group(IO_PAD_X, IO_GROUP_Y[0], ("G", "5V", "T4", "R4")),
+    "J5_external_i2c": io_group(IO_PAD_X, IO_GROUP_Y[0], ("G", "5V", "DA", "CL")),
     "J6_vtx_uart6": io_group(IO_PAD_X, IO_GROUP_Y[1], ("G", "5V", "T6", "R6")),
 }
 
@@ -165,12 +174,13 @@ PASSIVES = {
     "R16": dict(pos=(10.0, -4.0), side="B", rot=0),
     "R17": dict(pos=(12.0, -4.0), side="B", rot=0),
     "R18": dict(pos=(10.0, -7.0), side="B", rot=0),
-    "D4": dict(pos=(15.0, -4.0), side="F", rot=0),
     "R19": dict(pos=(15.0, -6.0), side="F", rot=0),
+    "R20": dict(pos=(14.0, -6.0), side="F", rot=0),
+    "C31": dict(pos=(13.0, -6.0), side="F", rot=0),
 }
 
 # Stretch the proven functional clusters along the aircraft axis while
-# compressing their transverse positions into the 22 mm board. Package sizes
+# compressing their transverse positions into the narrow board. Package sizes
 # are never scaled; the true-footprint board and KiCad DRC remain authoritative.
 for _spec in PASSIVES.values():
     _x, _y = _spec["pos"]
@@ -200,51 +210,56 @@ VERTICAL_PASSIVE_PLACEMENT = {
     "D3": ((0.0, 17.0), "B", 0),
 
     # Gyro and MCU bay, F.Cu.
-    "C10": ((6.8, 7.2), "F", 0),
-    "C11": ((9.0, 7.2), "F", 0),
+    "C10": ((5.8, 2.8), "F", 0),
+    "C11": ((8.0, 2.8), "F", 0),
     "FB1": ((-4.0, -1.2), "F", 0),
-    "C12": ((-5.5, -3.0), "B", 0),
-    "C13": ((-3.0, -3.0), "B", 0),
-    "C14": ((-0.5, -3.0), "B", 0),
-    "C15": ((2.0, -3.0), "B", 0),
-    "C16": ((-5.5, -5.5), "B", 0),
-    "C17": ((-3.0, -5.5), "B", 0),
-    "C18": ((0.0, -5.5), "B", 0),
-    "C19": ((-4.5, -18.2), "F", 0),
-    "C20": ((-1.0, -18.2), "F", 0),
+    "C12": ((3.0, -2.5), "B", 0),
+    "C13": ((-5.0, -2.5), "B", 0),
+    "C14": ((-8.0, -14.5), "B", 0),
+    "C15": ((8.5, -14.0), "B", 0),
+    "C16": ((5.4, -13.5), "B", 0),
+    "C17": ((-8.0, -12.0), "B", 0),
+    "C18": ((5.5, -15.5), "B", 0),
+    # VCAP pins need their capacitors immediately adjacent; both use the back
+    # face so the capacitor can sit directly under the relevant MCU edge.
+    "C19": ((-2.0, -1.0), "B", 0),
+    "C20": ((-5.5, -13.0), "B", 0),
     "C23": ((-4.5, -20.2), "F", 0),
     "R8": ((-2.0, -20.2), "F", 0),
     "R9": ((0.2, -20.2), "F", 0),
-    "C21": ((5.2, -21.0), "F", 0),
-    "C22": ((8.0, -21.5), "F", 0),
-    "R7": ((3.8, -17.5), "F", 0),
-    "C24": ((-3.2, 4.0), "F", 0),
-    "C25": ((0.0, 7.2), "F", 0),
+    # Crystal load network is directly below the HSE pins on B.Cu while the
+    # crystal itself remains on F.Cu in the narrow edge channel.
+    "C21": ((7.5, -7.2), "B", 90),
+    "C22": ((10.0, -7.0), "B", 90),
+    "R7": ((6.0, -11.0), "B", 90),
+    "C24": ((-3.5, 0.0), "F", 0),
+    "C25": ((0.0, 3.8), "F", 0),
 
     # Sensor support follows the B-side flash and barometer.
-    "C26": ((-6.0, 8.0), "B", 0),
-    "R10": ((-6.0, 10.5), "B", 0),
-    "R11": ((-6.0, 13.0), "B", 0),
-    "C27": ((-5.2, 3.0), "B", 0),
-    "R12": ((-7.0, 0.5), "B", 0),
-    "R13": ((-9.2, 0.5), "B", 0),
+    "C26": ((-2.0, -4.0), "B", 0),
+    "R10": ((0.0, -4.0), "B", 0),
+    "R11": ((2.0, -4.0), "B", 0),
+    "C27": ((-9.5, 1.5), "B", 0),
+    "R12": ((-7.5, 1.0), "B", 0),
+    "R13": ((-11.5, 1.0), "B", 0),
 
     # USB service and analog monitoring, B.Cu.
-    "C28": ((7.5, -24.0), "B", 0),
-    "D5": ((-3.8, -10.0), "B", 0),
-    "D6": ((0.0, -10.0), "B", 0),
-    "D7": ((3.8, -10.0), "B", 0),
-    "R14": ((6.5, -10.0), "B", 0),
-    "R15": ((8.8, -10.0), "B", 0),
-    "C29": ((4.0, -5.0), "B", 0),
-    "R16": ((6.2, -5.0), "B", 0),
-    "R17": ((8.4, -5.0), "B", 0),
-    "C30": ((4.0, -7.5), "B", 0),
-    "R18": ((6.2, -7.5), "B", 0),
+    "C28": ((11.0, -24.0), "B", 0),
+    "D5": ((-11.0, -24.0), "B", 0),
+    "D6": ((-7.0, -24.0), "B", 0),
+    "D7": ((7.0, -24.0), "B", 0),
+    "R14": ((-10.5, -10.5), "B", 90),
+    "R15": ((-10.5, -13.5), "B", 90),
+    "C29": ((5.0, -2.5), "B", 0),
+    "R16": ((0.5, -1.0), "B", 0),
+    "R17": ((2.5, -1.0), "B", 0),
+    "C30": ((5.0, -5.0), "B", 0),
+    "R18": ((7.0, -5.0), "B", 0),
 
-    # Status LED at the lower service end.
-    "D4": ((8.0, -24.0), "F", 0),
-    "R19": ((5.2, -24.0), "F", 0),
+    # Level-shifted addressable RGB status LED at the lower service end.
+    "R19": ((0.0, -21.8), "F", 0),
+    "R20": ((-8.0, -18.0), "F", 0),
+    "C31": ((4.5, -24.5), "F", 90),
 }
 for _ref, (_pos, _side, _rot) in VERTICAL_PASSIVE_PLACEMENT.items():
     PASSIVES[_ref].update(pos=_pos, side=_side, rot=_rot)

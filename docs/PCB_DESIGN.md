@@ -9,18 +9,18 @@ review board for the VYPER airframe.
 
 | Done | Not done |
 |---|---|
-| 26×64 R3 longitudinal board outline | Reviewed graphical KiCad schematic |
+| 30×64 R3 longitudinal board outline | Reviewed graphical KiCad schematic |
 | 16×56 Φ3.2 M2 soft-mount holes | Copper routing |
-| All 74 components placed with true footprints | Copper routing |
+| All 77 components placed with true footprints | Copper routing |
 | Courtyard / hole / pad interaction checks | Ordering files (gerbers/BOM/CPL) |
-| 59-net / 74-component authored connectivity | 183 routed connections |
-| All 242 authored nodes reach physical pads | Production approval |
+| 58-net / 77-component authored connectivity | 192 routed connections |
+| All 250 authored nodes reach physical pads | Production approval |
 
 `vyper_f4.kicad_pcb` remains the mechanical drawing. The generated
 `vyper_f4_unrouted.kicad_pcb` carries all real footprints and nets. KiCad finds
 no shorts, clearance failures, courtyard overlaps, edge errors or footprint
-errors among placed parts. All 57 passives are in-outline and checked against
-functional proximity gates, but 183 connections are unrouted. It is therefore
+errors among placed parts. All 58 passives are in-outline and checked against
+functional proximity gates, but 192 connections are unrouted. It is therefore
 **not an orderable FC**.
 
 ## The AI-tool landscape (verified August 2026)
@@ -44,12 +44,12 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
 [TPS54360 data sheet/product page](https://www.ti.com/product/TPS54360).
 
 1. **Gyro near the rotation centre, on the board axes.** ICM-42688-P at
-   (0, +4.0) — 4.0 mm off centre, limit 4. A FWD axis mark is on the silk
+   (0, 0) — exactly at the board centre. A FWD axis mark is on the silk
    because a rotated gyro is a config error you chase for a week.
 2. **Gyro ≥ 10 mm from anything that switches.** The buck inductor's field
    couples into the MEMS structure and reads as vibration that no filter
-   fully removes. Nearest noisy-part distance: **17.1 mm**, checked.
-3. **Gyro-to-MCU SPI under 10 mm.** Courtyard gap here: ~4.7 mm.
+   fully removes. Nearest noisy-part distance: **21.1 mm**, checked.
+3. **Gyro-to-MCU SPI under 10 mm.** Courtyard gap here: ~0.7 mm.
 4. **Soft mounting is a requirement, not a preference.** Hard-bolting the
    board flexes it and permanently shifts gyro bias — hence Φ3.2 holes for
    M2 soft mounts and a Φ6 keepout ring at each corner *on both faces*.
@@ -71,7 +71,7 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
 
 Two findings the checks enforce forever:
 
-- **The custom FC is 26×64 mm R3.** It mounts longitudinally and vertically on
+- **The custom FC is 30×64 mm R3.** It mounts longitudinally and vertically on
   a 16×56 mm soft-mount pattern behind the ESC. The true-footprint repack uses
   both faces and preserves the switcher/gyro exclusion without a square shelf.
 - **Duplicate corner motor pads were rejected.** The tested 8-pin ESC harness
@@ -116,7 +116,7 @@ python3 test_vyper_f4_netlist.py        # connectivity/resource assertions
 /Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
   vyper_f4_unrouted_gen.py               # true footprints/nets, still unrouted
 /Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
-  test_vyper_f4_board.py                 # 74 refs / 242 nodes transferred
+  test_vyper_f4_board.py                 # 77 refs / 250 nodes transferred
 python3 test_vyper_f4_drc.py              # rejects hidden placement/copper errors
 /Applications/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
   vyper_esc_unrouted_gen.py              # true footprints/nets, still unrouted
