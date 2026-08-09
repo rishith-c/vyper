@@ -37,29 +37,42 @@ GROMMET_KEEPOUT_D = 6.0       # mechanical, both sides
 # Parts. courtyard = (w, h) centred on pos unless noted. side: F or B.
 # ---------------------------------------------------------------------------
 PARTS = {
-    "U2_gyro_ICM42688P": dict(pos=(0.0, 0.0), side="F", courtyard=(4.5, 5.0),
-                              pkg="LGA-14 2.5x3.0"),
-    # Rotate the MCU so SPI1 exits toward the centrally mounted gyro. This
-    # removes the long wraparound routes produced by the initial floorplan.
-    "U1_mcu_STM32F405RGT6": dict(pos=(0.0, -9.4), side="F", rot=180,
+    # Rotate the IMU so its signal edges face the MCU escape channel. Firmware
+    # applies the matching CW90 alignment; this is a routing/EMI choice, not an
+    # axis assumption.
+    "U2_gyro_ICM42688P": dict(pos=(0.0, 0.0), side="F", rot=90,
+                              courtyard=(4.5, 5.0), pkg="LGA-14 2.5x3.0"),
+    # Rot0 puts alternate SPI1 pins PB3/PB4/PB5 and adjacent gyro CS/INT
+    # GPIOs on the gyro-facing edge. This eliminates the package-crossing
+    # routes required by the default PA5/PA6/PA7 pin group.
+    "U1_mcu_STM32F405RGT6": dict(pos=(2.0, -9.5), side="F", rot=0,
                                  courtyard=(12.4, 12.4), pkg="LQFP-64 10x10"),
-    "Y1_xtal_8MHz": dict(pos=(9.0, -11.0), side="B", courtyard=(3.2, 3.5),
+    "Y1_xtal_8MHz": dict(pos=(-7.0, -8.0), side="B", rot=180,
+                         courtyard=(4.3, 3.6),
                          pkg="3225"),
     # The first revision intentionally omits analog OSD.  The released netlist
     # uses this quiet area for the mandatory dedicated ICM-42688-P regulator.
-    "U5_gyro_ldo_AP2112K": dict(pos=(6.8, 0.0), side="F",
+    "U5_gyro_ldo_AP2112K": dict(pos=(5.0, 2.0), side="F", rot=180,
                                 courtyard=(3.4, 3.2), pkg="SOT-23-5"),
-    # The flash now sits directly under the MCU instead of at the opposite end
-    # of the board; SPI2 can fan through locally.
-    "U6_flash_W25Q128": dict(pos=(0.0, -8.0), side="B", courtyard=(6.5, 5.5),
+    # The flash sits below the MCU's SPI2-facing edge and is rotated so its
+    # narrow courtyard leaves a central passive-routing channel.
+    "U6_flash_W25Q128": dict(pos=(8.0, -10.0), side="B", rot=90,
+                             courtyard=(5.9, 9.4),
                              pkg="SOIC-8 blackbox"),
     "U7_baro_BMP280": dict(pos=(-9.5, -1.0), side="B", courtyard=(2.5, 3.0),
                             pkg="LGA-8"),
-    "L1_buck_inductor": dict(pos=(-6.3, 21.0), side="F", courtyard=(4.6, 4.6),
-                             pkg="4030 shielded", noisy=True),
-    "U3_buck_TPS54360": dict(pos=(2.1, 21.0), side="F", courtyard=(6.2, 5.2),
+    # TPS54360 rotated 90 degrees places SW/GND on its forward edge. The
+    # inductor, catch diode and bootstrap capacitor surround that edge so the
+    # high-di/dt loop is physically small before routing begins.
+    "L1_buck_inductor": dict(pos=(-8.0, 19.7), side="F", rot=180,
+                             courtyard=(8.4, 7.5),
+                             pkg="Wuerth HCI-7050 8.2uH", noisy=True),
+    "U3_buck_TPS54360": dict(pos=(0.0, 17.0), side="F", rot=90,
+                             courtyard=(5.6, 7.6),
                              pkg="TI PowerPAD-8 60V/3.5A", noisy=True),
-    "U4_ldo_3v3": dict(pos=(8.4, 21.0), side="F", courtyard=(3.4, 3.2),
+    # The logic LDO moves to B.Cu, outside the switch-node field but beside
+    # its two local bypass capacitors.
+    "U4_ldo_3v3": dict(pos=(8.5, 18.0), side="B", courtyard=(4.2, 3.5),
                        pkg="SOT-23-5"),
     "J1_usb_service_SH4": dict(pos=(0.0, -28.5), side="B",
                                 courtyard=(7.0, 4.6),
@@ -190,71 +203,74 @@ for _spec in PASSIVES.values():
 # side and rotation because the narrow board deliberately uses both faces.
 VERTICAL_PASSIVE_PLACEMENT = {
     # 60 V buck bay, F.Cu.
-    "D1": ((4.3, 14.2), "F", 0),
-    "C3": ((1.2, 17.0), "F", 0),
-    "C4": ((4.5, 17.0), "F", 0),
-    "C6": ((8.3, 17.0), "F", 0),
-    "C5": ((-6.5, 15.0), "F", 0),
-    "C7": ((-1.7, 14.5), "F", 0),
-    "R1": ((0.0, 11.0), "F", 0),
-    "R2": ((2.2, 11.0), "F", 0),
-    "R3": ((4.4, 11.0), "F", 0),
-    "R4": ((6.6, 11.0), "F", 0),
-    "R5": ((0.0, 9.2), "F", 0),
-    "R6": ((2.2, 9.2), "F", 0),
-    "C1": ((4.4, 9.2), "F", 0),
-    "C2": ((6.6, 9.2), "F", 0),
-    "C8": ((10.0, 16.0), "B", 0),
-    "C9": ((10.0, 19.0), "B", 0),
-    "D2": ((-5.0, 21.0), "B", 0),
-    "D3": ((0.0, 17.0), "B", 0),
+    "D1": ((1.1, 22.8), "F", 0),
+    "C3": ((-3.3, 17.0), "F", 90),
+    "C4": ((-0.8, 11.5), "F", 270),
+    "C6": ((1.2, 11.5), "F", 270),
+    "C5": ((-9.0, 13.5), "F", 0),
+    # A second output capacitor sits directly under L1 on B.Cu; short power
+    # vias will connect it to V5/GND without consuming the F.Cu switch bay.
+    "C7": ((-8.0, 19.7), "B", 0),
+    "R1": ((4.0, 14.3), "F", 0),
+    "R2": ((-1.0, 8.8), "F", 0),
+    "R3": ((1.2, 8.8), "F", 0),
+    "R4": ((6.3, 18.2), "F", 180),
+    "R5": ((6.3, 16.5), "F", 0),
+    "R6": ((3.9, 19.2), "F", 0),
+    "C1": ((6.3, 20.3), "F", 0),
+    "C2": ((4.0, 16.0), "F", 0),
+    "C8": ((11.7, 16.0), "B", 0),
+    "C9": ((11.8, 18.0), "B", 0),
+    "D2": ((7.0, 13.0), "B", 0),
+    "D3": ((-8.5, -22.5), "B", 0),
 
     # Gyro and MCU bay, F.Cu.
-    "C10": ((5.8, 2.8), "F", 0),
-    "C11": ((8.0, 2.8), "F", 0),
-    "FB1": ((-4.0, -1.2), "F", 0),
-    "C12": ((3.0, -2.5), "B", 0),
-    "C13": ((-5.0, -2.5), "B", 0),
-    "C14": ((-8.0, -14.5), "B", 0),
-    "C15": ((8.5, -14.0), "B", 0),
-    "C16": ((5.4, -13.5), "B", 0),
-    "C17": ((-8.0, -12.0), "B", 0),
-    "C18": ((5.5, -15.5), "B", 0),
+    "C10": ((8.0, 2.0), "F", 0),
+    "C11": ((3.0, 4.5), "F", 0),
+    "FB1": ((-5.8, -2.0), "F", 0),
+    "C12": ((-1.5, -3.0), "B", 0),
+    "C13": ((-1.5, -5.0), "B", 0),
+    "C14": ((0.0, -7.0), "B", 0),
+    "C15": ((6.8, -3.8), "B", 0),
+    "C16": ((9.0, -16.0), "B", 0),
+    "C17": ((-5.0, -14.5), "B", 0),
+    "C18": ((5.0, -16.0), "B", 0),
     # VCAP pins need their capacitors immediately adjacent; both use the back
     # face so the capacitor can sit directly under the relevant MCU edge.
-    "C19": ((-2.0, -1.0), "B", 0),
-    "C20": ((-5.5, -13.0), "B", 0),
-    "C23": ((-4.5, -20.2), "F", 0),
-    "R8": ((-2.0, -20.2), "F", 0),
-    "R9": ((0.2, -20.2), "F", 0),
-    # Crystal load network is directly below the HSE pins on B.Cu while the
-    # crystal itself remains on F.Cu in the narrow edge channel.
-    "C21": ((7.5, -7.2), "B", 90),
-    "C22": ((10.0, -7.0), "B", 90),
-    "R7": ((6.0, -11.0), "B", 90),
-    "C24": ((-3.5, 0.0), "F", 0),
+    "C19": ((5.0, -17.5), "F", 0),
+    "C20": ((10.4, -6.25), "F", 0),
+    "C23": ((-2.0, -8.5), "B", 0),
+    "R8": ((0.0, -8.5), "B", 0),
+    "R9": ((-3.5, -6.0), "B", 0),
+    # Crystal and load network share the quiet B.Cu edge channel beside HSE.
+    "C21": ((-4.8, -11.0), "B", 0),
+    "C22": ((-9.2, -11.0), "B", 0),
+    "R7": ((-7.0, -11.5), "B", 90),
+    # The 100 nF gyro bypass sits on B.Cu directly behind the package edge;
+    # paired power/ground vias keep its loop short without blocking SPI escape.
+    "C24": ((0.0, 1.8), "B", 0),
     "C25": ((0.0, 3.8), "F", 0),
 
     # Sensor support follows the B-side flash and barometer.
-    "C26": ((-2.0, -4.0), "B", 0),
-    "R10": ((0.0, -4.0), "B", 0),
-    "R11": ((2.0, -4.0), "B", 0),
+    "C26": ((3.5, -7.0), "B", 0),
+    "R10": ((3.5, -9.0), "B", 0),
+    "R11": ((3.5, -11.0), "B", 0),
     "C27": ((-9.5, 1.5), "B", 0),
     "R12": ((-7.5, 1.0), "B", 0),
     "R13": ((-11.5, 1.0), "B", 0),
 
     # USB service and analog monitoring, B.Cu.
     "C28": ((11.0, -24.0), "B", 0),
-    "D5": ((-11.0, -24.0), "B", 0),
-    "D6": ((-7.0, -24.0), "B", 0),
+    "D5": ((-13.0, -18.0), "B", 0),
+    "D6": ((-13.0, -15.0), "B", 0),
     "D7": ((7.0, -24.0), "B", 0),
-    "R14": ((-10.5, -10.5), "B", 90),
+    "R14": ((-8.0, -14.0), "B", 90),
     "R15": ((-10.5, -13.5), "B", 90),
-    "C29": ((5.0, -2.5), "B", 0),
-    "R16": ((0.5, -1.0), "B", 0),
-    "R17": ((2.5, -1.0), "B", 0),
-    "C30": ((5.0, -5.0), "B", 0),
-    "R18": ((7.0, -5.0), "B", 0),
+    "C29": ((9.0, -4.2), "B", 0),
+    "R16": ((9.0, -2.0), "B", 0),
+    "R17": ((11.0, -2.0), "B", 0),
+    "C30": ((-3.8, -12.0), "B", 0),
+    "R18": ((-1.8, -12.0), "B", 0),
 
     # Level-shifted addressable RGB status LED at the lower service end.
     "R19": ((0.0, -21.8), "F", 0),

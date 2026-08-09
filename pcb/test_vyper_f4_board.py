@@ -96,6 +96,14 @@ def part_pos(key):
     return L.PARTS[key]["pos"]
 
 
+def pad_pos(ref, number):
+    """Return the first physical pad centre in millimetres."""
+    pads = [p for p in footprints[ref].Pads() if p.GetNumber() == str(number)]
+    assert pads, f"{ref}.{number} has no pad"
+    position = pads[0].GetPosition()
+    return pcbnew.ToMM(position.x), pcbnew.ToMM(position.y)
+
+
 # Proximity gates preserve the intent of the manually packed passive groups.
 assert distance(L.PASSIVES["D1"]["pos"], part_pos("U3_buck_TPS54360")) <= 9.0
 assert distance(part_pos("L1_buck_inductor"), part_pos("U3_buck_TPS54360")) <= 9.0
@@ -119,6 +127,16 @@ assert max(distance(L.PASSIVES[r]["pos"], part_pos("U7_baro_BMP280"))
 assert max(distance(L.PASSIVES[r]["pos"], part_pos("U1_mcu_STM32F405RGT6"))
            for r in ("C29", "C30")) <= 9.0
 
+# Pad-level power-loop gates. These use the true rotated footprints, not the
+# coarse component centres, and prevent an autorouter from hiding a bad buck
+# placement with a long, high-inductance switch trace.
+assert distance(pad_pos("U3", 8), pad_pos("L1", 1)) <= 3.7
+assert distance(pad_pos("U3", 8), pad_pos("D1", 1)) <= 3.5
+assert distance(pad_pos("U3", 8), pad_pos("C3", 2)) <= 2.8
+assert distance(pad_pos("U3", 1), pad_pos("C3", 1)) <= 2.8
+assert distance(pad_pos("U3", 2), pad_pos("C4", 1)) <= 2.2
+assert distance(pad_pos("L1", 2), pad_pos("C7", 1)) <= 1.2
+
 assert board.GetCopperLayerCount() == 4
 assert len(board.GetTracks()) == 0
 assert len(board.Zones()) == 0
@@ -128,5 +146,6 @@ assert len(board.GetNetInfo().NetsByName()) == 59
 
 print("all 77 FC references and 250 netlist nodes reach real PCB pads")
 print("all 58 passives are in-outline and preserve functional proximity gates")
+print("TPS54360 switch, bootstrap, input and output pad-spacing gates pass")
 print("all 16 external I/O pads accept 2.54 mm headers or stripped wire")
 print("four layers; zero tracks/zones by design -- unrouted review board, NOT FOR FAB")

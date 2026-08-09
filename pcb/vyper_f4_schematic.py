@@ -201,9 +201,12 @@ u2["AP_SDA/AP_SDIO/AP_SDI"] += spi1_mosi
 u2["INT1/INT"] += gyro_int
 capacitor("100nF X7R", vgyro, gnd)
 capacitor("2.2uF X7R", vgyro, gnd, footprint=C0603)
-for pin_name, net in (("PA5", spi1_sck), ("PA6", spi1_miso),
-                      ("PA7", spi1_mosi), ("PA4", gyro_cs),
-                      ("PC4", gyro_int)):
+# Use SPI1's valid PB3/PB4/PB5 alternate-function group. With U1 rotated 0
+# degrees these five consecutive package pins face the gyro, removing every
+# package crossover from the timing-critical bus.
+for pin_name, net in (("PB3", spi1_sck), ("PB4", spi1_miso),
+                      ("PB5", spi1_mosi), ("PB7", gyro_cs),
+                      ("PB6", gyro_int)):
     u1[pin_name] += net
 
 # Blackbox flash on SPI2.
@@ -233,8 +236,10 @@ u7["VDD", "VDDIO", "CSB"] += v3
 u7["GND", "SDO"] += gnd
 u7["SCK"] += i2c_scl
 u7["SDI"] += i2c_sda
-u1["PB6"] += i2c_scl
-u1["PB7"] += i2c_sda
+# PB8/PB9 are the second valid I2C1 pin pair and free PB6/PB7 for the adjacent
+# gyro interrupt/chip-select pins above.
+u1["PB8"] += i2c_scl
+u1["PB9"] += i2c_sda
 resistor("4.7k", i2c_scl, v3)
 resistor("4.7k", i2c_sda, v3)
 capacitor("100nF", v3, gnd)

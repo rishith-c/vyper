@@ -5,6 +5,8 @@ from pathlib import Path
 
 NETLIST = Path(__file__).with_name("vyper_f4.net")
 text = NETLIST.read_text()
+firmware = (NETLIST.parent.parent / "firmware" / "vyper_f405" /
+            "config.h").read_text()
 
 
 def child_blocks(source, parent_token, child_token):
@@ -63,11 +65,11 @@ check("one net per component pin", not duplicates,
 
 expected_exact = {
     "BUCK_FB": {("R4", "2"), ("R5", "1"), ("U3", "5")},
-    "SPI1_SCK": {("U1", "21"), ("U2", "13")},
-    "SPI1_MISO": {("U1", "22"), ("U2", "1")},
-    "SPI1_MOSI": {("U1", "23"), ("U2", "14")},
-    "GYRO_CS": {("U1", "20"), ("U2", "12")},
-    "GYRO_INT1": {("U1", "24"), ("U2", "4")},
+    "SPI1_SCK": {("U1", "55"), ("U2", "13")},
+    "SPI1_MISO": {("U1", "56"), ("U2", "1")},
+    "SPI1_MOSI": {("U1", "57"), ("U2", "14")},
+    "GYRO_CS": {("U1", "59"), ("U2", "12")},
+    "GYRO_INT1": {("U1", "58"), ("U2", "4")},
     "MOTOR_1": {("J2", "5"), ("U1", "27")},
     "MOTOR_2": {("J2", "6"), ("U1", "26")},
     "MOTOR_3": {("J2", "7"), ("U1", "17")},
@@ -124,6 +126,18 @@ check("exact gyro value selected", "ICM-42688-P" in text,
 check("RGB uses a 5 V AHCT level shifter",
       "SN74AHCT1G125DBVR" in text and "SK6812MINI-E" in text,
       "PA8 is translated to a 5 V addressable status LED")
+
+resource_contract = {
+    "SPI1_SCK_PIN": "PB3", "SPI1_SDI_PIN": "PB4",
+    "SPI1_SDO_PIN": "PB5", "GYRO_1_EXTI_PIN": "PB6",
+    "GYRO_1_CS_PIN": "PB7", "I2C1_SCL_PIN": "PB8",
+    "I2C1_SDA_PIN": "PB9", "GYRO_1_ALIGN": "CW90_DEG",
+}
+for macro, expected in resource_contract.items():
+    match = re.search(rf"^#define\s+{macro}\s+(\S+)", firmware, re.MULTILINE)
+    actual = match.group(1) if match else "<missing>"
+    check(f"firmware {macro}", actual == expected,
+          f"{actual} (expected {expected})")
 
 if fails:
     raise SystemExit(f"{len(fails)} FAILED: {', '.join(fails)}")
