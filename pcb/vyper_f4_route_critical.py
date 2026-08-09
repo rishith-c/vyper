@@ -272,10 +272,32 @@ for ref, via_pos in (("C21", (-2.00, 10.50)),
     add_track("GND", pcbnew.B_Cu, 0.25, (clock_gnd, via_pos))
     add_via("GND", via_pos, size=0.65, drill=0.30)
 
+# STM32 internal-regulator capacitors. VCAP is neither 3V3 nor a routable
+# power rail: each pin gets one dedicated low-ESR capacitor and a short ground
+# return. Both remain entirely on F.Cu.
+vcap1_mcu = xy(pad("U1", 31, "VCAP1"))
+vcap1_cap = xy(pad("C19", 1, "VCAP1"))
+add_track("VCAP1", pcbnew.F_Cu, 0.30, (vcap1_mcu, vcap1_cap))
+
+c19_ground = xy(pad("C19", 2, "GND"))
+c19_ground_via = (5.25, 19.75)
+add_track("GND", pcbnew.F_Cu, 0.35,
+          (c19_ground, c19_ground_via))
+add_via("GND", c19_ground_via, size=0.65, drill=0.30)
+
+vcap2_mcu = xy(pad("U1", 47, "VCAP2"))
+vcap2_cap = xy(pad("C20", 1, "VCAP2"))
+add_track("VCAP2", pcbnew.F_Cu, 0.30, (vcap2_mcu, vcap2_cap))
+c20_ground = xy(pad("C20", 2, "GND"))
+c20_ground_via = (11.175, 5.10)
+add_track("GND", pcbnew.F_Cu, 0.35,
+          (c20_ground, c20_ground_via))
+add_via("GND", c20_ground_via, size=0.65, drill=0.30)
+
 # Fill after all vias exist so thermal/clearance geometry is deterministic.
 pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 pcbnew.SaveBoard(str(OUTPUT), board)
 
 print(f"wrote {OUTPUT}")
 print(f"tracks/vias: {len(board.GetTracks())}; zones: {len(board.Zones())}")
-print("critical buck, gyro bus/power and HSE copper; remaining routing is open")
+print("critical power, gyro bus, HSE and MCU VCAP copper; remaining routing is open")

@@ -235,9 +235,9 @@ VERTICAL_PASSIVE_PLACEMENT = {
     "C16": ((9.0, -16.0), "B", 0),
     "C17": ((-5.0, -14.5), "B", 0),
     "C18": ((5.0, -16.0), "B", 0),
-    # VCAP pins need their capacitors immediately adjacent; both use the back
-    # face so the capacitor can sit directly under the relevant MCU edge.
-    "C19": ((5.0, -17.5), "F", 0),
+    # Rotate VCAP1's capacitor so pad 1 directly faces the matching MCU pin;
+    # its ground pad then points outward to a dedicated plane via.
+    "C19": ((5.25, -17.85), "F", 270),
     "C20": ((10.4, -6.25), "F", 0),
     "C23": ((-2.0, -8.5), "B", 0),
     "R8": ((0.0, -8.5), "B", 0),
