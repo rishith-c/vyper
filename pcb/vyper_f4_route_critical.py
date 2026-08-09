@@ -4,7 +4,7 @@ This script starts from the generated, unrouted board and writes a separate
 critical-route candidate. It deliberately does not touch the unrouted source.
 The current stage implements the TPS54360 power loop, dedicated gyro supply,
 gyro SPI/interrupt bus, HSE crystal network, and a continuous In1 GND plane.
-USB and remaining power/signal routes are added in subsequent reviewed stages.
+USB and remaining power/signal routes are added in reviewed stages.
 The output is still NOT FOR FAB until every route and release gate passes.
 
 Run with KiCad's bundled Python 3.9.

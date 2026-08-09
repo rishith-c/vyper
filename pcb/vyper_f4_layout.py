@@ -89,7 +89,12 @@ PARTS = {
     "U8_rgb_level_shifter": dict(pos=(-8.0, -20.5), side="F",
                                   courtyard=(3.4, 3.2),
                                   pkg="SN74AHCT1G125 SOT-23-5"),
-    "D4_rgb_status": dict(pos=(0.0, -24.5), side="F", courtyard=(4.0, 4.0),
+    # Horizontal flow-through orientation preserves D-/D+ order through the
+    # right-to-left bend: the MCU pair enters pins 3/1 and exits pins 4/6.
+    "U9_usb_esd_USBLC6": dict(pos=(0.0, -21.5), side="F", rot=180,
+                               courtyard=(3.5, 4.2),
+                               pkg="USBLC6-2SC6 SOT-23-6"),
+    "D4_rgb_status": dict(pos=(-2.0, -26.0), side="F", courtyard=(4.0, 4.0),
                            pkg="SK6812MINI-E 3.5x3.5"),
 }
 
@@ -175,8 +180,6 @@ PASSIVES = {
 
     # USB service harness protection and termination.
     "C28": dict(pos=(6.0, -17.0), side="B", rot=0),
-    "D5": dict(pos=(-6.5, -13.5), side="B", rot=0),
-    "D6": dict(pos=(-3.2, -13.5), side="B", rot=0),
     "D7": dict(pos=(0.2, -13.5), side="B", rot=0),
     "R14": dict(pos=(3.8, -13.5), side="B", rot=0),
     "R15": dict(pos=(5.8, -13.5), side="B", rot=0),
@@ -263,22 +266,27 @@ VERTICAL_PASSIVE_PLACEMENT = {
     "R13": ((-11.5, 1.0), "B", 0),
 
     # USB service and analog monitoring, B.Cu.
-    "C28": ((11.0, -24.0), "B", 0),
-    "D5": ((-13.0, -18.0), "B", 0),
-    "D6": ((-13.0, -15.0), "B", 0),
-    "D7": ((7.0, -24.0), "B", 0),
-    "R14": ((-8.0, -14.0), "B", 90),
-    "R15": ((-10.5, -13.5), "B", 90),
+    # VBUS TVS/bypass face the service-channel feed; their ground pads point
+    # outward to dedicated plane vias instead of lying in the hot path.
+    "C28": ((10.5, -24.0), "B", 90),
+    "D7": ((7.0, -24.0), "B", 180),
+    # Vertical source terminators give D-/D+ a symmetric, non-crossing launch
+    # from the MCU into the long service-end pair.
+    "R14": ((9.3, -8.3), "F", 90),
+    "R15": ((10.6, -8.3), "F", 90),
     "C29": ((9.0, -4.2), "B", 0),
     "R16": ((9.0, -2.0), "B", 0),
     "R17": ((11.0, -2.0), "B", 0),
     "C30": ((-3.8, -12.0), "B", 0),
     "R18": ((-1.8, -12.0), "B", 0),
 
-    # Level-shifted addressable RGB status LED at the lower service end.
-    "R19": ((0.0, -21.8), "F", 0),
+    # Level-shifted addressable RGB status LED at the lower service end. Keep
+    # the data resistor left of the USB ESD array so the protected differential
+    # pair owns the central service-channel escape without a courtyard clash.
+    "R19": ((-4.5, -22.5), "F", 0),
     "R20": ((-8.0, -18.0), "F", 0),
-    "C31": ((4.5, -24.5), "F", 90),
+    # Local LED bypass sits outside D4's optical/package courtyard.
+    "C31": ((-7.0, -24.5), "F", 90),
 }
 for _ref, (_pos, _side, _rot) in VERTICAL_PASSIVE_PLACEMENT.items():
     PASSIVES[_ref].update(pos=_pos, side=_side, rot=_rot)

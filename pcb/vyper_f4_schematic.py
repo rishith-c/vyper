@@ -260,14 +260,20 @@ usb_dm_raw, usb_dp_raw = Net("USB_DM_RAW"), Net("USB_DP_RAW")
 usb_dm, usb_dp = Net("USB_DM"), Net("USB_DP")
 for pin, net in zip(range(1, 5), (gnd, usb5, usb_dm_raw, usb_dp_raw)):
     j1[pin] += net
-# Discrete low-capacitance clamps avoid treating the ESD reference as a power
-# input in ERC while preserving a reviewable protection path.
-for ref, protected in (("D5", usb_dm_raw), ("D6", usb_dp_raw),
-                       ("D7", usb5)):
-    tvs = Part("Device", "D_TVS", ref=ref, value="PESD5V low-C",
-               footprint="Diode_SMD:D_SOD-323")
-    tvs[1] += gnd
-    tvs[2] += protected
+# Exact two-line flow-through USB ESD array. Pairing both channels in one
+# package reduces parasitic mismatch versus two vaguely specified discrete
+# clamps. I/O2 carries D- and I/O1 carries D+ so physical routing order remains
+# consistent from connector to MCU.
+u9 = Part("Power_Protection", "USBLC6-2SC6", ref="U9")
+u9[3, 4] += usb_dm_raw
+u9[1, 6] += usb_dp_raw
+u9[5] += usb5
+u9[2] += gnd
+# VBUS retains a dedicated surge clamp.
+d7 = Part("Device", "D_TVS", ref="D7", value="PESD5V low-C",
+          footprint="Diode_SMD:D_SOD-323")
+d7[1] += gnd
+d7[2] += usb5
 resistor("22R", usb_dm_raw, usb_dm)
 resistor("22R", usb_dp_raw, usb_dp)
 u1["PA11"] += usb_dm

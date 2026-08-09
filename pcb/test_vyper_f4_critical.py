@@ -104,7 +104,7 @@ allowed = {"lib_footprint_issues", "silk_over_copper", "silk_overlap",
            "silk_edge_clearance", "text_height"}
 hard = [item for item in drc["violations"] if item["type"] not in allowed]
 assert not hard, [(item["type"], item["description"]) for item in hard]
-assert len(drc["unconnected_items"]) == 117
+assert len(drc["unconnected_items"]) == 119
 
 print("critical buck routing has zero hard DRC violations")
 print("BUCK_SW 10.73 mm total tree, zero vias, F.Cu only")
@@ -115,4 +115,4 @@ print("both STM32 VCAP paths pass dedicated local-capacitor gates")
 print("filled In1 GND and In2 3V3 planes plus VDDA island pass")
 print("four local STM32 VDD bypass loops and bulk capacitor pass DRC")
 print("BOOT0 and NRST startup networks pass route/via gates")
-print("117 items remain unrouted; board is NOT FOR FAB")
+print("119 items remain unrouted; board is NOT FOR FAB")

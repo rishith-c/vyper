@@ -28,11 +28,11 @@ allowed = {"unconnected_items", "silk_over_copper", "silk_overlap",
            "silk_edge_clearance", "lib_footprint_issues", "text_height"}
 forbidden = categories.keys() - allowed
 assert not forbidden, f"forbidden DRC categories: {sorted(forbidden)}"
-assert categories["unconnected_items"] == 192, categories
+assert categories["unconnected_items"] == 194, categories
 assert "** Found 0 Footprint errors **" in text
 
 print("FC DRC has no shorts, clearance, courtyard, edge, or footprint errors")
-print("192 unconnected items remain by design; routing is NOT complete")
+print("194 unconnected items remain by design; routing is NOT complete")
 print("allowed review-board warnings:",
       dict(sorted((k, v) for k, v in categories.items()
                   if k != "unconnected_items")))

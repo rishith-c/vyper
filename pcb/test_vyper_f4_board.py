@@ -81,7 +81,7 @@ for ref, group in (("J3", "J3_rx_uart1"), ("J4", "J4_gps_uart3"),
         assert abs(pcbnew.ToMM(drill.x) - L.IO_PAD_DRILL) < 1e-6
         assert abs(pcbnew.ToMM(drill.y) - L.IO_PAD_DRILL) < 1e-6
 
-assert len(L.PASSIVES) == 58
+assert len(L.PASSIVES) == 56
 for ref, spec in L.PASSIVES.items():
     actual = footprints[ref].GetPosition()
     assert abs(pcbnew.ToMM(actual.x) - spec["pos"][0]) < 1e-6
@@ -140,12 +140,12 @@ assert distance(pad_pos("L1", 2), pad_pos("C7", 1)) <= 1.2
 assert board.GetCopperLayerCount() == 4
 assert len(board.GetTracks()) == 0
 assert len(board.Zones()) == 0
-assert len(expected_refs) == 77
-assert len(expected_nodes) == 250
+assert len(expected_refs) == 76
+assert len(expected_nodes) == 252
 assert len(board.GetNetInfo().NetsByName()) == 59
 
-print("all 77 FC references and 250 netlist nodes reach real PCB pads")
-print("all 58 passives are in-outline and preserve functional proximity gates")
+print("all 76 FC references and 252 netlist nodes reach real PCB pads")
+print("all 56 passives are in-outline and preserve functional proximity gates")
 print("TPS54360 switch, bootstrap, input and output pad-spacing gates pass")
 print("all 16 external I/O pads accept 2.54 mm headers or stripped wire")
 print("four layers; zero tracks/zones by design -- unrouted review board, NOT FOR FAB")
