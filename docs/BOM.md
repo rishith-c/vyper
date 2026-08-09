@@ -18,7 +18,7 @@ honestly fit inside the same $200 aircraft budget.
 | 1 lot | [M3/M2 hardware — Amazon](https://www.amazon.com/s?k=m3+m2+socket+head+screw+washer+heat+set+insert), [AliExpress](https://www.aliexpress.us/w/wholesale-m2-m3-screw-assortment.html) | exact schedule below | 40 g allowance | $10.00 |
 | 1 lot | [12/20/26 AWG silicone wire, XT60, heatshrink — Amazon](https://www.amazon.com/s?k=silicone+wire+xt60+heatshrink), [AliExpress](https://www.aliexpress.us/w/wholesale-silicone-wire-xt60-kit.html) | motor: 20 AWG; battery: 12 AWG; signals: 26 AWG | included | $10.00 |
 | 1 | [470–1000 µF 50 V low-ESR capacitor — Amazon](https://www.amazon.com/s?k=1000uf+50v+low+esr+capacitor), [AliExpress](https://www.aliexpress.us/w/wholesale-1000uf-50v-low-esr.html) | mounted directly at ESC battery pigtail | 8 g allowance | $4.00 |
-| 300 g | [PETG or PA-CF filament — Amazon](https://www.amazon.com/s?k=petg+filament+1.75mm) | 1.75 mm; slicer estimate 246.9 g plus purge/test allowance; final material requires coupon/proof test | — | $6.00 |
+| 300 g | [PETG or PA-CF filament — Amazon](https://www.amazon.com/s?k=petg+filament+1.75mm) | 1.75 mm; slicer estimate 257.1 g plus purge/test allowance; final material requires coupon/proof test | — | $6.00 |
 | | **Target before tax/shipping** | | | **$193.13** |
 
 The $42 stack line is a budget gate, not a recommendation to buy an unknown

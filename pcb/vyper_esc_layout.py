@@ -2,7 +2,7 @@
 
 The ESC is purpose-built for the removable vertical electronics cassette. It
 is not a stretched square stack: four inverter cells are arranged along the
-aircraft Z axis on a 30 x 72 mm board. Every MOSFET is on the outward face so
+aircraft Z axis on a 36 x 72 mm board. Every MOSFET is on the outward face so
 two electrically isolated aluminium spreaders can intercept the heat. Gate
 drivers, MCUs and sensing parts live on the inward face.
 
@@ -11,11 +11,11 @@ an authorization to fabricate. Copper, transient, thermal and dyno gates in
 ESC_ARCHITECTURE.md remain mandatory.
 """
 
-BOARD_W = 30.0
+BOARD_W = 36.0
 BOARD_H = 72.0
 CORNER_R = 3.0
 BOARD_THICKNESS = 1.6
-MOUNT_PITCH_X = 24.0
+MOUNT_PITCH_X = 30.0
 MOUNT_PITCH_Y = 64.0
 HOLE_D = 2.4                 # M2 clearance
 HARDWARE_KEEPOUT_D = 5.0
@@ -46,9 +46,10 @@ FET_ROW_OFFSET_Y = 3.0
 
 # Alternating long-edge exits prevent phase leads from crossing the board.
 MOTOR_SIDE = {"M1": -1, "M2": 1, "M3": -1, "M4": 1}
-MOTOR_PAD_STATIONS = (-2.8, 0.0, 2.8)
-MOTOR_PAD_CENTER_X = 13.3
-MOTOR_PAD_SIZE = (2.0, 2.2)
+MOTOR_PAD_STATIONS = (-4.3, 0.0, 4.3)
+MOTOR_PAD_CENTER_X = 15.3
+MOTOR_PAD_SIZE = (4.4, 3.8)
+MOTOR_PAD_DRILL = (1.6, 2.2)  # accepts stripped 20 AWG with assembly allowance
 
 PARTS = {}
 MOTOR_PADS = {}
@@ -93,15 +94,15 @@ for channel in CHANNELS:
 # The centre feed halves the worst-case VBAT/GND distribution distance versus
 # a connector at one end. The cassette provides pigtail strain relief; the
 # two heat-spreader segments leave this centre service window uncovered.
-BATTERY_PADS = {"VBAT+": (-1.5, 0.0), "GND": (1.5, 0.0)}
-BATTERY_PAD_SIZE = (2.2, 5.0)
+BATTERY_PADS = {"VBAT+": (-4.4, 0.0), "GND": (4.4, 0.0)}
+BATTERY_PAD_SIZE = (6.2, 5.0)
 
 # Shared low-power support lives on B.Cu.
 PARTS["U_BUCK"] = dict(
-    pos=(-5.5, 0.0), side="B", courtyard=BUCK_CTYD,
+    pos=(-12.0, -1.5), side="B", courtyard=BUCK_CTYD,
     pkg="LMR16006XDDCR 60V 0.6A")
 PARTS["L_BUCK"] = dict(
-    pos=(5.8, 0.0), side="B", courtyard=INDUCTOR_CTYD,
+    pos=(-6.5, 0.0), side="B", courtyard=INDUCTOR_CTYD,
     pkg="22uH shielded Isat>=1.6A")
 PARTS["U_ISUM"] = dict(
     pos=(-5.0, 33.0), side="B", courtyard=OPAMP_CTYD,
@@ -139,7 +140,7 @@ BUCK_OUTPUT_A = 0.6
 # Each spreader segment is a packaging envelope. A dielectric interface with a
 # verified breakdown rating is mandatory; aluminium must never touch live
 # copper. The 6 mm centre gap exposes the battery/regulator service bay.
-HEAT_SPREADER_W = 28.0
+HEAT_SPREADER_W = 34.0
 HEAT_SPREADER_SEGMENT_H = 27.5
 HEAT_SPREADER_SEGMENT_COUNT = 2
 HEAT_SPREADER_CENTER_GAP = 6.0

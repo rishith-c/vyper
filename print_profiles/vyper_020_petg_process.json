@@ -13,6 +13,7 @@
   "bottom_shell_layers": "5",
   "sparse_infill_density": "20%",
   "sparse_infill_pattern": "gyroid",
+  "wall_generator": "classic",
   "enable_support": "0",
   "brim_type": "outer_only",
   "brim_width": "5",

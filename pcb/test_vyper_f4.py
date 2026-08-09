@@ -42,7 +42,7 @@ def rect_circle_overlap(r, cx, cy, cr):
 
 # ---------------------------------------------------------------- pattern
 print("=== mounting pattern ===")
-check("vertical FC outline", (L.BOARD_W, L.BOARD_H) == (22.0, 64.0),
+check("vertical FC outline", (L.BOARD_W, L.BOARD_H) == (26.0, 64.0),
       f"{L.BOARD_W:.0f} x {L.BOARD_H:.0f} mm")
 check("cassette soft-mount pattern",
       (L.HOLE_PITCH_X, L.HOLE_PITCH_Y) == (16.0, 56.0),
@@ -56,8 +56,8 @@ check("grommet bore", L.HOLE_D == 3.2,
 
 # ---------------------------------------------------------- board vs cassette
 print("\n=== board vs vertical cassette ===")
-check("FC is narrower than ESC", L.BOARD_W < 30.0 and L.BOARD_H < 72.0,
-      "22 x 64 FC nests behind the 30 x 72 ESC")
+check("FC is narrower than ESC", L.BOARD_W < 36.0 and L.BOARD_H < 72.0,
+      "26 x 64 FC nests behind the 36 x 72 ESC")
 
 # ---------------------------------------------------------------- gyro rules
 print("\n=== gyro placement (Betaflight mfr guidelines) ===")
@@ -96,11 +96,11 @@ for i, a in enumerate(names):
 check("part courtyards disjoint per side", not worst_pair[1],
       "every same-side courtyard pair checked")
 
-PAD = 1.6
+PAD_W, PAD_H = L.IO_PAD_SIZE
 bad = 0
 for group, pads in L.PAD_GROUPS.items():
     for x, y, label in pads:
-        pr = rect((x, y), (PAD, PAD))
+        pr = rect((x, y), (PAD_W, PAD_H))
         for name, spec in L.PARTS.items():
             if spec["side"] != "F":
                 continue
@@ -109,6 +109,11 @@ for group, pads in L.PAD_GROUPS.items():
                 bad += 1
 check("solder pads clear of courtyards", bad == 0,
       f"{sum(len(p) for p in L.PAD_GROUPS.values())} pads vs all F-side courtyards")
+check("I/O pads accept standard headers",
+      L.IO_PAD_PITCH == 2.54 and L.IO_PAD_DRILL >= 1.0
+      and L.IO_PAD_SIZE[0] >= 2.2 and L.IO_PAD_SIZE[1] >= 2.0,
+      f"{L.IO_PAD_PITCH:.2f} mm pitch, {PAD_W:.1f}×{PAD_H:.1f} pad / "
+      f"Ø{L.IO_PAD_DRILL:.1f} finished hole")
 
 bad = 0
 for hx, hy in L.HOLES:
@@ -120,7 +125,7 @@ for hx, hy in L.HOLES:
             bad += 1
     for group, pads in L.PAD_GROUPS.items():
         for x, y, label in pads:
-            if rect_circle_overlap(rect((x, y), (PAD, PAD)), hx, hy, kr):
+            if rect_circle_overlap(rect((x, y), (PAD_W, PAD_H)), hx, hy, kr):
                 check(f"grommet@({hx:+.2f},{hy:+.2f}) vs pad {label}", False,
                       "pad inside grommet keepout")
                 bad += 1
@@ -147,7 +152,7 @@ for name, spec in L.PARTS.items():
         bad += 1
 for group, pads in L.PAD_GROUPS.items():
     for x, y, label in pads:
-        if not inside_outline(rect((x, y), (PAD, PAD))):
+        if not inside_outline(rect((x, y), (PAD_W, PAD_H))):
             check(f"pad {label} inside outline", False, "pad leaves the board")
             bad += 1
 check("everything inside the rounded outline", bad == 0,

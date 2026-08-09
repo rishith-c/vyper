@@ -67,6 +67,27 @@ for channel in range(1, 5):
     driver_numbers = {p.GetNumber() for p in footprints[f"U{channel}2"].Pads()}
     assert driver_numbers == {str(i) for i in range(1, 42)}, driver_numbers
 
+    motor_pads = list(footprints[f"JM{channel}"].Pads())
+    assert len(motor_pads) == 3
+    for pad in motor_pads:
+        size = pad.GetSize()
+        drill = pad.GetDrillSize()
+        assert pad.GetAttribute() == pcbnew.PAD_ATTRIB_PTH
+        assert abs(pcbnew.ToMM(size.x) - 4.4) < 1e-6
+        assert abs(pcbnew.ToMM(size.y) - 3.8) < 1e-6
+        assert abs(pcbnew.ToMM(drill.x) - 1.6) < 1e-6
+        assert abs(pcbnew.ToMM(drill.y) - 2.2) < 1e-6
+
+battery_pads = list(footprints["JBAT"].Pads())
+assert len(battery_pads) == 2
+for pad in battery_pads:
+    size = pad.GetSize()
+    assert pad.GetAttribute() == pcbnew.PAD_ATTRIB_SMD
+    assert abs(pcbnew.ToMM(size.x) - 6.2) < 1e-6
+    assert abs(pcbnew.ToMM(size.y) - 5.0) < 1e-6
+    assert pad.IsOnLayer(pcbnew.F_Cu) and pad.IsOnLayer(pcbnew.F_Mask)
+    assert not pad.IsOnLayer(pcbnew.F_Paste)
+
 assert board.GetCopperLayerCount() == 6
 assert len(board.GetTracks()) == 0
 assert len(board.Zones()) == 0
@@ -75,4 +96,5 @@ assert len(expected_nodes) == 715
 assert len(board.GetNetInfo().NetsByName()) == 160  # 159 named plus net 0.
 
 print("all 195 references and 715 authored netlist nodes reach real PCB pads")
+print("20 AWG motor slots and no-paste 12 AWG battery landing pads verified")
 print("six layers; zero tracks/zones by design -- unrouted review board, NOT FOR FAB")

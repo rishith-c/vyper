@@ -76,6 +76,14 @@ def smd_layers(side="F"):
     return layers
 
 
+def pth_layers():
+    layers = pcbnew.LSET()
+    for layer in (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu,
+                  pcbnew.F_Mask, pcbnew.B_Mask):
+        layers.AddLayer(layer)
+    return layers
+
+
 def add_smd_pad(fp, number, x, y, sx, sy, side="F"):
     pad = pcbnew.PAD(fp)
     pad.SetNumber(str(number))
@@ -85,6 +93,18 @@ def add_smd_pad(fp, number, x, y, sx, sy, side="F"):
     pad.SetSize(pcbnew.VECTOR2I_MM(sx, sy))
     pad.SetFPRelativePosition(pcbnew.VECTOR2I_MM(x, y))
     pad.SetLayerSet(smd_layers(side))
+    fp.Add(pad)
+
+
+def add_pth_pad(fp, number, x, y, sx, sy, drill):
+    pad = pcbnew.PAD(fp)
+    pad.SetNumber(str(number))
+    pad.SetAttribute(pcbnew.PAD_ATTRIB_PTH)
+    pad.SetShape(pcbnew.PAD_SHAPE_OVAL)
+    pad.SetSize(pcbnew.VECTOR2I_MM(sx, sy))
+    pad.SetDrillSize(pcbnew.VECTOR2I_MM(drill, drill))
+    pad.SetFPRelativePosition(pcbnew.VECTOR2I_MM(x, y))
+    pad.SetLayerSet(pth_layers())
     fp.Add(pad)
 
 
@@ -98,7 +118,8 @@ def custom_connector(ref):
         centre_y = sum(p[1] for p in group) / len(group)
         # Pin order follows the layout list. KiCad local +Y points down.
         for number, (_x, y, _label) in enumerate(group, 1):
-            add_smd_pad(fp, number, 0, -(y - centre_y), 1.6, 1.6)
+            add_pth_pad(fp, number, 0, -(y - centre_y),
+                        *L.IO_PAD_SIZE, L.IO_PAD_DRILL)
     elif ref == "J7":
         for number, (x, y) in enumerate(
                 ((-0.635, -0.635), (0.635, -0.635),
@@ -122,6 +143,19 @@ def load_library_footprint(loader, identifier):
 
 def layout_xy(point):
     return point[0], -point[1]
+
+
+def add_silk_text(board, value, x, y, side="F", size=0.70):
+    size = max(size, 0.80)  # PCBWay-readable text height
+    item = pcbnew.PCB_TEXT(board)
+    item.SetText(value)
+    item.SetLayer(pcbnew.B_SilkS if side == "B" else pcbnew.F_SilkS)
+    item.SetMirrored(side == "B")
+    item.SetTextPos(pcbnew.VECTOR2I_MM(x, -y))
+    item.SetTextSize(pcbnew.VECTOR2I_MM(size, size))
+    item.SetTextThickness(pcbnew.FromMM(max(0.10, size * 0.15)))
+    item.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
+    board.Add(item)
 
 
 def placed_components():
@@ -208,6 +242,19 @@ def main():
     if missing_pads:
         raise RuntimeError("footprints missing netlist pads:\n  " +
                            "\n  ".join(missing_pads))
+    if staged:
+        raise RuntimeError("all FC footprints must be placed in-board; staged: "
+                           + ", ".join(staged))
+
+    add_silk_text(board, "VYPER-F4 REV A", 0, 29.8, size=0.85)
+    add_silk_text(board, "TAIL", 0, -30.0, size=0.65)
+    for group in L.PAD_GROUPS.values():
+        for x, y, label in group:
+            add_silk_text(board, label, x - 1.9 if x > 0 else x + 1.9, y,
+                          size=0.60)
+    add_silk_text(board, "EVT / UNROUTED", 0, 29.8, side="B", size=0.70)
+    add_silk_text(board, "USB", 0, -25.2, side="B", size=0.65)
+    add_silk_text(board, "ESC", 0, -12.6, side="B", size=0.65)
 
     pcbnew.SaveBoard(str(OUT), board)
     print(f"wrote {OUT}")

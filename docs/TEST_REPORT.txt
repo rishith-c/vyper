@@ -7,8 +7,8 @@ Geometry
 - shell, arm, hub and tail cap: one closed solid each
 - DOGCOM 81x39x33 mm battery radial allowance: 0.96 mm
 - battery Z14..95 mm; hub starts Z97 mm
-- 30×72 mm ESC and 22×64 mm FC fit longitudinally on the removable vertical
-  cassette; shell radial allowances are 5.79 mm and 10.34 mm respectively
+- 36×72 mm ESC and 26×64 mm FC fit longitudinally on the removable vertical
+  cassette; shell radial allowances are 3.28 mm and 8.76 mm respectively
 - tail: 3x M2x10 positive retainers into 4 mm inserts
 
 Propulsion / clearance
@@ -22,7 +22,7 @@ Neptune 4
 - nose 57x57x155 mm
 - arm 124x31x70 mm
 - hub 52x52x26 mm
-- electronics cassette 32x7x77 mm
+- electronics cassette 38x7x77 mm
 - tail 57x57x72 mm
 
 Analytical aerodynamics
@@ -34,11 +34,12 @@ Analytical aerodynamics
 - result: analytically feasible, flight validation required
 
 Mass
-- OrcaSlicer PETG estimate: 246.90 g
-- geometry/fill-factor screen: 224 g (9.3 percent lower)
+- OrcaSlicer PETG estimate: 257.11 g
+- support-free geometry/fill-factor screen: 224 g (9.9 percent lower than the
+  248.8 g support-free slicer estimate)
 - payload allowance: 458 g
-- estimated AUW: 705 g
-- static thrust-to-weight estimate: 8.9:1
+- estimated AUW: 715 g
+- static thrust-to-weight estimate: 8.8:1
 
 Additional suites
 - python3 pcb/test_vyper_f4.py: PASS, 15 mechanical floorplan checks
@@ -57,6 +58,10 @@ Additional suites
   open-source VYPER_55A_F421 AM32 target block
 - KiCad Python pcb/test_vyper_esc_board.py: PASS, all 195 references and 715
   authored netlist nodes reach true physical pads on a six-layer review board
+- all 12 ESC motor exits are 4.4×3.8 mm plated pads with 1.6×2.2 mm slots;
+  both battery lands are 6.2×5.0 mm exposed no-paste copper
+- all 16 FC UART power/data exits are 2.4×2.0 mm plated pads with 1.0 mm
+  finished holes on standard 2.54 mm pitch
 - FC authored SKiDL ERC: PASS, zero errors and zero warnings
 - FC true-footprint KiCad PCB DRC: NOT PASS FOR FAB; all 74 components are
   in-outline without placement/copper errors, but all 183 electrical

@@ -37,7 +37,7 @@ and closed-body thermal validation.
 
 ## Board and current path
 
-- 30×72 mm, R3 corners, 24×64 mm M2 pattern, six layers. The board mounts
+- 36×72 mm, R3 corners, 30×64 mm M2 pattern, six layers. The board mounts
   longitudinally and vertically in the removable cassette.
 - 3 oz outer copper; 2 oz inner copper design request. Fabricator capability,
   finished thickness and current-density review remain release gates.
@@ -47,10 +47,16 @@ and closed-body thermal validation.
 - Inner planes: `VBAT`, `PGND`, `3V3`, and a quiet logic-ground reference.
   Logic and power grounds meet once at the driver-recommended point; they are
   not connected by a long skinny trace.
-- Each phase output is a plated long-edge pad; channels alternate left/right
-  to avoid crossed phase leads. Central 12-AWG pigtail pads halve the worst
-  distribution distance along the board.
-- Two 28×27.5×1 mm aluminium spreaders sit outside the MOSFET face over a
+- Each phase output is a **4.4×3.8 mm plated through-hole pad** with a
+  **1.6×2.2 mm oblong finished slot**, sized for stripped 20-AWG motor wire
+  with solder fill on both faces. Channels alternate left/right to avoid
+  crossed phase leads. The edge copper clearance is 0.5 mm.
+- The central battery input uses two **6.2×5.0 mm exposed, no-paste SMD wire
+  lands** for a laid-flat stripped 12-AWG pigtail. These are not mechanically
+  self-supporting terminals: the cassette strain relief must carry every cable
+  load, and the leads require a high-thermal-mass soldering setup. Central
+  placement halves the worst distribution distance along the board.
+- Two 34×27.5×1 mm aluminium spreaders sit outside the MOSFET face over a
   0.5 mm dielectric thermal interface rated at least 1 kV. A 6 mm centre gap
   leaves the battery and buck-regulator service bay accessible. The plates are never allowed
   to contact component leads or copper directly.

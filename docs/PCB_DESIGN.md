@@ -9,7 +9,7 @@ review board for the VYPER airframe.
 
 | Done | Not done |
 |---|---|
-| 22×64 R3 longitudinal board outline | Reviewed graphical KiCad schematic |
+| 26×64 R3 longitudinal board outline | Reviewed graphical KiCad schematic |
 | 16×56 Φ3.2 M2 soft-mount holes | Copper routing |
 | All 74 components placed with true footprints | Copper routing |
 | Courtyard / hole / pad interaction checks | Ordering files (gerbers/BOM/CPL) |
@@ -62,12 +62,16 @@ Sources: [Betaflight manufacturer design guidelines](https://betaflight.com/docs
 7. **USB and ESC service harnesses on the inward face** — the 8-pin harness is
    rotated along the board axis for the back-to-back cassette, while a removable
    four-wire JST-SH-to-USB-C pigtail faces the open tail.
+8. **Human-scale external soldering.** The four UART groups use 2.54 mm pitch,
+   2.4×2.0 mm plated oval pads with 1.0 mm finished holes. They accept standard
+   0.1-inch header pins or direct 26–28 AWG wire and retain annular copper on
+   every layer; they are not tiny test pads.
 
 ## Why the board is shaped by the fuselage
 
 Two findings the checks enforce forever:
 
-- **The custom FC is 22×64 mm R3.** It mounts longitudinally and vertically on
+- **The custom FC is 26×64 mm R3.** It mounts longitudinally and vertically on
   a 16×56 mm soft-mount pattern behind the ESC. The true-footprint repack uses
   both faces and preserves the switcher/gyro exclusion without a square shelf.
 - **Duplicate corner motor pads were rejected.** The tested 8-pin ESC harness
@@ -82,9 +86,9 @@ The requested custom ESC is now specified in
 DRV8323 smart gate drivers and 24 Infineon 60 V MOSFETs.
 `vyper_esc_schematic.py` now emits the 159-net electrical design, and
 `vyper_esc_unrouted_gen.py` transfers all 195 references and 715 authored
-netlist nodes to true physical pads. The ESC is a 30×72 mm R3 longitudinal
-board on a 24×64 mm M2 pattern. All 24 MOSFETs face two isolated external
-28×27.5 mm heat spreaders separated by a 6 mm centre service gap. All 195
+netlist nodes to true physical pads. The ESC is a 36×72 mm R3 longitudinal
+board on a 30×64 mm M2 pattern. All 24 MOSFETs face two isolated external
+34×27.5 mm heat spreaders separated by a 6 mm centre service gap. All 195
 footprints are placed inside the outline; the board still contains zero
 tracks/zones. KiCad now finds
 no shorts, clearance failures, courtyard overlaps, edge errors, or footprint
@@ -93,6 +97,12 @@ routing backlog, not a release. It remains an EVT design until placement,
 routing, independent review and the full
 current-limited/dyno test matrix pass. The repository does not claim it cannot
 catch fire; no responsible design can make that claim before hardware validation.
+
+The ESC's twelve motor exits are 4.4×3.8 mm plated pads with 1.6×2.2 mm
+oblong slots for stripped 20-AWG phase wire. Its two central battery lands are
+6.2×5.0 mm exposed copper with solder paste deliberately disabled for a
+laid-flat 12-AWG pigtail. Both geometries are asserted from the generated KiCad
+board in the board-transfer test; battery-cable strain relief remains mandatory.
 
 ## Reproduce
 

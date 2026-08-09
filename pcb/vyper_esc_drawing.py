@@ -78,7 +78,7 @@ for ax, side, title in zip(axes, ("F", "B"), ("TOP / F.Cu", "BOTTOM / B.Cu")):
     ax.set_aspect("equal")
     ax.axis("off")
 
-fig.suptitle("VYPER-55A 30×72 VERTICAL 4-in-1 ESC — EVT FLOORPLAN\n"
+fig.suptitle(f"VYPER-55A {L.BOARD_W:.0f}×{L.BOARD_H:.0f} VERTICAL 4-in-1 ESC — EVT FLOORPLAN\n"
              "55 A / 2 s is a design target, not a tested rating",
              fontsize=13, fontweight="bold")
 fig.tight_layout()

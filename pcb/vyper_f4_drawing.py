@@ -1,4 +1,4 @@
-"""Render the dimensioned 22 x 64 mm VYPER-F4 vertical FC floorplan."""
+"""Render the dimensioned 26 x 64 mm VYPER-F4 vertical FC floorplan."""
 
 import sys
 from pathlib import Path
@@ -38,8 +38,12 @@ for name, spec in L.PARTS.items():
 
 for pads in L.PAD_GROUPS.values():
     for x, y, label in pads:
-        ax.add_patch(Rectangle((x - 0.8, y - 0.8), 1.6, 1.6,
+        ax.add_patch(Rectangle((x - L.IO_PAD_SIZE[0] / 2,
+                                y - L.IO_PAD_SIZE[1] / 2),
+                               *L.IO_PAD_SIZE,
                                fc="#d8d8d8", ec="#222", lw=0.3))
+        ax.add_patch(Circle((x, y), L.IO_PAD_DRILL / 2,
+                            fc="#333333", ec="#111", lw=0.2))
         ax.text(x, y, label, fontsize=4.5, ha="center", va="center")
 
 
@@ -70,7 +74,7 @@ ax.annotate("gyro", xy=(gx, gy), xytext=(-13.5, 8.5), fontsize=7,
 ax.text(0, 38.0, "VYPER-F4 VERTICAL FLIGHT CONTROLLER",
         fontsize=11, fontweight="bold", ha="center")
 ax.text(0, 36.4,
-        f"22×64 R3 | 16×56 soft mount | 4× Ø{L.HOLE_D:.1f} | all mm",
+        f"26×64 R3 | 16×56 soft mount | 4× Ø{L.HOLE_D:.1f} | all mm",
         fontsize=7.5, ha="center")
 ax.text(0, -38.0, "solid = F.Cu major parts   dashed = B.Cu major parts",
         fontsize=7, ha="center", color="#333")

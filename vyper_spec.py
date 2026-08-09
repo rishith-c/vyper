@@ -33,13 +33,18 @@ PROP_MASS_G = 3.33
 # structural PETG profile.  These are slicer estimates, still subject to real
 # spool diameter/density and printer flow calibration.
 SLICED_MASS_G = {
-    "shell_body": 60.91,
-    "shell_nose": 36.92,
-    "arm_each": 24.39,
-    "hub": 27.72,
-    "electronics_cassette": 3.02,
-    "tail_cap": 20.77,
+    "shell_body": 59.48,
+    "shell_nose": 36.40,
+    "arm_each": 27.49,  # includes build-plate-only support material
+    "hub": 27.60,
+    "electronics_cassette": 3.35,
+    "tail_cap": 20.32,
 }
+
+# Orca's feature-tagged extrusion assigns about 7.52% of each arm file to
+# Support/Support interface: 27.49 g × 0.0752 = 2.07 g. Keep this separate when
+# comparing the sliced model against the support-free solid-volume estimate.
+ARM_SUPPORT_MASS_G = 2.07
 
 
 def sliced_airframe_mass_g():
@@ -66,15 +71,15 @@ BATTERY_FULL_VOLTAGE_V = 4.2 * BATTERY_CELLS
 # length and leaves the ESC with poor copper/thermal area.  Both custom boards
 # instead mount vertically in a removable cassette immediately above the arm
 # hub.  PCB local X is aircraft X and PCB local Y maps to aircraft +Z.
-ESC_BOARD_WIDTH_MM = 30.0
+ESC_BOARD_WIDTH_MM = 36.0
 ESC_BOARD_HEIGHT_MM = 72.0
 ESC_BOARD_THICKNESS_MM = 1.6
 ESC_BOARD_CORNER_RADIUS_MM = 3.0
-ESC_MOUNT_PITCH_X_MM = 24.0
+ESC_MOUNT_PITCH_X_MM = 30.0
 ESC_MOUNT_PITCH_Z_MM = 64.0
 ESC_MOUNT_HOLE_D_MM = 2.4
 
-FC_BOARD_WIDTH_MM = 22.0
+FC_BOARD_WIDTH_MM = 26.0
 FC_BOARD_HEIGHT_MM = 64.0
 FC_BOARD_THICKNESS_MM = 1.6
 FC_BOARD_CORNER_RADIUS_MM = 3.0
@@ -88,7 +93,7 @@ FC_BOARD_CENTER_Y_MM = 4.5
 ESC_COMPONENT_HEIGHT_MM = 4.5
 FC_COMPONENT_HEIGHT_MM = 4.0
 ESC_HEAT_SPREADER_THICKNESS_MM = 1.0
-ESC_HEAT_SPREADER_WIDTH_MM = 28.0
+ESC_HEAT_SPREADER_WIDTH_MM = 34.0
 ESC_HEAT_SPREADER_SEGMENT_HEIGHT_MM = 27.5
 ESC_HEAT_SPREADER_CENTER_GAP_MM = 6.0
 
@@ -97,7 +102,7 @@ ESC_HEAT_SPREADER_CENTER_GAP_MM = 6.0
 # laterally captured by the ogive/nose when assembled.
 CASSETTE_BOTTOM_Z_MM = 123.0
 CASSETTE_TOP_Z_MM = 200.0
-CASSETTE_WIDTH_MM = 32.0
+CASSETTE_WIDTH_MM = 38.0
 CASSETTE_SPINE_THICKNESS_MM = 2.0
 CASSETTE_RAIL_WIDTH_MM = 3.0
 CASSETTE_BOARD_STANDOFF_D_MM = 5.0

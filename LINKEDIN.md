@@ -14,7 +14,7 @@ ISO M3 motor fasteners.
 
 Current analytical screening results:
 
-- 705 g slicer-based estimated all-up mass and 8.9:1 static thrust-to-weight;
+- 715 g slicer-based estimated all-up mass and 8.8:1 static thrust-to-weight;
 - 40 cm² component drag area estimate;
 - 241 km/h ideal prop-pitch speed; 200 km/h would require 83% pitch efficiency;
 - 28.6 mm adjacent prop-tip clearance and 18.0 mm body clearance;
@@ -27,8 +27,8 @@ boards as EVT, documents every remaining ERC/DRC, thermal, structural and dyno
 gate, and separates the under-$200 purchased-stack prototype from the custom-
 electronics development cost.
 
-The custom 22×64 mm FC now has a 59-net, 74-component authored electrical
-design, while the custom 30×72 mm four-channel ESC has 159 nets and 195
+The custom 26×64 mm FC now has a 59-net, 74-component authored electrical
+design, while the custom 36×72 mm four-channel ESC has 159 nets and 195
 components. Every footprint is packed inside its vertical board outline and
 the placement-level KiCad checks report no shorts, clearance, courtyard, edge
 or footprint errors. Both boards remain explicitly unrouted: 183 FC and 499

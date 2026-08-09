@@ -6,7 +6,7 @@ If a dimension is not in this file, it does not exist.
 
 WHY THESE NUMBERS
 -----------------
-The board is 22 x 64 mm with R3 corners for the longitudinal vertical cassette.
+The board is 26 x 64 mm with R3 corners for the longitudinal vertical cassette.
 Its 16 x 56 mm M2 pattern is independent of the ESC pattern so the FC can use
 soft grommets while the power board remains rigidly coupled to its spreader.
 Each 3.2 mm bore and 6 mm keepout is checked on both faces.
@@ -25,7 +25,7 @@ face. The ESC harness plugs straight up, while the removable USB pigtail faces
 the open tail; the shell needs no drag-producing side hatch.
 """
 
-BOARD_W = 22.0
+BOARD_W = 26.0
 BOARD_H = 64.0
 CORNER_R = 3.0
 HOLE_PITCH_X = 16.0
@@ -47,7 +47,7 @@ PARTS = {
     # uses this quiet area for the mandatory dedicated ICM-42688-P regulator.
     "U5_gyro_ldo_AP2112K": dict(pos=(6.8, 4.0), side="F",
                                 courtyard=(3.4, 3.2), pkg="SOT-23-5"),
-    "U6_flash_W25Q128": dict(pos=(-5.8, 10.5), side="B", courtyard=(6.5, 5.5),
+    "U6_flash_W25Q128": dict(pos=(0.0, 10.5), side="B", courtyard=(6.5, 5.5),
                              pkg="SOIC-8 blackbox"),
     "U7_baro_BMP280": dict(pos=(-8.0, 3.0), side="B", courtyard=(2.5, 3.0),
                            pkg="LGA-8"),
@@ -71,20 +71,27 @@ PARTS = {
                             pkg="1x2 1.27 mm beeper pads"),
 }
 
-# Solder pad groups: (x, y, label), 1.6 mm square pads, F side.
+# Dual-purpose 2.54 mm header / wire groups.  Each location is a 2.4 mm plated
+# through-hole pad with a 1.0 mm finished drill, accepting a 0.64 mm square
+# header pin or 26--28 AWG stripped wire.  The order follows Betaflight's
+# GND, 5V, TX, RX connector convention.
+IO_PAD_SIZE = (2.4, 2.0)
+IO_PAD_DRILL = 1.0
+IO_PAD_PITCH = 2.54
+IO_PAD_X = 11.3
+IO_GROUP_Y = (-7.65, 6.90)
+
+
+def io_group(x, center_y, labels):
+    return [(x, center_y + (index - 1.5) * IO_PAD_PITCH, label)
+            for index, label in enumerate(labels)]
+
+
 PAD_GROUPS = {
-    "J3_rx_uart1": [(-9.6, y, l) for y, l in
-                     zip((-13.1, -9.4, -5.8, -2.2),
-                         ("G", "5V", "T1", "R1"))],
-    "J4_gps_uart3": [(-9.6, y, l) for y, l in
-                      zip((1.5, 5.1, 8.7, 12.3),
-                          ("G", "5V", "T3", "R3"))],
-    "J5_aux_uart4": [(9.6, y, l) for y, l in
-                      zip((-13.1, -9.4, -5.8, -2.2),
-                          ("G", "5V", "T4", "R4"))],
-    "J6_vtx_uart6": [(9.6, y, l) for y, l in
-                      zip((1.5, 5.1, 8.7, 12.3),
-                          ("G", "5V", "T6", "R6"))],
+    "J3_rx_uart1": io_group(-IO_PAD_X, IO_GROUP_Y[0], ("G", "5V", "T1", "R1")),
+    "J4_gps_uart3": io_group(-IO_PAD_X, IO_GROUP_Y[1], ("G", "5V", "T3", "R3")),
+    "J5_aux_uart4": io_group(IO_PAD_X, IO_GROUP_Y[0], ("G", "5V", "T4", "R4")),
+    "J6_vtx_uart6": io_group(IO_PAD_X, IO_GROUP_Y[1], ("G", "5V", "T6", "R6")),
 }
 
 # Explicit functional placement for every passive in vyper_f4.net. Critical
@@ -187,9 +194,9 @@ VERTICAL_PASSIVE_PLACEMENT = {
     "R6": ((2.2, 9.2), "F", 0),
     "C1": ((4.4, 9.2), "F", 0),
     "C2": ((6.6, 9.2), "F", 0),
-    "C8": ((7.5, 17.0), "B", 0),
-    "C9": ((7.5, 19.0), "B", 0),
-    "D2": ((4.8, 12.5), "B", 0),
+    "C8": ((10.0, 16.0), "B", 0),
+    "C9": ((10.0, 19.0), "B", 0),
+    "D2": ((-5.0, 21.0), "B", 0),
     "D3": ((0.0, 17.0), "B", 0),
 
     # Gyro and MCU bay, F.Cu.
@@ -215,9 +222,9 @@ VERTICAL_PASSIVE_PLACEMENT = {
     "C25": ((0.0, 7.2), "F", 0),
 
     # Sensor support follows the B-side flash and barometer.
-    "C26": ((-5.0, 6.2), "B", 0),
-    "R10": ((-7.2, 6.2), "B", 0),
-    "R11": ((-9.2, 6.2), "B", 0),
+    "C26": ((-6.0, 8.0), "B", 0),
+    "R10": ((-6.0, 10.5), "B", 0),
+    "R11": ((-6.0, 13.0), "B", 0),
     "C27": ((-5.2, 3.0), "B", 0),
     "R12": ((-7.0, 0.5), "B", 0),
     "R13": ((-9.2, 0.5), "B", 0),

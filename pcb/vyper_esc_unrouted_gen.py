@@ -83,6 +83,13 @@ def smd_layers():
     return layers
 
 
+def wire_smd_layers():
+    layers = pcbnew.LSET()
+    for layer in (pcbnew.F_Cu, pcbnew.F_Mask):
+        layers.AddLayer(layer)
+    return layers
+
+
 def pth_layers():
     layers = pcbnew.LSET.AllCuMask()
     layers.AddLayer(pcbnew.F_Mask)
@@ -106,6 +113,19 @@ def add_smd_pad(fp, number, x, y, sx, sy, shape=pcbnew.PAD_SHAPE_ROUNDRECT):
     pad.SetLayerSet(smd_layers())
     if shape == pcbnew.PAD_SHAPE_ROUNDRECT:
         pad.SetRoundRectRadiusRatio(0.2)
+    fp.Add(pad)
+    return pad
+
+
+def add_wire_smd_pad(fp, number, x, y, sx, sy):
+    pad = pcbnew.PAD(fp)
+    pad.SetNumber(str(number))
+    pad.SetAttribute(pcbnew.PAD_ATTRIB_SMD)
+    pad.SetShape(pcbnew.PAD_SHAPE_ROUNDRECT)
+    pad.SetRoundRectRadiusRatio(0.15)
+    pad.SetSize(pcbnew.VECTOR2I_MM(sx, sy))
+    pad.SetFPRelativePosition(pcbnew.VECTOR2I_MM(x, y))
+    pad.SetLayerSet(wire_smd_layers())
     fp.Add(pad)
     return pad
 
@@ -143,12 +163,13 @@ def custom_footprint(name):
     if name == "MOTOR_EDGE_PADS_3X":
         fp = base_custom(name)
         for number, y in enumerate(L.MOTOR_PAD_STATIONS, 1):
-            add_pth_pad(fp, number, 0, y, *L.MOTOR_PAD_SIZE, 1.3, 1.5)
+            add_pth_pad(fp, number, 0, y, *L.MOTOR_PAD_SIZE,
+                        *L.MOTOR_PAD_DRILL)
         return fp
     if name == "BATTERY_PIGTAIL_2X":
         fp = base_custom(name)
-        add_pth_pad(fp, 1, -1.5, 0, 2.2, 5.0, 1.4, 4.2)
-        add_pth_pad(fp, 2, 1.5, 0, 2.2, 5.0, 1.4, 4.2)
+        for number, (x, y) in enumerate(L.BATTERY_PADS.values(), 1):
+            add_wire_smd_pad(fp, number, x, y, *L.BATTERY_PAD_SIZE)
         return fp
     if name == "FC_HARNESS_2X4_P1.27_SOLDER":
         fp = base_custom(name)
@@ -181,6 +202,20 @@ def load_footprint(identifier):
 def xy_layout(point):
     """Layout uses +Y up; KiCad uses +Y down."""
     return point[0], -point[1]
+
+
+def add_silk_text(board, value, x, y, side="F", size=0.70, rotation=0.0):
+    size = max(size, 0.80)  # PCBWay-readable text height
+    item = pcbnew.PCB_TEXT(board)
+    item.SetText(value)
+    item.SetLayer(pcbnew.B_SilkS if side == "B" else pcbnew.F_SilkS)
+    item.SetMirrored(side == "B")
+    item.SetTextPos(pcbnew.VECTOR2I_MM(x, -y))
+    item.SetTextAngle(pcbnew.EDA_ANGLE(rotation, pcbnew.DEGREES_T))
+    item.SetTextSize(pcbnew.VECTOR2I_MM(size, size))
+    item.SetTextThickness(pcbnew.FromMM(max(0.10, size * 0.15)))
+    item.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_CENTER)
+    board.Add(item)
 
 
 def placed_major_components():
@@ -267,7 +302,7 @@ def placed_channel_support(loaded):
 
         # The 1210 bus capacitor gets its own side pocket opposite the motor
         # pads. This keeps it close to the bridge without blocking phase wires.
-        cap_x = -L.MOTOR_SIDE[channel] * 12.3
+        cap_x = -L.MOTOR_SIDE[channel] * 14.0
         result[f"C{index}D3"] = (*xy_layout((cap_x, cy - 3.7)), "B", 0)
     return result
 
@@ -277,15 +312,15 @@ def placed_shared_support(loaded):
     result = {
         # F.Cu centre service window around, but not touching, JBAT. The heat
         # spreader therefore needs a matching electrically isolated relief.
-        "D1": (*xy_layout((-11.8, 0.0)), "F", 0),
-        "C2": (*xy_layout((-8.0, -1.5)), "F", 0),
-        "C3": (*xy_layout((-8.0, 1.5)), "F", 0),
-        "R1": (*xy_layout((-5.5, -1.5)), "F", 0),
-        "R2": (*xy_layout((-5.5, 0.0)), "F", 0),
-        "R3": (*xy_layout((-5.5, 1.5)), "F", 0),
-        "C1": (*xy_layout((5.5, 0.0)), "F", 0),
-        "C4": (*xy_layout((9.0, -1.5)), "F", 0),
-        "C5": (*xy_layout((9.0, 1.5)), "F", 0),
+        "D1": (*xy_layout((-15.0, 1.5)), "B", 0),
+        "C2": (*xy_layout((-11.5, -1.5)), "F", 0),
+        "C3": (*xy_layout((-11.5, 1.5)), "F", 0),
+        "R1": (*xy_layout((-8.8, -1.5)), "F", 0),
+        "R2": (*xy_layout((-8.8, 0.0)), "F", 0),
+        "R3": (*xy_layout((-8.8, 1.5)), "F", 0),
+        "C1": (*xy_layout((9.0, 0.0)), "F", 0),
+        "C4": (*xy_layout((11.0, -1.5)), "F", 0),
+        "C5": (*xy_layout((11.0, 1.5)), "F", 0),
     }
     pack_support_row(result, loaded,
                      ["RT1", "RS1", "RS2", "RS3", "RS4"],
@@ -376,6 +411,22 @@ def main():
     if staged:
         raise RuntimeError("all ESC footprints must be placed in-board; staged: "
                            + ", ".join(staged))
+
+    add_silk_text(board, "VYPER-55A REV A", 0, 34.0, size=0.85)
+    # Keep polarity off the exposed solder surface. Vertical labels fit the
+    # narrow service corridor between the adjacent inverter cells.
+    add_silk_text(board, "BAT+", -8.2, 0.0, size=0.55, rotation=90.0)
+    add_silk_text(board, "GND", 8.2, 0.0, size=0.55, rotation=90.0)
+    for index, channel in enumerate(L.CHANNELS, 1):
+        side = L.MOTOR_SIDE[channel]
+        x = side * 12.0
+        for phase, y_offset in zip("ABC", L.MOTOR_PAD_STATIONS):
+            add_silk_text(board, phase, x, L.CHANNEL_Y[channel] + y_offset,
+                          size=0.58)
+        add_silk_text(board, f"M{index}", side * 15.0,
+                      L.CHANNEL_Y[channel] + 6.6, size=0.62)
+    # The control face is intentionally too dense for decorative channel text.
+    # The EVT warning remains in the board metadata and Dwgs.User layer.
 
     pcbnew.SaveBoard(str(OUT), board)
     print(f"wrote {OUT}")

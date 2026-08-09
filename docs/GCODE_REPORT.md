@@ -7,15 +7,20 @@ profile and the Elegoo Generic PETG values (1.27 g/cm³, 240 °C first layer,
 
 | File | Quantity | PETG each | Time each |
 |---|---:|---:|---:|
-| `gcode/vyper_shell_body.gcode` | 1 | 60.91 g | 2:45:39 |
-| `gcode/vyper_shell_nose.gcode` | 1 | 36.92 g | 1:57:12 |
-| `gcode/vyper_arm_print.gcode` | 4 | 24.39 g | 2:29:33 |
-| `gcode/vyper_hub.gcode` | 1 | 27.72 g | 2:09:24 |
-| `gcode/vyper_electronics_cassette.gcode` | 1 | 3.02 g | 0:37:19 |
-| `gcode/vyper_tail_cap.gcode` | 1 | 20.77 g | 1:09:21 |
-| **Total** | 9 prints | **246.90 g** | **18:37:07** |
+| `gcode/vyper_shell_body.gcode` | 1 | 59.48 g | 2:47:29 |
+| `gcode/vyper_shell_nose.gcode` | 1 | 36.40 g | 2:00:01 |
+| `gcode/vyper_arm_print.gcode` | 4 | 27.49 g | 1:48:13 |
+| `gcode/vyper_hub.gcode` | 1 | 27.60 g | 1:20:56 |
+| `gcode/vyper_electronics_cassette.gcode` | 1 | 3.35 g | 0:12:59 |
+| `gcode/vyper_tail_cap.gcode` | 1 | 20.32 g | 1:05:12 |
+| **Total** | 9 prints | **257.11 g** | **14:39:29** |
 
-All six unique files pass the G-code skill's static checks for non-empty
+The 25° arm print orientation requires build-plate-only support; the other
+five parts remain support-free. Orca's feature tags assign approximately
+2.07 g per arm (8.28 g total) to support and support-interface extrusion; that
+allowance is removed only when comparing slicer mass with the support-free
+solid-volume sanity estimate. It remains included in the 257.11 g build mass
+and 715 g aircraft estimate. All six unique files pass static checks for non-empty
 content, movement, extrusion, temperature commands and Neptune 4 XYZ bounds.
 Two reviewed warnings remain:
 
@@ -24,7 +29,8 @@ Two reviewed warnings remain:
 - `SET_VELOCITY_LIMIT` is reported unknown by the generic validator but is a
   normal Klipper command for the Neptune 4 profile.
 
-This validation does not simulate extrusion physics or authorize a print.
+All files now explicitly start at an 80 °C bed and 240 °C nozzle; the previous
+Cool Plate fallback of 35 °C was rejected. This validation does not simulate extrusion physics or authorize a print.
 Review the first-layer placement in OrcaSlicer and print the tolerance coupon
 before any structural part.
 

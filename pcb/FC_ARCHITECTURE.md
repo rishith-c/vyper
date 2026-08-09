@@ -5,7 +5,7 @@ not orderable**. A four-layer true-footprint review board now transfers all 74
 references and 242 netlist nodes to physical pads. All 57 passives are placed
 in-outline with functional proximity gates and no placement/copper DRC errors;
 183 connections remain unrouted.
-The current mechanical form is a 22×64 mm R3 longitudinal board on a 16×56 mm
+The current mechanical form is a 26×64 mm R3 longitudinal board on a 16×56 mm
 M2 soft-mount pattern. It mounts vertically behind the ESC in the removable
 electronics cassette; it is not a standard square flight-stack board.
 The automatically drawn KiCad preview is excluded from release because its
@@ -45,6 +45,10 @@ earlier 28 V TPS54331, which had inadequate transient margin on 6S.
 | VBAT/current ADC | PC5/PC3 | 100k:10k divider / filtered ESC current |
 | USB | PA11/PA12 | USB FS, 4-pin JST-SH service harness, 22 Ω and low-C TVS |
 | SWD | PA13/PA14 | 4-pin debug header |
+
+The four external UART groups use plated 2.4×2.0 mm pads, 1.0 mm finished holes,
+and standard 2.54 mm pitch in GND/5V/TX/RX order. They accept ordinary 0.64 mm
+header pins or hand-soldered 26--28 AWG wire and retain copper on every layer.
 
 The matching Betaflight resource contract is
 `firmware/vyper_f405/config.h`. The 8-pin ESC harness contract is GND, VBAT,

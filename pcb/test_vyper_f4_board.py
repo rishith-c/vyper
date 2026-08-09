@@ -67,9 +67,19 @@ for ref, group in (("J3", "J3_rx_uart1"), ("J4", "J4_gps_uart3"),
                    ("J5", "J5_aux_uart4"), ("J6", "J6_vtx_uart6")):
     pads = {p.GetNumber(): p for p in footprints[ref].Pads()}
     for number, (x, y, _label) in enumerate(L.PAD_GROUPS[group], 1):
-        actual = pads[str(number)].GetPosition()
-        assert abs(pcbnew.ToMM(actual.x) - x) < 1e-6
-        assert abs(pcbnew.ToMM(actual.y) + y) < 1e-6
+        pad = pads[str(number)]
+        actual = pad.GetPosition()
+        # KiCad stores integer nanometres; 2.54 mm pitch arithmetic can round
+        # by one nanometre when converted through the SWIG binding.
+        assert abs(pcbnew.ToMM(actual.x) - x) < 1e-5
+        assert abs(pcbnew.ToMM(actual.y) + y) < 1e-5
+        size = pad.GetSize()
+        drill = pad.GetDrillSize()
+        assert pad.GetAttribute() == pcbnew.PAD_ATTRIB_PTH
+        assert abs(pcbnew.ToMM(size.x) - L.IO_PAD_SIZE[0]) < 1e-6
+        assert abs(pcbnew.ToMM(size.y) - L.IO_PAD_SIZE[1]) < 1e-6
+        assert abs(pcbnew.ToMM(drill.x) - L.IO_PAD_DRILL) < 1e-6
+        assert abs(pcbnew.ToMM(drill.y) - L.IO_PAD_DRILL) < 1e-6
 
 assert len(L.PASSIVES) == 57
 for ref, spec in L.PASSIVES.items():
@@ -118,4 +128,5 @@ assert len(board.GetNetInfo().NetsByName()) == 60
 
 print("all 74 FC references and 242 netlist nodes reach real PCB pads")
 print("all 57 passives are in-outline and preserve functional proximity gates")
+print("all 16 external I/O pads accept 2.54 mm headers or stripped wire")
 print("four layers; zero tracks/zones by design -- unrouted review board, NOT FOR FAB")

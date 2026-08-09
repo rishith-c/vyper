@@ -230,16 +230,19 @@ geometric_printed = (shell.Volume() * SHELL_FILL + hub.Volume() * 0.5
                      + M.tail_cap.val().Volume() * SHELL_FILL
                      + 4 * arm.Volume() * ARM_FILL) * 1.27e-3
 printed = S.sliced_airframe_mass_g()
+support = 4 * S.ARM_SUPPORT_MASS_G
+model_only_printed = printed - support
 payload = (S.MOTOR_COUNT * S.MOTOR_MASS_G + 30 + S.BATTERY_MASS_G
            + 8 + 8 + 1.5 + 4 * S.PROP_MASS_G + 40)
 auw = printed + payload
 thrust = 4 * 1572.5
-print(f"  sliced {printed:.0f} g (geometric screen {geometric_printed:.0f} g) "
+print(f"  sliced {printed:.0f} g incl. {support:.1f} g support "
+      f"(support-free geometric screen {geometric_printed:.0f} g) "
       f"+ payload {payload:.0f} g = AUW {auw:.0f} g")
-check("slicer and geometric mass estimates agree",
-      abs(printed - geometric_printed) / printed < 0.10,
-      f"{printed:.1f} vs {geometric_printed:.1f} g "
-      f"({100 * abs(printed - geometric_printed) / printed:.1f}% difference)")
+check("support-free slicer and geometric mass screen agree",
+      abs(model_only_printed - geometric_printed) / model_only_printed < 0.10,
+      f"{model_only_printed:.1f} vs {geometric_printed:.1f} g "
+      f"({100 * abs(model_only_printed - geometric_printed) / model_only_printed:.1f}% difference)")
 check("thrust-to-weight", thrust / auw > 4.0, f"{thrust / auw:.1f}:1")
 
 print()

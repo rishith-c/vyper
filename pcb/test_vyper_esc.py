@@ -48,10 +48,10 @@ def inside_rounded_outline(r):
 
 
 print("=== board and airframe ===")
-check("vertical ESC outline", L.BOARD_W == 30.0 and L.BOARD_H == 72.0,
+check("vertical ESC outline", L.BOARD_W == 36.0 and L.BOARD_H == 72.0,
       f"{L.BOARD_W:.0f} x {L.BOARD_H:.0f} mm")
 check("cassette mount pattern", (L.MOUNT_PITCH_X, L.MOUNT_PITCH_Y, L.HOLE_D)
-      == (24.0, 64.0, 2.4),
+      == (30.0, 64.0, 2.4),
       f"{L.MOUNT_PITCH_X:.0f} x {L.MOUNT_PITCH_Y:.0f} mm, M2 clearance")
 check("six-layer heavy-copper stack declared",
       L.LAYERS == 6 and L.OUTER_COPPER_OZ >= 3 and L.INNER_COPPER_OZ >= 2,
