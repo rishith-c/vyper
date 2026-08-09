@@ -126,6 +126,10 @@ check("exact gyro value selected", "ICM-42688-P" in text,
 check("RGB uses a 5 V AHCT level shifter",
       "SN74AHCT1G125DBVR" in text and "SK6812MINI-E" in text,
       "PA8 is translated to a 5 V addressable status LED")
+check("exact compact blackbox flash package",
+      "W25Q128JVPIM" in text and
+      "WDFN-8-1EP_6x5mm_P1.27mm_EP3.4x4mm" in text,
+      "mass-production Winbond 128 Mbit WSON-8 part")
 
 resource_contract = {
     "SPI1_SCK_PIN": "PB3", "SPI1_SDI_PIN": "PB4",

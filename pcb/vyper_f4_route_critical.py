@@ -353,10 +353,82 @@ for ref, via_pos in (("C12", (-8.55, 10.70)),
     add_track("GND", pcbnew.F_Cu, 0.35, (analog_ground, via_pos))
     add_via("GND", via_pos, size=0.65, drill=0.30)
 
+# Two lower-edge digital VDD pins and their 100 nF B.Cu capacitors. Each pair
+# shares one short 3V3 plane via; each capacitor has its own ground-plane via.
+vdd64 = xy(pad("U1", 64, "V3V3"))
+c14_vdd = xy(pad("C14", 1, "V3V3"))
+vdd64_via = (-2.50, 3.30)
+add_track("V3V3", pcbnew.F_Cu, 0.30,
+          (vdd64, (-1.75, 3.30), vdd64_via))
+add_via("V3V3", vdd64_via, size=0.65, drill=0.30)
+add_track("V3V3", pcbnew.B_Cu, 0.30, (vdd64_via, c14_vdd))
+c14_ground = xy(pad("C14", 2, "GND"))
+c14_ground_via = (-4.20, 5.00)
+add_track("GND", pcbnew.B_Cu, 0.35, (c14_ground, c14_ground_via))
+add_via("GND", c14_ground_via, size=0.65, drill=0.30)
+
+vdd48 = xy(pad("U1", 48, "V3V3"))
+c15_vdd = xy(pad("C15", 1, "V3V3"))
+vdd48_via = (8.55, 5.20)
+add_track("V3V3", pcbnew.F_Cu, 0.30,
+          (vdd48, (8.55, 5.75), vdd48_via))
+add_via("V3V3", vdd48_via, size=0.65, drill=0.30)
+add_track("V3V3", pcbnew.B_Cu, 0.30, (vdd48_via, c15_vdd))
+c15_ground = xy(pad("C15", 2, "GND"))
+c15_ground_via = (4.80, 5.75)
+add_track("GND", pcbnew.B_Cu, 0.35, (c15_ground, c15_ground_via))
+add_via("GND", c15_ground_via, size=0.65, drill=0.30)
+
+# Upper-edge VDD pins escape outward before entering B.Cu, keeping their
+# capacitor loops clear of the J2 connector pads and the WSON flash fanout.
+vdd19 = xy(pad("U1", 19, "V3V3"))
+c17_vdd = xy(pad("C17", 1, "V3V3"))
+vdd19_via = (-0.75, 17.00)
+add_track("V3V3", pcbnew.F_Cu, 0.30,
+          (vdd19, vdd19_via))
+add_via("V3V3", vdd19_via, size=0.65, drill=0.30)
+add_track("V3V3", pcbnew.B_Cu, 0.30,
+          (vdd19_via, (-3.80, 17.00), (-5.48, 15.40), c17_vdd))
+c17_ground = xy(pad("C17", 2, "GND"))
+c17_ground_via = (-3.50, 14.80)
+add_track("GND", pcbnew.B_Cu, 0.35,
+          (c17_ground, c17_ground_via))
+add_via("GND", c17_ground_via, size=0.65, drill=0.30)
+
+vdd32 = xy(pad("U1", 32, "V3V3"))
+c16_vdd = xy(pad("C16", 1, "V3V3"))
+vdd32_via = (6.80, 16.20)
+add_track("V3V3", pcbnew.F_Cu, 0.30,
+          (vdd32, (5.75, 16.20), vdd32_via))
+add_via("V3V3", vdd32_via, size=0.65, drill=0.30)
+add_track("V3V3", pcbnew.B_Cu, 0.30,
+          (vdd32_via, (6.80, 14.30), c16_vdd))
+c16_ground = xy(pad("C16", 2, "GND"))
+c16_ground_via = (3.80, 13.20)
+add_track("GND", pcbnew.B_Cu, 0.35,
+          (c16_ground, c16_ground_via))
+add_via("GND", c16_ground_via, size=0.65, drill=0.30)
+
+# Rail bulk capacitor has its own paired power/ground plane vias.
+c18_vdd = xy(pad("C18", 1, "V3V3"))
+c18_vdd_via = (9.20, 14.00)
+add_track("V3V3", pcbnew.B_Cu, 0.45, (c18_vdd, c18_vdd_via))
+add_via("V3V3", c18_vdd_via, size=0.65, drill=0.30)
+c18_ground = xy(pad("C18", 2, "GND"))
+c18_ground_via = (10.80, 14.00)
+add_track("GND", pcbnew.B_Cu, 0.45, (c18_ground, c18_ground_via))
+add_via("GND", c18_ground_via, size=0.65, drill=0.30)
+
+# STM32 VBAT is tied to the same 3V3 domain in this design. It joins the pin-64
+# plane entry under the package, avoiding the HSE keepout and another via.
+mcu_vbat = xy(pad("U1", 1, "V3V3"))
+add_track("V3V3", pcbnew.F_Cu, 0.30,
+          (mcu_vbat, (-3.00, 5.75), (-3.00, 4.20), vdd64_via))
+
 # Fill after all vias exist so thermal/clearance geometry is deterministic.
 pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 pcbnew.SaveBoard(str(OUTPUT), board)
 
 print(f"wrote {OUTPUT}")
 print(f"tracks/vias: {len(board.GetTracks())}; zones: {len(board.Zones())}")
-print("critical power, gyro, HSE, VCAP and VDDA copper; remaining routing is open")
+print("critical power, gyro, HSE, VCAP, VDDA and MCU VDD copper; remaining routing is open")

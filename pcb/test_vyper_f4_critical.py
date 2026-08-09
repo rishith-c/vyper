@@ -73,7 +73,7 @@ assert stats["VCAP2"]["layers"] == {"F.Cu"}
 assert stats["V3V3_A"]["length"] <= 8.0
 assert stats["V3V3_A"]["vias"] == 0
 assert stats["V3V3_A"]["layers"] == {"F.Cu"}
-assert stats["V3V3"]["vias"] == 2
+assert stats["V3V3"]["vias"] == 7
 
 zones = list(board.Zones())
 assert len(zones) == 2
@@ -98,7 +98,7 @@ allowed = {"lib_footprint_issues", "silk_over_copper", "silk_overlap",
            "silk_edge_clearance", "text_height"}
 hard = [item for item in drc["violations"] if item["type"] not in allowed]
 assert not hard, [(item["type"], item["description"]) for item in hard]
-assert len(drc["unconnected_items"]) == 138
+assert len(drc["unconnected_items"]) == 123
 
 print("critical buck routing has zero hard DRC violations")
 print("BUCK_SW 10.73 mm total tree, zero vias, F.Cu only")
@@ -107,4 +107,5 @@ print("all five gyro nets are <= 10 mm with controlled layer changes")
 print("8 MHz HSE and dedicated gyro-regulator routes pass length/via gates")
 print("both STM32 VCAP paths pass dedicated local-capacitor gates")
 print("filled In1 GND and In2 3V3 planes plus VDDA island pass")
-print("138 items remain unrouted; board is NOT FOR FAB")
+print("four local STM32 VDD bypass loops and bulk capacitor pass DRC")
+print("123 items remain unrouted; board is NOT FOR FAB")

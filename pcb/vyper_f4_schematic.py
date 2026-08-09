@@ -209,8 +209,14 @@ for pin_name, net in (("PB3", spi1_sck), ("PB4", spi1_miso),
                       ("PB6", gyro_int)):
     u1[pin_name] += net
 
-# Blackbox flash on SPI2.
-u6 = Part("Memory_Flash", "W25Q128JVS", ref="U6")
+# Blackbox flash on SPI2. The exact W25Q128JVPIM uses Winbond's compact
+# 6x5 mm WSON-8 package. Pad 9 is a structural, internally unconnected center
+# pad per Winbond; the selected footprint leaves it netless and has no vias
+# under it.
+u6 = Part("Memory_Flash", "W25Q128JVS", ref="U6",
+          value="W25Q128JVPIM",
+          footprint=("Package_DFN_QFN:"
+                     "WDFN-8-1EP_6x5mm_P1.27mm_EP3.4x4mm"))
 spi2_sck, spi2_miso, spi2_mosi = Net("SPI2_SCK"), Net("SPI2_MISO"), Net("SPI2_MOSI")
 flash_cs = Net("FLASH_CS")
 u6["VCC"] += v3

@@ -57,8 +57,8 @@ PARTS = {
     # The flash sits below the MCU's SPI2-facing edge and is rotated so its
     # narrow courtyard leaves a central passive-routing channel.
     "U6_flash_W25Q128": dict(pos=(8.0, -10.0), side="B", rot=90,
-                             courtyard=(5.9, 9.4),
-                             pkg="SOIC-8 blackbox"),
+                             courtyard=(5.6, 7.3),
+                             pkg="W25Q128JVPIM WSON-8 6x5 blackbox"),
     "U7_baro_BMP280": dict(pos=(-9.5, -1.0), side="B", courtyard=(2.5, 3.0),
                             pkg="LGA-8"),
     # TPS54360 rotated 90 degrees places SW/GND on its forward edge. The
@@ -233,11 +233,11 @@ VERTICAL_PASSIVE_PLACEMENT = {
     "FB1": ((-5.8, -11.75), "F", 90),
     "C12": ((-7.4, -10.7), "F", 180),
     "C13": ((-7.4, -12.0), "F", 180),
-    "C14": ((0.0, -7.0), "B", 0),
-    "C15": ((6.8, -3.8), "B", 0),
-    "C16": ((9.0, -16.0), "B", 0),
+    "C14": ((-2.8, -5.0), "B", 180),
+    "C15": ((6.2, -5.75), "B", 180),
+    "C16": ((4.3, -14.3), "B", 180),
     "C17": ((-5.0, -14.5), "B", 0),
-    "C18": ((5.0, -16.0), "B", 0),
+    "C18": ((10.0, -15.0), "B", 0),
     # Rotate VCAP1's capacitor so pad 1 directly faces the matching MCU pin;
     # its ground pad then points outward to a dedicated plane via.
     "C19": ((5.25, -17.85), "F", 270),
