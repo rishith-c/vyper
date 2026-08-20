@@ -1,43 +1,32 @@
-=== arms ===
-two blades, 9 x 18 mm, 255 mm long, crossing at 77 deg
-blade frontal silhouette      34.8 cm^2
-  The blades make no useful lift and are not meant to. The whole
-  point of this layout is that a 9 mm blade edge-on costs almost
-  nothing, so the drag budget is body + motors and nothing else.
+VYPER ANALYTICAL AERODYNAMIC SCREEN — 2026-08-08
 
-=== frame geometry ===
-stretched X: 176 mm fore-aft / 140 mm lateral = 1.26:1
-lateral spacing sits at the 127 mm prop minimum + 13 mm
-exposed blade frontal area  34.8 cm^2
+This is a component drag build-up, not CFD or wind-tunnel data.
 
-=== drag build-up ===
-  fuselage           CdA =   3.02 cm^2  (   8 %)
-  2 blades           CdA =   6.96 cm^2  (  18 %)
-  4 motor bells      CdA =  28.67 cm^2  (  74 %)
-  interference x1.15
-  TOTAL              CdA =  44.45 cm^2
-  open racer, same class   75.00 cm^2   -> 41 % less drag
-  NOTE: the motors are now the single largest drag item. Fairing
-  the airframe has made the bare bells the thing worth attacking.
+Geometry
+- body: diameter 57 mm, overall length 360 mm including tail
+- four true-X printed blade arms, 8 mm streamwise x 26 mm axial
+- arm sweep: 22 degrees; motor thrust axes remain on the body axis
+- four pusher motors; 220 mm opposite-motor span
 
-=== top speed ===
-prop 5x4.3 at ~30,303 rpm -> pitch speed  55.2 m/s
-realistic max level speed       41.4 m/s =   149 km/h
-drag there  4.66 N against  62.8 N available
-  Thrust is NOT the limit -- prop pitch is. This is the single most
-  important result here: the fairing does not raise the ceiling,
-  it lowers what it costs to sit at the ceiling.
+CdA build-up
+- body frontal area 25.52 cm2; CdA 2.30 cm2
+- four arm blades 26.08 cm2; CdA 4.48 cm2 after sweep factor
+- four motor bells 34.98 cm2; CdA 27.98 cm2
+- 15 percent interference allowance
+- total CdA 39.98 cm2
 
-=== what the fairing actually buys ===
-  at 30 m/s (108 km/h): drag 2.45 N vs 4.13 N open  ->  41 % less power to hold speed
-  at 40 m/s (144 km/h): drag 4.36 N vs 7.35 N open  ->  41 % less power to hold speed
+At 200 km/h, rho=1.225 kg/m3
+- drag: 7.6 N
+- ideal propulsive power: 420 W
 
-=== hover ===
-disc area (4 props)           507 cm^2
-disc loading                118.6 N/m^2
-induced velocity              7.0 m/s
-ideal hover power              42 W  (x ~1.9 for real figure of merit -> 79 W)
-blade area inside the discs    42 cm^2 =  8.2 % of disc area  (measured)
-estimated hover download    0.5 % of thrust  =   31 g
-  Two thin blades block far less of the disc than the wing panels
-  did, which is the other half of why this layout is better here.
+Pitch-speed screen
+- T-Motor V2207 V3 1950KV published static RPM: 31,612.6
+- HQProp 5x5V1S ideal no-slip pitch speed: 241 km/h
+- 200 km/h requires 83.0 percent pitch efficiency
+
+Conclusion
+The target is inside the analytical pitch envelope and is not rejected by the
+first-order drag/power screen. It remains unproven. Propeller unloading,
+compressibility at the blade tip, actual motor RPM, battery sag, fuselage angle
+of attack and stability can all reduce achieved speed. Validate incrementally
+with two-direction radar or high-rate GNSS.

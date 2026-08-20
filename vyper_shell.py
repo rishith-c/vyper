@@ -24,10 +24,10 @@ four arms leave the body horizontally and the props sweep in horizontal planes.
 
 WHAT THIS IS AND IS NOT
 -----------------------
-This is the aerodynamic OUTER SHELL only. The arms are flat carbon plate that
-you buy, cut and slide in through the slots from the inside; they are not
-printed. The stack bolts to the internal shelf. Motors, battery, camera and
-wiring are yours to place.
+This module now generates the aerodynamic shell, four printed blade arms, the
+internal arm hub and the removable tail. Purchased electronics, motors,
+propellers and fasteners are integrated as fit-check geometry in
+`vyper_assembly.py`; they are not fused into printable airframe STLs.
 
 MATHEMATICAL SECTIONS (bottom to top)
 -------------------------------------
@@ -59,6 +59,7 @@ boolean is exact and always works.
 import math
 
 import cadquery as cq
+import vyper_spec as S
 
 # =============================================================================
 # PARAMETERS -- everything is driven from here
@@ -66,39 +67,39 @@ import cadquery as cq
 
 # ---- Overall envelope -------------------------------------------------------
 TOTAL_LEN = 300.0        # base (Z=0) to nose tip (Z=TOTAL_LEN)
-# Set by the largest thing that must fit, which after the $150 re-spec is the
-# 4S 1500 pack (75 x 35 x 30): half-diagonal 23.0 + 1.0 fit + 2.0 wall = 26.0.
-# The old 60 mm body was sized by a 44 mm-wide SpeedyBee ESC; the budget
-# 36 x 36 stack does not need it, so the aircraft got 25% less frontal area.
-R_MAX = 26.0             # max outer radius -> 52 mm diameter body
+# Set by the DOGCOM Pro 6S 1380 pack (81 x 39 x 33): cross-section
+# half-diagonal 25.54 + 0.96 fit + 2.0 wall = 28.5 mm.  A 52 mm body only has
+# a 24 mm internal radius and cannot accept a battery capable of the selected
+# 6S propulsion current.  This 57 mm body is the smallest honest circular
+# envelope for the selected pack; the battery fit is checked in test_vyper.py.
+R_MAX = 28.5             # max outer radius -> 57 mm diameter body
 WALL = 2.0               # constant shell wall thickness
 
 # ---- Longitudinal stations --------------------------------------------------
 Z_TAIL_TOP = 60.0        # boat-tail ends / parallel body begins
 Z_NOSE_BASE = 170.0      # parallel body ends / ogive begins
-R_TAIL_BASE = 21.0       # radius at the very base (Z=0)
+R_TAIL_BASE = R_MAX      # full-diameter battery loading opening at Z=0
 R_TIP = 0.6              # tiny flat at the tip: a knife point will not print
 
 # ---- Arm slots --------------------------------------------------------------
-# Flat carbon plate arms slide in from the INSIDE and out through the wall.
+# Printed blade arms slide in from the INSIDE and out through the wall.
 ARM_COUNT = 4
 ARM_ANGLES = [45.0, 135.0, 225.0, 315.0]   # true-X quadcopter
 # The blade stands ON EDGE: 26 mm tall, 6 mm thick streamwise. Motor thrust
 # is vertical, so depth in Z is what resists bending -- a 6 mm-thick flat
 # plate lying horizontally would be 18x less stiff for the same material.
 # It is also the low-drag orientation, since 6 mm is what the air sees.
-ARM_THICK = 6.0          # streamwise thickness (horizontal)
+ARM_THICK = 8.0          # streamwise thickness; leaves wall around wire bore
 ARM_WIDTH = 26.0         # vertical depth -- carries the bending
 ARM_FIT = 0.4            # total slip fit added to BOTH slot dimensions
-ARM_Z = 95.0             # slot centre height -- lower-middle of the body
+ARM_Z = 110.0            # hub starts at Z=97, immediately above the battery
 ARM_REACH = 60.0         # how far the cutter runs past R_MAX
 
-# ---- Internal flight-stack shelf -------------------------------------------
-SHELF_Z = 135.0          # top face of the shelf
-SHELF_T = 3.0            # shelf thickness
-STACK_PITCH = 30.5       # standard 30.5 x 30.5 mounting pattern
-STACK_HOLE_D = 3.2       # M3 clearance in printed PETG (see note below)
-SHELF_VENT_D = 18.0      # central pass-through for the ESC / motor looms
+# ---- Longitudinal electronics ----------------------------------------------
+# The custom ESC and FC no longer inherit a horizontal 30.5 mm racing stack.
+# A removable vertical cassette attaches to the arm hub and uses the body's
+# available Z length.  Its dimensions live in vyper_spec.py beside the board
+# contracts used by both CAD and ECAD.
 
 # ---- Cavity extent ----------------------------------------------------------
 CAVITY_BOTTOM = -1.0     # below Z=0, so the base is OPEN for assembly
@@ -134,6 +135,19 @@ SPLIT_Z = 170.0          # ogive base -- see above
 SPIGOT_L = 25.0          # lap engagement length
 SPIGOT_FIT = 0.25        # radial clearance, nose spigot into body socket
 
+# Removable aerodynamic tail cap. The main shell stays full diameter down to
+# Z=0 so the 81 mm battery can load axially. This cap then adds the boat-tail
+# outside that packaging volume instead of falsely tapering through the pack.
+TAIL_CAP_LEN = 60.0
+TAIL_EXIT_R = 8.0
+TAIL_SPIGOT_L = 12.0
+TAIL_SPIGOT_WALL = 1.75
+TAIL_RETAINER_ANGLES = [0.0, 120.0, 240.0]
+TAIL_RETAINER_Z = 6.0
+TAIL_RETAINER_SCREW_D = 2.2       # M2 clearance, printed then hand-reamed
+TAIL_INSERT_D = 3.6               # M2 heat-set insert pilot envelope
+TAIL_INSERT_L = 4.0
+
 
 # =============================================================================
 # PROFILE MATHEMATICS
@@ -165,6 +179,16 @@ def boat_tail_radius(z):
     """
     t = z / Z_TAIL_TOP
     return R_TAIL_BASE + (R_MAX - R_TAIL_BASE) * (1.0 - math.cos(math.pi * t)) / 2.0
+
+
+def tail_cap_radius(z):
+    """Cosine boat-tail radius for -TAIL_CAP_LEN <= z <= 0.
+
+    Both endpoint slopes are zero. The cap is removable, allowing the battery
+    to slide through the full-diameter Z=0 opening before the fairing is fitted.
+    """
+    t = (z + TAIL_CAP_LEN) / TAIL_CAP_LEN
+    return TAIL_EXIT_R + (R_MAX - TAIL_EXIT_R) * (1.0 - math.cos(math.pi * t)) / 2.0
 
 
 def outer_profile():
@@ -252,90 +276,9 @@ def build_shell():
     cavity = revolve_profile(inner_profile(outer_pts))
     shell = body.cut(cavity)
 
-    # ---- 3. Internal flight-stack shelf --------------------------------------
-    # Radius deliberately exceeds the local inner radius so the disc merges
-    # INTO the wall rather than sitting tangent to it -- a tangent disc unions
-    # as a separate floating solid.
-    shelf_r = R_MAX - WALL + 0.5
-    shelf = (
-        cq.Workplane("XY")
-        .workplane(offset=SHELF_Z - SHELF_T)
-        .circle(shelf_r)
-        .extrude(SHELF_T)
-    )
-    shell = shell.union(shelf)
-
-    # ---- 3a. Self-supporting ramp under the shelf ----------------------------
-    # The shelf is an annular ledge reaching 15.5 mm inward from the wall with
-    # nothing beneath it: a 90 deg overhang of about 1520 mm^2. That is the
-    # single largest overhang on the airframe, and unlike an external one it
-    # cannot be solved with support material -- this face is 132 mm up a 48 mm
-    # bore, so any support printed under it stays there forever.
-    #
-    # The fix is a cone under the shelf running back down to the wall at 45
-    # deg. Each layer then steps inward by exactly its own height, which is the
-    # self-support limit, so it prints unsupported and the ledge lands on solid
-    # material. It also fillets the shelf-to-wall joint, which is where a
-    # cantilevered ledge would otherwise crack first.
-    #
-    # Cost is 15.5 mm off the top of the battery bay, leaving about 116 mm of
-    # clear cavity for a 75 mm pack. If that ever gets tight, widening
-    # SHELF_VENT_D shortens the ramp one-for-one.
-    # Built as a conical SHELL, not a solid cone. Only the surface has to be
-    # there -- the shelf needs something to land on, not a plug. A solid cone
-    # costs about 20 g, which on a 600 g airframe is 3 % of all-up weight
-    # bought for nothing.
-    ramp_h = shelf_r - SHELF_VENT_D / 2.0
-    ramp_z0 = SHELF_Z - SHELF_T - ramp_h
-    ramp_wall = WALL * math.sqrt(2.0)      # 45 deg cone: vertical offset for
-    #                                        a WALL-thick normal section
-    ramp = (
-        cq.Workplane("XY").workplane(offset=ramp_z0)
-        .circle(shelf_r).extrude(ramp_h)
-    ).cut(
-        cq.Workplane("XY").workplane(offset=ramp_z0)
-        .circle(shelf_r)
-        .workplane(offset=ramp_h)
-        .circle(SHELF_VENT_D / 2.0)
-        .loft()
-    ).cut(
-        cq.Workplane("XY").workplane(offset=ramp_z0)
-        .circle(shelf_r + ramp_wall)
-        .workplane(offset=ramp_h)
-        .circle(SHELF_VENT_D / 2.0 + ramp_wall)
-        .loft()
-    )
-    shell = shell.union(ramp)
-
-    # 30.5 x 30.5 stack pattern + a central loom pass-through.
-    #
-    # Cut with explicit cylinders rather than .faces(">Z").hole(): on a body
-    # of revolution the ">Z" selector resolves to the nose tip (or to nothing
-    # at all after a boolean), not to the shelf you just added. Positioning
-    # the cutters absolutely is unambiguous and cannot mis-select.
-    half = STACK_PITCH / 2.0
-    for sx in (-half, half):
-        for sy in (-half, half):
-            bolt = (
-                cq.Workplane("XY")
-                .workplane(offset=SHELF_Z - SHELF_T - 2.0)
-                .center(sx, sy)
-                .circle(STACK_HOLE_D / 2.0)
-                .extrude(SHELF_T + 4.0)
-            )
-            shell = shell.cut(bolt)
-
-    vent = (
-        cq.Workplane("XY")
-        .workplane(offset=SHELF_Z - SHELF_T - 2.0)
-        .circle(SHELF_VENT_D / 2.0)
-        .extrude(SHELF_T + 4.0)
-    )
-    shell = shell.cut(vent)
-
-    # ---- 4. Arm slots --------------------------------------------------------
+    # ---- 3. Arm slots --------------------------------------------------------
     # Each cutter starts on the axis and runs radially outward, so the slot is
-    # open to the cavity: the carbon plate feeds in from inside and pushes out.
+    # open to the cavity: the printed blade feeds in from inside and pushes out.
     slot_w = ARM_WIDTH + ARM_FIT      # vertical
     slot_t = ARM_THICK + ARM_FIT      # streamwise
     cut_len = R_MAX + ARM_REACH
@@ -425,19 +368,7 @@ ARM_SWEEP = 22.0         # degrees aft ("down" when standing on the tail)
 # motor direction must be reversed in Betaflight -- see firmware/.
 PUSHER = True
 HUB_BOLT_D = 3.2
-WIRE_BORE_D = 6.0        # 3x 20 AWG silicone, hand-pullable
-# Boat-tail behind the motor pad. Two numbers, and both are set by print
-# overhang as much as by drag:
-#   * the cone FLANK is an overhang equal to its own half-angle, and the print
-#     rotation above adds to it. atan((1-PAD_TAIL_R)*pad_r / PAD_TAIL_L) must
-#     stay under (45 - PRINT_ROT_Y) = 20 deg or the flank needs support.
-#   * the flat aft END is a 90 deg face. Shrinking PAD_TAIL_R shrinks it, and
-#     also removes base area, which is what the boat-tail is for.
-# 0.45 over 14 mm gave a 31 deg flank and a 149 mm^2 flat. 0.35 over 24 mm
-# gives a 19.5 deg flank -- self-supporting at 25 deg print rotation -- and
-# drops the flat to 90 mm^2.
-PAD_TAIL_L = 24.0        # boat-tail length below the pad
-PAD_TAIL_R = 0.35        # aft radius as a fraction of pad radius
+WIRE_BORE_D = 5.5        # 3x 20 AWG silicone; 1.25 mm wall each side
 
 
 def build_arm():
@@ -467,57 +398,23 @@ def build_arm():
         .translate((ARM_ROOT_R, 0, 0))
     )
 
-    # Motor pad stays a VERTICAL boss, so its face is normal to the body axis
-    # and thrust is not canted.
+    # Motor pad stays normal to the body axis, so thrust is not canted. It is
+    # only MOTOR_PAD_T thick: the previous full-depth boss plus aft cone
+    # occupied the exact volume required by a pusher motor. This flow-aligned
+    # disc is functional, lighter, and leaves the complete motor envelope aft.
     pad_r = MOTOR_PATTERN / 2.0 * math.sqrt(2) + 4.0
     z_pad = -drop
-    # The pad's axis is ALONG the flight direction, so it behaves like a
-    # nacelle, not a bluff cylinder: its drag is base drag off the flat aft
-    # end. The fix is a boat-tail, not a teardrop in plan. Tapering the
-    # underside to 45 % radius removes most of that base area.
-    # Built as a straight boss PLUS a separate boat-tail cone. A single loft
-    # from pad_r straight down to the tail radius leaves the boss too slim
-    # where the blade meets it, and the union comes apart into two solids.
-    boss = (
+    z_face = (z_pad - ARM_WIDTH) if PUSHER else z_pad
+    motor_pad = (
         cq.Workplane("XY")
-        .workplane(offset=z_pad - ARM_WIDTH)
+        .workplane(offset=z_face)
         .center(R_MOTOR, 0)
         .circle(pad_r)
-        .extrude(ARM_WIDTH)
+        .extrude(MOTOR_PAD_T)
     )
-    tail = (
-        cq.Workplane("XY")
-        .workplane(offset=z_pad - ARM_WIDTH)
-        .center(R_MOTOR, 0)
-        .circle(pad_r)
-        .workplane(offset=-PAD_TAIL_L)
-        .circle(pad_r * PAD_TAIL_R)
-        .loft()
-    )
-    arm = arm.union(boss).union(tail)
-
-    # PUSHER: the motor bolts to the AFT face, so the 4.0 mm pad is at the
-    # BOTTOM of the boss and the relief pocket opens forward (nose-ward)
-    # instead of aft. Tractor would be the mirror of this.
-    if PUSHER:
-        arm = arm.cut(
-            cq.Workplane("XY")
-            .workplane(offset=z_pad - ARM_WIDTH + MOTOR_PAD_T)
-            .center(R_MOTOR, 0)
-            .circle(pad_r - 2.0)
-            .extrude(ARM_WIDTH - MOTOR_PAD_T + 1.0)
-        )
-    else:
-        arm = arm.cut(
-            cq.Workplane("XY")
-            .workplane(offset=z_pad - ARM_WIDTH - 1.0)
-            .center(R_MOTOR, 0)
-            .circle(pad_r - 2.0)
-            .extrude(ARM_WIDTH - MOTOR_PAD_T + 1.0)
-        )
+    arm = arm.union(motor_pad)
 
     # 16 x 16 M3 + centre bore, through the 4 mm pad only.
-    z_face = (z_pad - ARM_WIDTH) if PUSHER else (z_pad - MOTOR_PAD_T)
     half = MOTOR_PATTERN / 2.0
     for sx in (-half, half):
         for sy in (-half, half):
@@ -538,7 +435,7 @@ def build_arm():
 
     # ---- WIRE ROUTING ---------------------------------------------------
     # Three phase wires per motor have to get from the bell to the ESC inside
-    # the fuselage. They are NOT left to flap in a 139 km/h airstream: a bore
+    # the fuselage. They are NOT left to flap in a 200 km/h airstream: a bore
     # runs the length of the blade from the motor pocket to the root, exiting
     # inside the cavity.
     #
@@ -548,13 +445,15 @@ def build_arm():
     #
     # The bore is cut BEFORE the root bolt so the bolt passes through solid
     # material either side of it rather than into an open channel.
-    arm = arm.cut(
-        cq.Workplane("XY")
-        .box(length + 30.0, WIRE_BORE_D, WIRE_BORE_D)
-        .translate((length / 2.0, 0, -ARM_WIDTH / 2.0))
+    wire_bore = (
+        cq.Workplane("YZ")
+        .center(0, -ARM_WIDTH / 2.0)
+        .circle(WIRE_BORE_D / 2.0)
+        .extrude(length + 30.0)
         .rotate((0, 0, 0), (0, 1, 0), ARM_SWEEP)
-        .translate((ARM_ROOT_R, 0, 0))
+        .translate((ARM_ROOT_R - 5.0, 0, 0))
     )
+    arm = arm.cut(wire_bore)
 
     # Root bolt: one M3 through the blade into the internal hub.
     arm = arm.cut(
@@ -582,8 +481,8 @@ def split_shell(shell):
 
     Returns (body, nose), both standing on Z = 0 ready to slice.
     """
-    r_in = R_MAX - WALL                  # 24.0, cavity wall
-    r_mid = R_MAX - WALL / 2.0           # 25.0, mid-wall
+    r_in = R_MAX - WALL                  # cavity wall
+    r_mid = R_MAX - WALL / 2.0           # mid-wall
     far = R_MAX * 4.0
 
     body = shell.cut(
@@ -646,9 +545,202 @@ def build_hub():
             cq.Workplane("XY")
             .box(hub_r - HUB_CORE_R, HUB_BOLT_D, HUB_BOLT_D)
             .translate((ARM_ROOT_R + 8.0, 0, ARM_Z))
+                .rotate((0, 0, 0), (0, 0, 1), angle)
+        )
+
+    # Two M3 heat-set insert pockets in the intact central core retain the
+    # removable electronics cassette.  They open from the hub top at Z=123;
+    # the arm slots stop at R10, so neither pocket intersects an arm root.
+    cassette_half_pitch = S.CASSETTE_HUB_SCREW_PITCH_MM / 2.0
+    hub_top = ARM_Z + ARM_WIDTH / 2.0
+    for x in (-cassette_half_pitch, cassette_half_pitch):
+        pocket = (
+            cq.Workplane("XY")
+            .workplane(offset=hub_top - S.CASSETTE_HUB_INSERT_DEPTH_MM)
+            .center(x, 0.0)
+            .circle(S.CASSETTE_HUB_INSERT_D_MM / 2.0)
+            .extrude(S.CASSETTE_HUB_INSERT_DEPTH_MM + 0.2)
+        )
+        hub = hub.cut(pocket)
+    return hub
+
+
+def build_electronics_cassette():
+    """Removable ladder frame carrying both vertical custom PCBs.
+
+    Aircraft coordinates are used directly: frame width is X, its thin spine
+    is Y, and the board length is Z.  ESC standoffs project toward -Y and FC
+    standoffs toward +Y, leaving the components facing the shell and the quiet
+    board backs facing the central printed frame.
+    """
+    width = S.CASSETTE_WIDTH_MM
+    height = S.CASSETTE_TOP_Z_MM - S.CASSETTE_BOTTOM_Z_MM
+    rail = S.CASSETTE_RAIL_WIDTH_MM
+    spine_t = S.CASSETTE_SPINE_THICKNESS_MM
+    z_mid = (S.CASSETTE_BOTTOM_Z_MM + S.CASSETTE_TOP_Z_MM) / 2.0
+
+    # Two full-height side rails plus short crossbars at every board fastener
+    # row.  This is an open ladder, not a draggy/heat-trapping solid plate.
+    cassette = None
+    for x in (-(width - rail) / 2.0, (width - rail) / 2.0):
+        bar = cq.Workplane("XY").box(rail, spine_t, height).translate((x, 0, z_mid))
+        cassette = bar if cassette is None else cassette.union(bar)
+
+    esc_half_z = S.ESC_MOUNT_PITCH_Z_MM / 2.0
+    fc_half_z = S.FC_MOUNT_PITCH_Z_MM / 2.0
+    crossbar_z = {
+        S.CASSETTE_BOTTOM_Z_MM + rail / 2.0,
+        S.ELECTRONICS_CENTER_Z_MM - esc_half_z,
+        S.ELECTRONICS_CENTER_Z_MM - fc_half_z,
+        S.ELECTRONICS_CENTER_Z_MM,
+        S.ELECTRONICS_CENTER_Z_MM + fc_half_z,
+        S.ELECTRONICS_CENTER_Z_MM + esc_half_z,
+        S.CASSETTE_TOP_Z_MM - rail / 2.0,
+    }
+    for z in sorted(crossbar_z):
+        cassette = cassette.union(
+            cq.Workplane("XY").box(width, spine_t, rail).translate((0, 0, z))
+        )
+
+    # Horizontal foot seats on the hub top.  Two M3 clearance holes align to
+    # the heat-set pockets authored in build_hub().
+    foot = (
+        cq.Workplane("XY")
+        .box(20.0, 6.0, rail)
+        .translate((0, 0, S.CASSETTE_BOTTOM_Z_MM + rail / 2.0))
+    )
+    cassette = cassette.union(foot)
+    screw_half_pitch = S.CASSETTE_HUB_SCREW_PITCH_MM / 2.0
+    for x in (-screw_half_pitch, screw_half_pitch):
+        cassette = cassette.cut(
+            cq.Workplane("XY")
+            .workplane(offset=S.CASSETTE_BOTTOM_Z_MM - 0.5)
+            .center(x, 0.0)
+            .circle(S.CASSETTE_HUB_SCREW_D_MM / 2.0)
+            .extrude(rail + 1.0)
+        )
+
+    def add_standoff(part, x, z, side):
+        # XZ workplane positive extrusion points toward -Y.  The plane offset
+        # is measured along -Y, hence +spine_t/2 for the ESC side and the
+        # mirrored negative extrusion for the FC side.
+        if side == "ESC":
+            boss = (
+                cq.Workplane("XZ").workplane(offset=spine_t / 2.0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_STANDOFF_D_MM / 2.0)
+                .extrude(S.CASSETTE_BOARD_GAP_MM)
+            )
+            y0 = -spine_t / 2.0 - S.CASSETTE_BOARD_GAP_MM - 0.1
+            bore_len = S.CASSETTE_BOARD_INSERT_DEPTH_MM + 0.2
+            bore = (
+                cq.Workplane("XZ").workplane(offset=-y0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_INSERT_D_MM / 2.0)
+                .extrude(-bore_len)
+            )
+        else:
+            boss = (
+                cq.Workplane("XZ").workplane(offset=-spine_t / 2.0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_STANDOFF_D_MM / 2.0)
+                .extrude(-S.CASSETTE_BOARD_GAP_MM)
+            )
+            y0 = spine_t / 2.0 + S.CASSETTE_BOARD_GAP_MM + 0.1
+            bore_len = S.CASSETTE_BOARD_INSERT_DEPTH_MM + 0.2
+            bore = (
+                cq.Workplane("XZ").workplane(offset=-y0)
+                .center(x, z)
+                .circle(S.CASSETTE_BOARD_INSERT_D_MM / 2.0)
+                .extrude(bore_len)
+            )
+        return part.union(boss).cut(bore)
+
+    for x in (-S.ESC_MOUNT_PITCH_X_MM / 2.0, S.ESC_MOUNT_PITCH_X_MM / 2.0):
+        for z in (S.ELECTRONICS_CENTER_Z_MM - esc_half_z,
+                  S.ELECTRONICS_CENTER_Z_MM + esc_half_z):
+            cassette = add_standoff(cassette, x, z, "ESC")
+    for x in (-S.FC_MOUNT_PITCH_X_MM / 2.0, S.FC_MOUNT_PITCH_X_MM / 2.0):
+        for z in (S.ELECTRONICS_CENTER_Z_MM - fc_half_z,
+                  S.ELECTRONICS_CENTER_Z_MM + fc_half_z):
+            cassette = add_standoff(cassette, x, z, "FC")
+
+    return cassette
+
+
+def build_tail_cap():
+    """Hollow removable boat-tail with a located, screw-retained spigot.
+
+    The aft 5 mm stays solid around a 6 mm drain/vent hole. The spigot occupies
+    only the annulus next to the main-shell wall, leaving the battery envelope
+    unobstructed once its forward face starts at Z=14 mm.
+    """
+    steps = 48
+    outer_pts = []
+    for i in range(steps + 1):
+        z = -TAIL_CAP_LEN + TAIL_CAP_LEN * i / steps
+        outer_pts.append((tail_cap_radius(z), z))
+    outer = revolve_profile(outer_pts)
+
+    inner_pts = []
+    z0 = -TAIL_CAP_LEN + 5.0
+    for i in range(steps + 1):
+        z = z0 + (0.5 - z0) * i / steps
+        inner_pts.append((max(tail_cap_radius(z) - WALL, 3.0), z))
+    cap = outer.cut(revolve_profile(inner_pts))
+
+    spigot_outer = R_MAX - WALL - SPIGOT_FIT
+    spigot_inner = spigot_outer - TAIL_SPIGOT_WALL
+    # A one-millimetre internal radial flange bridges the cap wall to the
+    # smaller locating spigot. The spigot starts 0.5 mm inside that flange so
+    # the boolean has real volume overlap rather than a fragile tangent face.
+    flange = (
+        cq.Workplane("XY").workplane(offset=-1.0)
+        .circle(R_MAX).circle(spigot_inner)
+        .extrude(1.0)
+    )
+    spigot = (
+        cq.Workplane("XY").workplane(offset=-0.5)
+        .circle(spigot_outer).circle(spigot_inner)
+        .extrude(TAIL_SPIGOT_L + 0.5)
+    )
+    cap = cap.union(flange).union(spigot)
+
+    # Three internal bosses carry M2 heat-set inserts.  The cap still removes
+    # axially for battery access, but cannot vibrate free: M2x10 screws pass
+    # radially through the main shell and engage the full 4 mm insert length.
+    # Bosses are entirely inside the aerodynamic skin.
+    for angle in TAIL_RETAINER_ANGLES:
+        boss = (
+            cq.Workplane("XY")
+            .box(8.0, 6.0, 8.0)
+            .translate((22.5, 0.0, TAIL_RETAINER_Z))
             .rotate((0, 0, 0), (0, 0, 1), angle)
         )
-    return hub
+        cap = cap.union(boss)
+
+        # Insert pocket opens toward the cap interior for installation.
+        insert_pocket = (
+            cq.Workplane("YZ").workplane(offset=18.4)
+            .center(0.0, TAIL_RETAINER_Z)
+            .circle(TAIL_INSERT_D / 2.0)
+            .extrude(TAIL_INSERT_L + 0.2)
+            .rotate((0, 0, 0), (0, 0, 1), angle)
+        )
+        screw_bore = (
+            cq.Workplane("YZ").workplane(offset=22.4)
+            .center(0.0, TAIL_RETAINER_Z)
+            .circle(TAIL_RETAINER_SCREW_D / 2.0)
+            .extrude(7.0)
+            .rotate((0, 0, 0), (0, 0, 1), angle)
+        )
+        cap = cap.cut(insert_pocket).cut(screw_bore)
+
+    vent = (
+        cq.Workplane("XY").workplane(offset=-TAIL_CAP_LEN - 1.0)
+        .circle(3.0).extrude(8.0)
+    )
+    return cap.cut(vent)
 
 
 # =============================================================================
@@ -656,8 +748,22 @@ def build_hub():
 # =============================================================================
 
 result = build_shell()
+# Matching radial clearance holes in the main shell.  These are cut from the
+# assembled shell, not drilled as a post-process assumption, so the exported
+# STL and the tail-cap test share the same centres.
+for angle in TAIL_RETAINER_ANGLES:
+    retainer_hole = (
+        cq.Workplane("YZ").workplane(offset=25.8)
+        .center(0.0, TAIL_RETAINER_Z)
+        .circle(TAIL_RETAINER_SCREW_D / 2.0)
+        .extrude(4.0)
+        .rotate((0, 0, 0), (0, 0, 1), angle)
+    )
+    result = result.cut(retainer_hole)
 arm = build_arm()
 hub = build_hub()
+electronics_cassette = build_electronics_cassette()
+tail_cap = build_tail_cap()
 
 # Print-ready variants. These are what actually goes to the slicer; `result`
 # and `arm` stay in ASSEMBLY orientation so the assembly and the verification
@@ -691,3 +797,23 @@ if __name__ == "__main__":
     print(f" nose         : Von Karman, {TOTAL_LEN - Z_NOSE_BASE:.0f} mm long,"
           f" fineness {(TOTAL_LEN - Z_NOSE_BASE) / (2 * R_MAX):.2f}")
     print("=" * 62)
+    exports = {
+        "cad/vyper_shell.step": result,
+        "cad/vyper_shell_body.step": shell_body,
+        "cad/vyper_shell_nose.step": shell_nose,
+        "cad/vyper_arm.step": arm,
+        "cad/vyper_arm_print.step": arm_print,
+        "cad/vyper_hub.step": hub,
+        "cad/vyper_electronics_cassette.step": electronics_cassette,
+        "cad/vyper_tail_cap.step": tail_cap,
+        "stl/vyper_shell_body.stl": shell_body,
+        "stl/vyper_shell_nose.stl": shell_nose,
+        "stl/vyper_arm.stl": arm,
+        "stl/vyper_arm_print.stl": arm_print,
+        "stl/vyper_hub.stl": hub,
+        "stl/vyper_electronics_cassette.stl": electronics_cassette,
+        "stl/vyper_tail_cap.stl": tail_cap,
+    }
+    for path, obj in exports.items():
+        cq.exporters.export(obj, path, tolerance=0.05, angularTolerance=0.1)
+        print(f" exported     : {path}")

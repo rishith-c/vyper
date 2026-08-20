@@ -42,26 +42,22 @@ def rect_circle_overlap(r, cx, cy, cr):
 
 # ---------------------------------------------------------------- pattern
 print("=== mounting pattern ===")
-check("pattern is 30.5 x 30.5", L.HOLE_PITCH == 30.5,
-      f"{L.HOLE_PITCH} mm -- must match the VYPER shelf and any 4-in-1 ESC")
-edge = L.BOARD_W / 2 - L.HOLE_PITCH / 2 - L.HOLE_D / 2
-check("hole edge to board edge", edge >= 0.7,
-      f"{edge:.2f} mm web -- tight but standard for 36x36/30.5")
-check("grommet bore", L.HOLE_D == 4.0,
-      f"{L.HOLE_D} mm for M3 soft-mount grommets (hard mounting shifts gyro bias)")
+check("vertical FC outline", (L.BOARD_W, L.BOARD_H) == (30.0, 64.0),
+      f"{L.BOARD_W:.0f} x {L.BOARD_H:.0f} mm")
+check("cassette soft-mount pattern",
+      (L.HOLE_PITCH_X, L.HOLE_PITCH_Y) == (16.0, 56.0),
+      f"{L.HOLE_PITCH_X:.0f} x {L.HOLE_PITCH_Y:.0f} mm")
+edge_x = L.BOARD_W / 2 - L.HOLE_PITCH_X / 2 - L.HOLE_D / 2
+edge_y = L.BOARD_H / 2 - L.HOLE_PITCH_Y / 2 - L.HOLE_D / 2
+check("hole edge to board edge", min(edge_x, edge_y) >= 1.0,
+      f"{edge_x:.2f} mm transverse / {edge_y:.2f} mm longitudinal web")
+check("grommet bore", L.HOLE_D == 3.2,
+      f"{L.HOLE_D} mm M2 soft-mount bore")
 
-# ---------------------------------------------------------- board vs airframe
-print("\n=== board vs VYPER fuselage ===")
-corner_reach = math.sqrt(2) * (L.BOARD_W / 2 - L.CORNER_R) + L.CORNER_R
-check("corners fit the fuselage cavity", corner_reach <= L.FUSE_CAVITY_R - 0.4,
-      f"reach {corner_reach:.2f} mm vs cavity R {L.FUSE_CAVITY_R} "
-      f"(a SQUARE 36x36 board reaches 25.46 and does NOT fit)")
-check("board rests on the shelf", L.BOARD_W / 2 < L.SHELF_CLEAR_R,
-      f"half-width {L.BOARD_W / 2} vs shelf R {L.SHELF_CLEAR_R}")
-hole_r = math.hypot(L.HOLE_PITCH / 2, L.HOLE_PITCH / 2)
-check("holes clear the shelf vent", hole_r - L.HOLE_D / 2 > L.SHELF_VENT_D / 2 + 1.0,
-      f"holes at r={hole_r:.2f}, vent R={L.SHELF_VENT_D / 2} -- "
-      f"{hole_r - L.HOLE_D / 2 - L.SHELF_VENT_D / 2:.1f} mm of shelf between them")
+# ---------------------------------------------------------- board vs cassette
+print("\n=== board vs vertical cassette ===")
+check("FC is narrower than ESC", L.BOARD_W < 36.0 and L.BOARD_H < 72.0,
+      "30 x 64 FC nests behind the 36 x 72 ESC")
 
 # ---------------------------------------------------------------- gyro rules
 print("\n=== gyro placement (Betaflight mfr guidelines) ===")
@@ -100,11 +96,11 @@ for i, a in enumerate(names):
 check("part courtyards disjoint per side", not worst_pair[1],
       "every same-side courtyard pair checked")
 
-PAD = 1.6
+PAD_W, PAD_H = L.IO_PAD_SIZE
 bad = 0
 for group, pads in L.PAD_GROUPS.items():
     for x, y, label in pads:
-        pr = rect((x, y), (PAD, PAD))
+        pr = rect((x, y), (PAD_W, PAD_H))
         for name, spec in L.PARTS.items():
             if spec["side"] != "F":
                 continue
@@ -113,6 +109,11 @@ for group, pads in L.PAD_GROUPS.items():
                 bad += 1
 check("solder pads clear of courtyards", bad == 0,
       f"{sum(len(p) for p in L.PAD_GROUPS.values())} pads vs all F-side courtyards")
+check("I/O pads accept standard headers",
+      L.IO_PAD_PITCH == 2.54 and L.IO_PAD_DRILL >= 1.0
+      and L.IO_PAD_SIZE[0] >= 2.2 and L.IO_PAD_SIZE[1] >= 2.0,
+      f"{L.IO_PAD_PITCH:.2f} mm pitch, {PAD_W:.1f}×{PAD_H:.1f} pad / "
+      f"Ø{L.IO_PAD_DRILL:.1f} finished hole")
 
 bad = 0
 for hx, hy in L.HOLES:
@@ -124,7 +125,7 @@ for hx, hy in L.HOLES:
             bad += 1
     for group, pads in L.PAD_GROUPS.items():
         for x, y, label in pads:
-            if rect_circle_overlap(rect((x, y), (PAD, PAD)), hx, hy, kr):
+            if rect_circle_overlap(rect((x, y), (PAD_W, PAD_H)), hx, hy, kr):
                 check(f"grommet@({hx:+.2f},{hy:+.2f}) vs pad {label}", False,
                       "pad inside grommet keepout")
                 bad += 1
@@ -151,7 +152,7 @@ for name, spec in L.PARTS.items():
         bad += 1
 for group, pads in L.PAD_GROUPS.items():
     for x, y, label in pads:
-        if not inside_outline(rect((x, y), (PAD, PAD))):
+        if not inside_outline(rect((x, y), (PAD_W, PAD_H))):
             check(f"pad {label} inside outline", False, "pad leaves the board")
             bad += 1
 check("everything inside the rounded outline", bad == 0,
@@ -159,13 +160,13 @@ check("everything inside the rounded outline", bad == 0,
 
 # ----------------------------------------------------------------- system fit
 print("\n=== system integration ===")
-usb = L.PARTS["J1_usbc"]
-check("USB faces the open tail", usb["side"] == "B" and usb["pos"][1] < -12,
-      "bottom side, -Y edge: config access via right-angle extension "
-      "through the tail opening (the shell has no side hatch)")
+usb = L.PARTS["J1_usb_service_SH4"]
+check("USB service harness faces the open tail",
+      usb["side"] == "B" and usb["pos"][1] < -12,
+      "bottom side, -Y edge: removable USB-C pigtail exits through the tail")
 esc = L.PARTS["J2_esc_SH8"]
 check("ESC socket matches 4-in-1 harness", esc["side"] == "B" and "8-pin" in esc["pkg"],
-      "SH1.0 8-pin on the bottom face, straight up from the ESC below")
+      "SH1.0 8-pin on inward face for a short back-to-back harness")
 
 print()
 if fails:

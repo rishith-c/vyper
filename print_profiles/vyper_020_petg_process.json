@@ -1,0 +1,22 @@
+{
+  "type": "process",
+  "name": "VYPER 0.20 PETG structural",
+  "inherits": "0.20mm Standard @Elegoo Neptune4 (0.4 nozzle)",
+  "from": "user",
+  "instantiation": "true",
+  "compatible_printers": [
+    "Elegoo Neptune 4 (0.4 nozzle)"
+  ],
+  "layer_height": "0.20",
+  "wall_loops": "5",
+  "top_shell_layers": "5",
+  "bottom_shell_layers": "5",
+  "sparse_infill_density": "20%",
+  "sparse_infill_pattern": "gyroid",
+  "wall_generator": "classic",
+  "enable_support": "0",
+  "brim_type": "outer_only",
+  "brim_width": "5",
+  "outer_wall_speed": "60",
+  "inner_wall_speed": "80"
+}

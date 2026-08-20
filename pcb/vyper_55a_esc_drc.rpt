@@ -1,0 +1,525 @@
+** Drc report for vyper_55a_esc.kicad_pcb **
+** Created on 2026-08-08T14:36:27-0700 **
+** Report includes: Errors, Warnings **
+
+** Found 170 DRC violations **
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-15.2500 mm, 15.2500 mm): Footprint H1
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-15.2500 mm, -15.2500 mm): Footprint H2
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(15.2500 mm, 15.2500 mm): Footprint H3
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(15.2500 mm, -15.2500 mm): Footprint H4
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-6.2000 mm, -13.0000 mm): Footprint Q1
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-6.2000 mm, -13.0000 mm): Footprint Q2
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, -13.0000 mm): Footprint Q3
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, -13.0000 mm): Footprint Q4
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(6.2000 mm, -13.0000 mm): Footprint Q5
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(6.2000 mm, -13.0000 mm): Footprint Q6
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, -6.8000 mm): Footprint U1
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, -6.8000 mm): Footprint U2
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(4.7000 mm, -4.8000 mm): Footprint RN1
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-4.7000 mm, -9.1000 mm): Footprint TH1
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(13.0000 mm, -6.2000 mm): Footprint Q7
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(13.0000 mm, -6.2000 mm): Footprint Q8
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(13.0000 mm, 0.0000 mm): Footprint Q9
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(13.0000 mm, 0.0000 mm): Footprint Q10
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(13.0000 mm, 6.2000 mm): Footprint Q11
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(13.0000 mm, 6.2000 mm): Footprint Q12
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(6.8000 mm, 0.0000 mm): Footprint U3
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(6.8000 mm, 0.0000 mm): Footprint U4
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(4.8000 mm, 4.7000 mm): Footprint RN2
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(9.1000 mm, -4.7000 mm): Footprint TH2
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(6.2000 mm, 13.0000 mm): Footprint Q13
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(6.2000 mm, 13.0000 mm): Footprint Q14
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, 13.0000 mm): Footprint Q15
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, 13.0000 mm): Footprint Q16
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-6.2000 mm, 13.0000 mm): Footprint Q17
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-6.2000 mm, 13.0000 mm): Footprint Q18
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, 6.8000 mm): Footprint U5
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, 6.8000 mm): Footprint U6
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-4.7000 mm, 4.8000 mm): Footprint RN3
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(4.7000 mm, 9.1000 mm): Footprint TH3
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-13.0000 mm, 6.2000 mm): Footprint Q19
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-13.0000 mm, 6.2000 mm): Footprint Q20
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-13.0000 mm, 0.0000 mm): Footprint Q21
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-13.0000 mm, 0.0000 mm): Footprint Q22
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-13.0000 mm, -6.2000 mm): Footprint Q23
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-13.0000 mm, -6.2000 mm): Footprint Q24
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-6.8000 mm, 0.0000 mm): Footprint U7
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-6.8000 mm, 0.0000 mm): Footprint U8
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-4.8000 mm, -4.7000 mm): Footprint RN4
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-9.1000 mm, 4.7000 mm): Footprint TH4
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-7.0000 mm, -16.4000 mm): Footprint M1A
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, -16.4000 mm): Footprint M1B
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(7.0000 mm, -16.4000 mm): Footprint M1C
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(16.4000 mm, -7.0000 mm): Footprint M2A
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(16.4000 mm, 0.0000 mm): Footprint M2B
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(16.4000 mm, 7.0000 mm): Footprint M2C
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(7.0000 mm, 16.4000 mm): Footprint M3A
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(0.0000 mm, 16.4000 mm): Footprint M3B
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-7.0000 mm, 16.4000 mm): Footprint M3C
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-16.4000 mm, 7.0000 mm): Footprint M4A
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-16.4000 mm, 0.0000 mm): Footprint M4B
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-16.4000 mm, -7.0000 mm): Footprint M4C
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(-1.5000 mm, 0.0000 mm): Footprint VBAT+
+[lib_footprint_issues]: The current configuration does not include the footprint library 'VYPER_EVT'.
+    Local override; warning
+    @(1.5000 mm, 0.0000 mm): Footprint GND
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-6.2000 mm, -13.0000 mm): Reference field of Q1
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-6.2000 mm, -13.0000 mm): Reference field of Q2
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, -13.0000 mm): Reference field of Q3
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, -13.0000 mm): Reference field of Q4
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(6.2000 mm, -13.0000 mm): Reference field of Q5
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(6.2000 mm, -13.0000 mm): Reference field of Q6
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, -6.8000 mm): Reference field of U1
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, -6.8000 mm): Reference field of U2
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(4.7000 mm, -4.8000 mm): Reference field of RN1
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-4.7000 mm, -9.1000 mm): Reference field of TH1
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(13.0000 mm, -6.2000 mm): Reference field of Q7
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(13.0000 mm, -6.2000 mm): Reference field of Q8
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(13.0000 mm, 0.0000 mm): Reference field of Q9
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(13.0000 mm, 0.0000 mm): Reference field of Q10
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(13.0000 mm, 6.2000 mm): Reference field of Q11
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(13.0000 mm, 6.2000 mm): Reference field of Q12
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(6.8000 mm, 0.0000 mm): Reference field of U3
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(6.8000 mm, 0.0000 mm): Reference field of U4
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(4.8000 mm, 4.7000 mm): Reference field of RN2
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(9.1000 mm, -4.7000 mm): Reference field of TH2
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(6.2000 mm, 13.0000 mm): Reference field of Q13
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(6.2000 mm, 13.0000 mm): Reference field of Q14
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, 13.0000 mm): Reference field of Q15
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, 13.0000 mm): Reference field of Q16
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-6.2000 mm, 13.0000 mm): Reference field of Q17
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-6.2000 mm, 13.0000 mm): Reference field of Q18
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, 6.8000 mm): Reference field of U5
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(0.0000 mm, 6.8000 mm): Reference field of U6
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-4.7000 mm, 4.8000 mm): Reference field of RN3
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(4.7000 mm, 9.1000 mm): Reference field of TH3
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-13.0000 mm, 6.2000 mm): Reference field of Q19
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-13.0000 mm, 6.2000 mm): Reference field of Q20
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-13.0000 mm, 0.0000 mm): Reference field of Q21
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-13.0000 mm, 0.0000 mm): Reference field of Q22
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-13.0000 mm, -6.2000 mm): Reference field of Q23
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-13.0000 mm, -6.2000 mm): Reference field of Q24
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-6.8000 mm, 0.0000 mm): Reference field of U7
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-6.8000 mm, 0.0000 mm): Reference field of U8
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-4.8000 mm, -4.7000 mm): Reference field of RN4
+[text_height]: Text height out of range (board setup constraints silk text height min height 0.8000 mm; actual 0.5500 mm)
+    Rule: board setup constraints silk text height; warning
+    @(-9.1000 mm, 4.7000 mm): Reference field of TH4
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-6.2000 mm, -13.0000 mm): Reference field of Q1
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-9.2000 mm, -15.7000 mm): Rectangle of Q1 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-6.2000 mm, -13.0000 mm): Reference field of Q2
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-9.2000 mm, -15.7000 mm): Rectangle of Q2 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, -13.0000 mm): Reference field of Q3
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-3.0000 mm, -15.7000 mm): Rectangle of Q3 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, -13.0000 mm): Reference field of Q4
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-3.0000 mm, -15.7000 mm): Rectangle of Q4 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(6.2000 mm, -13.0000 mm): Reference field of Q5
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(3.2000 mm, -15.7000 mm): Rectangle of Q5 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(6.2000 mm, -13.0000 mm): Reference field of Q6
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(3.2000 mm, -15.7000 mm): Rectangle of Q6 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, -6.8000 mm): Reference field of U1
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, -6.8000 mm): Reference field of U2
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(4.7000 mm, -4.8000 mm): Reference field of RN1
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-4.7000 mm, -9.1000 mm): Reference field of TH1
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-5.4000 mm, -9.5500 mm): Rectangle of TH1 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(13.0000 mm, -6.2000 mm): Reference field of Q7
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(10.3000 mm, -9.2000 mm): Rectangle of Q7 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(13.0000 mm, -6.2000 mm): Reference field of Q8
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(10.3000 mm, -9.2000 mm): Rectangle of Q8 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(13.0000 mm, 0.0000 mm): Reference field of Q9
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(10.3000 mm, -3.0000 mm): Rectangle of Q9 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(13.0000 mm, 0.0000 mm): Reference field of Q10
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(10.3000 mm, -3.0000 mm): Rectangle of Q10 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(13.0000 mm, 6.2000 mm): Reference field of Q11
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(10.3000 mm, 3.2000 mm): Rectangle of Q11 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(13.0000 mm, 6.2000 mm): Reference field of Q12
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(10.3000 mm, 3.2000 mm): Rectangle of Q12 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(6.8000 mm, 0.0000 mm): Reference field of U3
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(6.8000 mm, 0.0000 mm): Reference field of U4
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(4.8000 mm, 4.7000 mm): Reference field of RN2
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(9.1000 mm, -4.7000 mm): Reference field of TH2
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(8.6500 mm, -5.4000 mm): Rectangle of TH2 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(6.2000 mm, 13.0000 mm): Reference field of Q13
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(3.2000 mm, 10.3000 mm): Rectangle of Q13 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(6.2000 mm, 13.0000 mm): Reference field of Q14
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(3.2000 mm, 10.3000 mm): Rectangle of Q14 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, 13.0000 mm): Reference field of Q15
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-3.0000 mm, 10.3000 mm): Rectangle of Q15 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, 13.0000 mm): Reference field of Q16
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-3.0000 mm, 10.3000 mm): Rectangle of Q16 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-6.2000 mm, 13.0000 mm): Reference field of Q17
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-9.2000 mm, 10.3000 mm): Rectangle of Q17 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-6.2000 mm, 13.0000 mm): Reference field of Q18
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-9.2000 mm, 10.3000 mm): Rectangle of Q18 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, 6.8000 mm): Reference field of U5
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(0.0000 mm, 6.8000 mm): Reference field of U6
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-4.7000 mm, 4.8000 mm): Reference field of RN3
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(4.7000 mm, 9.1000 mm): Reference field of TH3
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(4.0000 mm, 8.6500 mm): Rectangle of TH3 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-13.0000 mm, 6.2000 mm): Reference field of Q19
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-15.7000 mm, 3.2000 mm): Rectangle of Q19 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-13.0000 mm, 6.2000 mm): Reference field of Q20
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-15.7000 mm, 3.2000 mm): Rectangle of Q20 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-13.0000 mm, 0.0000 mm): Reference field of Q21
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-15.7000 mm, -3.0000 mm): Rectangle of Q21 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-13.0000 mm, 0.0000 mm): Reference field of Q22
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-15.7000 mm, -3.0000 mm): Rectangle of Q22 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-13.0000 mm, -6.2000 mm): Reference field of Q23
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-15.7000 mm, -9.2000 mm): Rectangle of Q23 on F.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-13.0000 mm, -6.2000 mm): Reference field of Q24
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-15.7000 mm, -9.2000 mm): Rectangle of Q24 on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-6.8000 mm, 0.0000 mm): Reference field of U7
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-6.8000 mm, 0.0000 mm): Reference field of U8
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-4.8000 mm, -4.7000 mm): Reference field of RN4
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-9.1000 mm, 4.7000 mm): Reference field of TH4
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; warning
+    @(-9.5500 mm, 4.0000 mm): Rectangle of TH4 on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(-4.7000 mm, -9.1000 mm): Reference field of TH1
+    @(-5.4000 mm, -9.5500 mm): Rectangle of TH1 on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(8.6500 mm, -5.4000 mm): Rectangle of TH2 on B.Silkscreen
+    @(9.1000 mm, -4.7000 mm): Reference field of TH2
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(4.7000 mm, 9.1000 mm): Reference field of TH3
+    @(4.0000 mm, 8.6500 mm): Rectangle of TH3 on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(-9.1000 mm, 4.7000 mm): Reference field of TH4
+    @(-9.5500 mm, 4.0000 mm): Rectangle of TH4 on B.Silkscreen
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **

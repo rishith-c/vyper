@@ -1,130 +1,40 @@
-# =============================================================================
-#  VYPER  --  Betaflight CLI configuration
-#  4S / 2207 2450KV / 5x4.3x3 / F405 + 40A 4in1 / ExpressLRS
-# =============================================================================
+# VYPER Betaflight starting configuration
+# 6S / T-Motor V2207 V3 1950KV / HQProp 5x5V1S / F405 / 55A+ ESC / ELRS
 #
-#  HOW TO USE
-#    1. Flash Betaflight 4.5+ for your F405 target FIRST.
-#    2. Betaflight Configurator -> CLI tab.
-#    3. Paste this whole file, press Enter, then type: save
-#    4. PROPS OFF for everything up to the final step.
-#
-#  Every non-default line below is here for a reason specific to THIS
-#  airframe, and the reason is stated. Do not paste tuning you cannot explain.
-# =============================================================================
+# This is a reviewed starting point, not a flight tune. Betaflight CLI names
+# can change by release and target. Use `diff all` before/after and reject any
+# unknown command instead of pasting blindly. PROPS OFF.
 
-# ---- Airframe ---------------------------------------------------------------
-# True-X, 220 mm wheelbase, arms at 45/135/225/315. Standard quad X mixer;
-# the 22 deg arm sweep is aerodynamic only and does NOT change the mix,
-# because sweep moves the arm, not the thrust axis.
 mixer QUADX
 
-# PUSHER / INVERTED MOTORS.
-# The motors bolt to the AFT face of the arms with the props behind them, so
-# every motor turns the opposite way to a normal tractor quad. Reverse all
-# four in BLHeli/AM32 (or with DShot beacon commands), then set this ON so
-# Betaflight gets the yaw sign right. Get this wrong and the quad will flip
-# on the yaw axis the instant you arm.
+# The motors are mounted on the aft faces in pusher configuration. Verify each
+# physical direction in the Motors tab before setting the mixer convention.
 set yaw_motors_reversed = ON
 
-# ---- ESC protocol -----------------------------------------------------------
-# DSHOT600 is the right choice on a 4-in-1 with short traces. Bidirectional
-# DShot gives us RPM telemetry, which is what makes RPM filtering possible --
-# and RPM filtering is the single biggest tuning win available.
+# Use bidirectional DShot only after every ESC channel returns stable telemetry.
 set motor_pwm_protocol = DSHOT600
 set dshot_bidir = ON
 set motor_poles = 14
 
-# ---- Filtering --------------------------------------------------------------
-# With RPM filtering on we can run the gyro lowpass much higher than stock,
-# which cuts delay. The printed PETG airframe is LESS stiff than carbon, so
-# its frame resonance sits lower -- the dynamic notch is left wide to catch it.
-set gyro_lpf1_dyn_min_hz = 0
-set gyro_lpf1_dyn_max_hz = 0
-set gyro_lpf2_static_hz = 500
-set dyn_notch_count = 3
-set dyn_notch_q = 300
-set dyn_notch_min_hz = 90
-set dyn_notch_max_hz = 600
-set dterm_lpf1_dyn_min_hz = 75
-set dterm_lpf1_dyn_max_hz = 150
-set dterm_lpf2_static_hz = 150
-
-# ---- PID ---------------------------------------------------------------------
-# Starting point only. The fuselage puts mass on the roll/pitch axes further
-# from centre than a flat racer does, so P is backed off slightly from stock
-# to avoid hot-motor oscillation on the first flight. Tune up from here.
-set p_pitch = 45
-set i_pitch = 80
-set d_pitch = 38
-set f_pitch = 120
-set p_roll = 42
-set i_roll = 76
-set d_roll = 36
-set f_roll = 115
-set p_yaw = 45
-set i_yaw = 80
-set d_yaw = 0
-set f_yaw = 120
-
-# ---- Rates: smooth, for speed runs not freestyle ------------------------------
-# Low centre sensitivity so small stick errors do not upset the airframe at
-# 139 km/h, with full authority still available at the stick ends.
-set rates_type = ACTUAL
-set roll_rc_rate = 12
-set pitch_rc_rate = 12
-set yaw_rc_rate = 12
-set roll_srate = 65
-set pitch_srate = 65
-set yaw_srate = 60
-set roll_expo = 45
-set pitch_expo = 45
-set yaw_expo = 40
-
-# ---- Receiver: ExpressLRS ------------------------------------------------------
+# ExpressLRS over CRSF.
 set serialrx_provider = CRSF
 set serialrx_inverted = OFF
-# 250 Hz+ link: raise this to match your ELRS packet rate or you add latency.
-set fpv_mix_degrees = 0
 
-# ---- Battery: 4S 1500 ----------------------------------------------------------
+# DOGCOM 6S 1380 mAh pack. Calibrate voltage/current against instruments.
 set vbat_min_cell_voltage = 330
 set vbat_warning_cell_voltage = 350
-set vbat_max_cell_voltage = 435
-set battery_capacity = 1500
-# Calibrate this against a real charger reading after the first pack.
-set ibata_scale = 400
+set vbat_max_cell_voltage = 425
+set battery_capacity = 1380
 
-# ---- Failsafe: DROP, not land ---------------------------------------------------
-# A 567 g airframe doing 139 km/h that loses link must stop making thrust
-# immediately. "Land" mode on a fast quad flies it a long way before it stops.
+# Link loss removes thrust. GPS Rescue may be configured only after GPS,
+# compass-free rescue direction and home-lock behavior are individually tested.
 set failsafe_procedure = DROP
-set failsafe_delay = 4
-set failsafe_off_delay = 10
-
-# ---- Arming safety ---------------------------------------------------------------
-set small_angle = 180
 set runaway_takeoff_prevention = ON
-set gyro_cal_on_first_arm = OFF
 
-# ---- Pusher-specific note -----------------------------------------------------
-# Props ingest the body and arm wake in this layout, which shows up as
-# blade-loading fluctuation -- broadband, not a clean tone. The dynamic notch
-# above is set to 3 notches partly for that reason. If the blackbox shows a
-# noise floor lift rather than a peak, that is the wake, not a balance problem,
-# and chasing it with prop balancing will not help.
-
-# ---- Motor output ------------------------------------------------------------------
-set motor_output_limit = 100
-# Idle set low: 5" on 4S has plenty of authority and a lower idle means less
-# heat in a CLOSED FUSELAGE, which is this airframe's real thermal risk.
+# Conservative motor limit for first restrained runs. Raise only through the
+# validation gates while monitoring current, bus overshoot and temperature.
+set motor_output_limit = 50
 set dshot_idle_value = 450
 
-# ---- OSD ----------------------------------------------------------------------------
-set osd_vbat_pos = 2433
-set osd_current_pos = 2465
-set osd_craft_name_pos = 2081
-set osd_rssi_dbm_pos = 2049
 set name VYPER
-
 save

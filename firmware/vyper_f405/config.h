@@ -1,0 +1,73 @@
+/* VYPER-F4 Rev A Betaflight target resource contract.
+ * Hardware must pass schematic/PCB review and bench bring-up before flight.
+ */
+#pragma once
+
+#define FC_TARGET_MCU STM32F405
+#define BOARD_NAME VYPERF405
+#define MANUFACTURER_ID VYPR
+#define SYSTEM_HSE_MHZ 8
+
+#define USE_ACC
+#define USE_GYRO
+#define USE_GYRO_SPI_ICM42688P
+#define USE_ACC_SPI_ICM42688P
+#define USE_FLASH
+#define USE_FLASH_W25Q128FV
+#define USE_BARO
+#define USE_BARO_BMP280
+#ifndef USE_MAG
+#define USE_MAG
+#define USE_MAG_QMC5883
+#define USE_MAG_LIS2MDL
+#endif
+#ifndef USE_GPS
+#define USE_GPS
+#endif
+
+#define MOTOR1_PIN PB1
+#define MOTOR2_PIN PB0
+#define MOTOR3_PIN PA3
+#define MOTOR4_PIN PA2
+#define UART1_TX_PIN PA9
+#define UART1_RX_PIN PA10
+#define UART3_TX_PIN PB10
+#define UART3_RX_PIN PB11
+#define UART5_RX_PIN PD2
+#define UART6_TX_PIN PC6
+#define UART6_RX_PIN PC7
+#define I2C1_SCL_PIN PB8
+#define I2C1_SDA_PIN PB9
+#define SPI1_SCK_PIN PB3
+#define SPI1_SDI_PIN PB4
+#define SPI1_SDO_PIN PB5
+#define SPI2_SCK_PIN PB13
+#define SPI2_SDI_PIN PB14
+#define SPI2_SDO_PIN PB15
+#define GYRO_1_CS_PIN PB7
+#define GYRO_1_EXTI_PIN PB6
+#define FLASH_CS_PIN PB12
+#define ADC_VBAT_PIN PC5
+#define ADC_CURR_PIN PC3
+#define LED_STRIP_PIN PA8
+#define BEEPER_PIN PC13
+
+#define TIMER_PIN_MAPPING \
+    TIMER_PIN_MAP(0, PB1, 2, 0) \
+    TIMER_PIN_MAP(1, PB0, 2, 0) \
+    TIMER_PIN_MAP(2, PA3, 1, 1) \
+    TIMER_PIN_MAP(3, PA2, 1, 0) \
+    TIMER_PIN_MAP(4, PA8, 2, 0)
+
+#define ADC1_DMA_OPT 1
+#define GYRO_1_SPI_INSTANCE SPI1
+#define GYRO_1_ALIGN CW90_DEG
+#define FLASH_SPI_INSTANCE SPI2
+#define BARO_I2C_INSTANCE I2CDEV_1
+#define MAG_I2C_INSTANCE I2CDEV_1
+#define DEFAULT_BLACKBOX_DEVICE BLACKBOX_DEVICE_FLASH
+#define DEFAULT_DSHOT_BURST DSHOT_DMAR_OFF
+#define DEFAULT_DSHOT_BITBANG DSHOT_BITBANG_OFF
+#define DEFAULT_CURRENT_METER_SOURCE CURRENT_METER_ADC
+#define DEFAULT_VOLTAGE_METER_SOURCE VOLTAGE_METER_ADC
+#define ESC_SENSOR_UART SERIAL_PORT_UART5

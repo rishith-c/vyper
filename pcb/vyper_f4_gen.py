@@ -48,7 +48,7 @@ HEADER = """(kicad_pcb
 \t(title_block
 \t\t(title "VYPER-F4 flight controller")
 \t\t(rev "A")
-\t\t(comment 1 "36x36, 30.5x30.5 M3, placement-complete / unrouted")
+\t\t(comment 1 "30x64 R3 vertical FC, 16x56 M2 soft mount / unrouted")
 \t)
 \t(layers
 \t\t(0 "F.Cu" signal)
@@ -129,6 +129,12 @@ def smd_pad(num, x, y, w, h, side):
             f'(size {w} {h}) (layers {layers}) (roundrect_rratio 0.25) {uid()})\n')
 
 
+def pth_pad(num, x, y, width, height, drill):
+    return (f'\t\t(pad "{num}" thru_hole oval (at {x:.3f} {y:.3f}) '
+            f'(size {width} {height}) (drill {drill}) '
+            f'(layers "*.Cu" "*.Mask") {uid()})\n')
+
+
 def build():
     out = [HEADER]
 
@@ -175,15 +181,15 @@ def build():
     for pads in L.PAD_GROUPS.values():
         for x, y, label in pads:
             out.append(footprint_open(f"PAD_{label}", x, y, "F", label))
-            out.append(smd_pad("1", 0, 0, 1.6, 1.6, "F"))
+            out.append(pth_pad("1", 0, 0, *L.IO_PAD_SIZE, L.IO_PAD_DRILL))
             out.append("\t)\n")
 
     # ---- gyro forward-axis marker + titles -----------------------------------
     gx, gy = L.PARTS["U2_gyro_ICM42688P"]["pos"]
     out.append(gr_line(gx, gy + 3.4, gx, gy + 5.2, "F.SilkS", 0.2))
     out.append(gr_text("FWD", gx + 2.8, gy + 4.3, "F.SilkS", 0.7))
-    out.append(gr_text("VYPER-F4", 0, 16.6, "F.SilkS", 1.1))
-    out.append(gr_text("36x36 / 30.5", 0, -16.9, "F.SilkS", 0.8))
+    out.append(gr_text("VYPER-F4 VERTICAL", 0, 29.8, "F.SilkS", 0.8))
+    out.append(gr_text("30x64 / 16x56 M2", 0, -30.0, "F.SilkS", 0.7))
 
     out.append(")\n")
     OUT.write_text("".join(out))

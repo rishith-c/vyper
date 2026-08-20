@@ -1,0 +1,21 @@
+{
+  "backend": "orcaslicer",
+  "native_config": "/Users/rishith/Library/Application Support/OrcaSlicer/system/Elegoo/machine/Elegoo Neptune 4 (0.4 nozzle).json",
+  "native_settings": [
+    "/Users/rishith/Library/Application Support/OrcaSlicer/system/Elegoo/machine/Elegoo Neptune 4 (0.4 nozzle).json",
+    "/Users/rishith/Developer/vyper5/print_profiles/vyper_020_petg_process.json"
+  ],
+  "native_filaments": [
+    "/Users/rishith/Developer/vyper5/print_profiles/vyper_generic_petg.json"
+  ],
+  "machine": {
+    "name": "Elegoo Neptune 4 (0.4 nozzle)",
+    "bed_size_mm": [225, 225],
+    "z_height_mm": 265
+  },
+  "filament": {
+    "type": "PETG",
+    "nozzle_temp_c": 250,
+    "bed_temp_c": 80
+  }
+}
